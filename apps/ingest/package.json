@@ -1,0 +1,25 @@
+{
+  "name": "@scpv/ingest",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "process": "tsx --env-file=.env src/index.ts",
+    "retry": "tsx --env-file=.env src/retry.ts",
+    "build": "echo 'no build yet'",
+    "lint": "pnpm -w exec biome check .",
+    "format": "pnpm -w exec biome format --write .",
+    "test": "echo 'no test yet'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^3.0.20",
+    "@scpv/core": "workspace:*",
+    "@scpv/database": "workspace:*",
+    "ai": "^6.0.67",
+    "drizzle-orm": "^0.44.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}

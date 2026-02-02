@@ -1,0 +1,27 @@
+{
+  "name": "@scpv/database",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "build": "echo 'no build yet'",
+    "dev": "turso dev --db-file ./dev.turso.db",
+    "lint": "pnpm -w exec biome check .",
+    "format": "pnpm -w exec biome format --write .",
+    "test": "echo 'no test yet'",
+    "typecheck": "tsc --noEmit",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.17.0",
+    "drizzle-orm": "^0.44.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.30.0"
+  }
+}
