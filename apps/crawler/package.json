@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "crawl": "tsx --env-file=.env src/index.ts",
+    "crawl": "pnpm sync-incident-categories && pnpm tsx --env-file=.env src/index.ts",
     "sync-incident-categories": "tsx --env-file=.env src/incident-categories.ts",
     "build": "echo 'no build yet'",
     "lint": "echo 'no lint yet'",
