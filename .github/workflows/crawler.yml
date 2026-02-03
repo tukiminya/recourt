@@ -1,0 +1,42 @@
+name: crawler
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: crawler
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      CRAWL_DELAY_SECONDS: "1"
+      CRAWL_VERSION: "v1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: "10.28.1"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Ensure env file exists
+        run: touch apps/crawler/.env
+      - name: Set crawl date range
+        run: |
+          echo "CRAWL_START_DATE=$(date -u -d '7 days ago' +%F)" >> "$GITHUB_ENV"
+          echo "CRAWL_END_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+      - name: Run crawler
+        run: pnpm --filter @scpv/crawler crawl
