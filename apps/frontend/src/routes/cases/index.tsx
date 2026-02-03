@@ -280,83 +280,93 @@ function CasesIndex() {
           </form>
 
           <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">検索結果</h2>
-              <p className="text-xs text-[var(--ink-3)]">全 {cases.length} 件</p>
-            </div>
-
-            {cases.length === 0 && (
+            {cases.length === 0 ? (
               <div className="scv-panel p-6 text-center text-[var(--ink-3)]">
                 該当する判例がありません。
               </div>
-            )}
-
-            <div className="md:hidden space-y-4">
-              {cases.map((caseItem: CaseListItem, index: number) => (
-                <div
-                  key={caseItem.case_id}
-                  className="scv-card p-4 scv-rise"
-                  style={{ animationDelay: `${index * 45}ms` }}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <a className="scv-link" href={`/cases/${caseItem.case_id}`}>
-                        {caseItem.case_title_short ?? caseItem.case_title}
-                      </a>
-                      {caseItem.case_title_short && (
-                        <p className="mt-1 text-xs text-[var(--ink-3)]">{caseItem.case_title}</p>
-                      )}
-                    </div>
-                    <span className="scv-chip">{caseItem.decision_date}</span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--ink-3)]">
-                    <span>{caseItem.court_name ?? "-"}</span>
-                    <span>{caseItem.court_incident_id}</span>
-                    <span>{caseItem.result ?? "-"}</span>
-                  </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">検索結果</h2>
+                  <p className="text-xs text-[var(--ink-3)]">全 {cases.length} 件</p>
                 </div>
-              ))}
-            </div>
 
-            <div className="hidden md:block overflow-hidden scv-card">
-              <table className="scv-table w-full text-left text-sm">
-                <thead className="bg-[var(--paper-2)] text-[var(--ink-2)]">
-                  <tr>
-                    <th className="px-4 py-3">事件名</th>
-                    <th className="px-4 py-3">判決日</th>
-                    <th className="px-4 py-3">法廷</th>
-                    <th className="px-4 py-3">事件番号</th>
-                    <th className="px-4 py-3">結果</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--border-1)]">
+                <div className="md:hidden space-y-4">
                   {cases.map((caseItem: CaseListItem, index: number) => (
-                    <tr
+                    <div
                       key={caseItem.case_id}
-                      className="hover:bg-[color:rgba(215,199,180,0.3)] scv-rise"
-                      style={{ animationDelay: `${index * 35}ms` }}
+                      className="scv-card p-4 scv-rise"
+                      style={{ animationDelay: `${index * 45}ms` }}
                     >
-                      <td className="px-4 py-3">
-                        <a className="scv-link" href={`/cases/${caseItem.case_id}`}>
-                          {caseItem.case_title_short ?? caseItem.case_title}
-                        </a>
-                        {caseItem.case_title_short && (
-                          <p className="mt-1 text-xs text-[var(--ink-3)]">{caseItem.case_title}</p>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-[var(--ink-2)]">{caseItem.decision_date}</td>
-                      <td className="px-4 py-3 text-[var(--ink-3)]">
-                        {caseItem.court_name ?? "-"}
-                      </td>
-                      <td className="px-4 py-3 text-[var(--ink-3)]">
-                        {caseItem.court_incident_id}
-                      </td>
-                      <td className="px-4 py-3 text-[var(--ink-2)]">{caseItem.result ?? "-"}</td>
-                    </tr>
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <a className="scv-link" href={`/cases/${caseItem.case_id}`}>
+                            {caseItem.case_title_short ?? caseItem.case_title}
+                          </a>
+                          {caseItem.case_title_short && (
+                            <p className="mt-1 text-xs text-[var(--ink-3)]">
+                              {caseItem.case_title}
+                            </p>
+                          )}
+                        </div>
+                        <span className="scv-chip">{caseItem.decision_date}</span>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--ink-3)]">
+                        <span>{caseItem.court_name ?? "-"}</span>
+                        <span>{caseItem.court_incident_id}</span>
+                        <span>{caseItem.result ?? "-"}</span>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+
+                <div className="hidden md:block overflow-hidden scv-card">
+                  <table className="scv-table w-full text-left text-sm">
+                    <thead className="bg-[var(--paper-2)] text-[var(--ink-2)]">
+                      <tr>
+                        <th className="px-4 py-3">事件名</th>
+                        <th className="px-4 py-3">判決日</th>
+                        <th className="px-4 py-3">法廷</th>
+                        <th className="px-4 py-3">事件番号</th>
+                        <th className="px-4 py-3">結果</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border-1)]">
+                      {cases.map((caseItem: CaseListItem, index: number) => (
+                        <tr
+                          key={caseItem.case_id}
+                          className="hover:bg-[color:rgba(215,199,180,0.3)] scv-rise"
+                          style={{ animationDelay: `${index * 35}ms` }}
+                        >
+                          <td className="px-4 py-3">
+                            <a className="scv-link" href={`/cases/${caseItem.case_id}`}>
+                              {caseItem.case_title_short ?? caseItem.case_title}
+                            </a>
+                            {caseItem.case_title_short && (
+                              <p className="mt-1 text-xs text-[var(--ink-3)]">
+                                {caseItem.case_title}
+                              </p>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-[var(--ink-2)] min-w-fit">
+                            {caseItem.decision_date}
+                          </td>
+                          <td className="px-4 py-3 text-[var(--ink-3)] min-w-fit">
+                            {caseItem.court_name ?? "-"}
+                          </td>
+                          <td className="px-4 py-3 text-[var(--ink-3)] min-w-fit">
+                            {caseItem.court_incident_id}
+                          </td>
+                          <td className="px-4 py-3 text-[var(--ink-2)] min-w-fit">
+                            {caseItem.result ?? "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </section>
         </div>
       </div>

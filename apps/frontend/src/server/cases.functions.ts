@@ -99,6 +99,7 @@ export const getCaseDetail = createServerFn({ method: "GET" })
         judge_name: judges.judge_name,
         supplementary_opinion: case_judges.supplementary_opinion,
         opinion_summary: case_judges.opinion_summary,
+        opinion_stance: case_judges.opinion_stance,
       })
       .from(case_judges)
       .innerJoin(judges, eq(judges.judge_id, case_judges.judge_id))

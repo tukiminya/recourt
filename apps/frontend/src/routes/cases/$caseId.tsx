@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SquareArrowOutUpRight } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { getCaseDetail } from "../../server/cases.functions";
 
@@ -11,6 +13,30 @@ export const Route = createFileRoute("/cases/$caseId")({
 function CaseDetail() {
   type CaseDetailData = Awaited<ReturnType<typeof getCaseDetail>>;
   const data = Route.useLoaderData() as CaseDetailData;
+
+  type OpinionStance = "agree" | "dissent" | "supplement" | "other" | "unknown";
+  const stanceLabels: Record<OpinionStance, string> = {
+    agree: "同意",
+    dissent: "反対",
+    supplement: "補足",
+    other: "その他",
+    unknown: "不明",
+  };
+  const stanceOrder: OpinionStance[] = ["agree", "dissent", "supplement", "other", "unknown"];
+
+  const normalizeStance = (value: string | null | undefined): OpinionStance => {
+    if (value === "agree" || value === "dissent" || value === "supplement" || value === "other") {
+      return value;
+    }
+    return "unknown";
+  };
+
+  const renderMarkdown = (value: string | null | undefined) => {
+    if (!value) {
+      return <p>-</p>;
+    }
+    return <ReactMarkdown remarkPlugins={[remarkGfm]}>{value}</ReactMarkdown>;
+  };
 
   const parseStringArray = (value: string | null | undefined) => {
     if (!value) {
@@ -65,7 +91,15 @@ function CaseDetail() {
   const reasoning = parseStringArray(explanation?.reasoning_json);
   const impactedParties = parseStringArray(explanation?.impacted_parties_json);
   const glossary = parseGlossary(explanation?.glossary_json);
+  const reasoningMarkdown = explanation?.reasoning_markdown ?? null;
+  const mainTextMarkdown = outcome?.main_text_markdown ?? outcome?.main_text ?? null;
   const displayTitle = caseRow.case_title_short ?? caseRow.case_title;
+  const judgesByStance = stanceOrder
+    .map((stance) => {
+      const filtered = judges.filter((judge) => normalizeStance(judge.opinion_stance) === stance);
+      return { stance, label: stanceLabels[stance], judges: filtered };
+    })
+    .filter((group) => group.judges.length > 0);
 
   return (
     <div className="min-h-screen text-[var(--ink-1)] scv-page">
@@ -89,11 +123,10 @@ function CaseDetail() {
                   <span className="text-[var(--ink-3)]">結果:</span>{" "}
                   {outcome?.result ?? "-"}
                 </p>
-                <p className="whitespace-pre-line">
+                <div className="scv-markdown">
                   <span className="text-[var(--ink-3)]">主文:</span>
-                  <br />
-                  {outcome?.main_text ?? "-"}
-                </p>
+                  <div className="mt-2">{renderMarkdown(mainTextMarkdown)}</div>
+                </div>
               </div>
             </section>
 
@@ -108,9 +141,9 @@ function CaseDetail() {
                 <div className="space-y-4 text-sm text-[var(--ink-2)]">
                   <div>
                     <p className="text-[var(--ink-3)]">概要</p>
-                    <p className="mt-1 whitespace-pre-line">
-                      {explanation.summary}
-                    </p>
+                    <div className="mt-2 scv-markdown">
+                      {renderMarkdown(explanation.summary)}
+                    </div>
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">背景</p>
@@ -132,7 +165,9 @@ function CaseDetail() {
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">判断理由の要点</p>
-                    {reasoning.length === 0 ? (
+                    {reasoningMarkdown ? (
+                      <div className="mt-2 scv-markdown">{renderMarkdown(reasoningMarkdown)}</div>
+                    ) : reasoning.length === 0 ? (
                       <p className="mt-1">-</p>
                     ) : (
                       <ul className="mt-1 list-disc pl-5 space-y-1">
@@ -144,9 +179,9 @@ function CaseDetail() {
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">影響</p>
-                    <p className="mt-1 whitespace-pre-line">
-                      {explanation.impact}
-                    </p>
+                    <div className="mt-2 scv-markdown">
+                      {renderMarkdown(explanation.impact)}
+                    </div>
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">影響を受ける主体</p>
@@ -231,32 +266,40 @@ function CaseDetail() {
                     裁判官情報がありません。
                   </p>
                 )}
-                {judges.map((judge: (typeof judges)[number], index: number) => (
-                  <div
-                    key={judge.judge_id}
-                    className="text-sm text-[var(--ink-2)] scv-rise"
-                    style={{ animationDelay: `${index * 60}ms` }}
-                  >
-                    <a className="scv-link" href={`/judges/${judge.judge_id}`}>
-                      {judge.judge_name}
-                    </a>
-                    {judge.supplementary_opinion && (
-                      <div className="mt-2 space-y-2">
-                        <p className="text-[var(--ink-3)]">
-                          {judge.supplementary_opinion}
-                        </p>
-                        {judge.opinion_summary && (
-                          <div className="scv-panel px-3 py-2 text-[var(--ink-3)]">
-                            <p className="text-xs text-[var(--ink-3)]">
-                              原文の範囲内での短い要約です。
-                            </p>
-                            <p className="mt-1">{judge.opinion_summary}</p>
+                {judges.length > 0 &&
+                  judgesByStance.map((group) => (
+                    <div key={group.stance} className="space-y-3">
+                      <div className="scv-chip">{group.label}</div>
+                      <div className="space-y-4">
+                        {group.judges.map((judge, index) => (
+                          <div
+                            key={judge.judge_id}
+                            className="text-sm text-[var(--ink-2)] scv-rise"
+                            style={{ animationDelay: `${index * 60}ms` }}
+                          >
+                            <a className="scv-link" href={`/judges/${judge.judge_id}`}>
+                              {judge.judge_name}
+                            </a>
+                            {judge.opinion_summary && (
+                              <div className="mt-2 scv-markdown">
+                                {renderMarkdown(judge.opinion_summary)}
+                              </div>
+                            )}
+                            {judge.supplementary_opinion && (
+                              <details className="mt-3 scv-panel px-3 py-2 text-[var(--ink-3)]">
+                                <summary className="cursor-pointer text-xs text-[var(--ink-3)]">
+                                  原文を開く
+                                </summary>
+                                <p className="mt-2 whitespace-pre-line">
+                                  {judge.supplementary_opinion}
+                                </p>
+                              </details>
+                            )}
                           </div>
-                        )}
+                        ))}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))}
               </div>
             </section>
 
