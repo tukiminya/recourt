@@ -13,4 +13,6 @@ count.txt
 .turbo
 todos.json
 
+dev.turso.db*
+
 apps/crawler/storage
