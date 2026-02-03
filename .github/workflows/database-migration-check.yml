@@ -1,0 +1,40 @@
+name: database-migration-check
+
+on:
+  pull_request:
+    paths:
+      - "packages/database/src/schema.ts"
+      - "packages/database/migrations/**"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify migrations for schema changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          schema_changed=false
+          migrations_changed=false
+          while IFS= read -r file; do
+            if [[ "$file" == "packages/database/src/schema.ts" ]]; then
+              schema_changed=true
+            fi
+            if [[ "$file" == packages/database/migrations/* ]]; then
+              migrations_changed=true
+            fi
+          done <<< "$files"
+          if [[ "$schema_changed" == "true" && "$migrations_changed" == "false" ]]; then
+            echo "schema.ts が変更されていますが、migrations に変更がありません。"
+            exit 1
+          fi
