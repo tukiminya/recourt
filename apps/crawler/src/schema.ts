@@ -7,6 +7,8 @@ export const crawlResultSchema = z.object({
   court_incident_id: z.string().min(1),
   case_title: z.string().min(1),
   court_name: z.string().optional(),
+  outcome_type: z.string().optional(),
+  result: z.string().optional(),
   case_type_guess: z.enum(["civil", "criminal", "unknown"]).optional(),
 });
 

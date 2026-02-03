@@ -3,12 +3,14 @@ import {
   type NewCase,
   type NewCrawlRange,
   type NewIngestJob,
+  type NewOutcome,
   cases,
   court_incidents,
   crawl_ranges,
   createDatabase,
   incident_categories,
   ingest_jobs,
+  outcomes,
   runMigrations,
 } from "@scpv/database";
 import type { CheerioAPI } from "crawlee";
@@ -108,6 +110,28 @@ export const runCrawler = async (config: CrawlerConfig) => {
 
           await db.insert(cases).values(caseRow).run();
 
+          if (detail.outcome_type || detail.result) {
+            const outcomeRow: NewOutcome = {
+              case_id: caseId,
+              outcome_type: detail.outcome_type ?? "不明",
+              main_text: null,
+              main_text_markdown: null,
+              result: detail.result ?? "不明",
+              created_at: ingestedAt,
+            };
+            await db
+              .insert(outcomes)
+              .values(outcomeRow)
+              .onConflictDoUpdate({
+                target: outcomes.case_id,
+                set: {
+                  outcome_type: outcomeRow.outcome_type,
+                  result: outcomeRow.result,
+                },
+              })
+              .run();
+          }
+
           const ingestJob: NewIngestJob = {
             ingest_job_id: createUuidV7(),
             case_id: caseId,
@@ -165,31 +189,46 @@ const extractDetail = ($: CheerioAPI, requestUrl: string, config: CrawlerConfig)
   const pageUrl = requestUrl;
   const pdfHref = normalizeText($(".module-sub-page-parts-table a[href$='.pdf']").attr("href"));
   const pdfUrl = pdfHref ? new URL(pdfHref, requestUrl).toString() : "";
-  const decisionDate = normalizeDate($("dd").eq(2).text());
-  const courtIncidentId = normalizeText($("dd").eq(0).text());
-  const caseTitle = normalizeText($("dd").eq(1).text());
-  const courtName = normalizeText($("dd").eq(3).text());
+
+  const getDetailValue = (label: string) => {
+    const entry = $(".module-sub-page-parts-table dl")
+      .filter((_, element) => normalizeText($(element).children("dt").text()) === label)
+      .first();
+    if (!entry.length) {
+      return "";
+    }
+    return normalizeText(entry.children("dd").text());
+  };
+
+  const courtIncidentId = getDetailValue("事件番号");
+  const caseTitle = getDetailValue("事件名");
+  const decisionDate = normalizeDate(getDetailValue("裁判年月日"));
+  const courtName = getDetailValue("法廷名");
+  const outcomeType = getDetailValue("裁判種別");
+  const outcomeResult = getDetailValue("結果");
 
   // 必須項目が揃わない詳細ページは除外する。
   if (!pdfUrl || !decisionDate || !courtIncidentId || !caseTitle) {
     return null;
   }
 
-  const result = crawlResultSchema.safeParse({
+  const parsed = crawlResultSchema.safeParse({
     detail_url: pageUrl,
     pdf_url: pdfUrl,
     decision_date: decisionDate,
     court_incident_id: courtIncidentId,
     case_title: caseTitle,
     court_name: courtName || undefined,
+    outcome_type: outcomeType || undefined,
+    result: outcomeResult || undefined,
   });
 
-  if (!result.success) {
-    console.error(result.error.format());
+  if (!parsed.success) {
+    console.error(parsed.error.format());
     return null;
   }
 
-  return result.data;
+  return parsed.data;
 };
 
 const inDateRange = (date: string, config: CrawlerConfig) => {
