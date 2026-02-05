@@ -50,6 +50,13 @@
       "when": 1770281419610,
       "tag": "0006_strong_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1770295503454,
+      "tag": "0007_plain_valeria_richards",
+      "breakpoints": true
     }
   ]
 }

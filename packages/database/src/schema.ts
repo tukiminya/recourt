@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   primaryKey,
   sqliteTable,
@@ -9,37 +10,37 @@ import {
 export type CaseTypeGuess = "civil" | "criminal" | "unknown";
 export type IngestJobStatus = "pending" | "processing" | "done" | "error";
 
-export const cases = sqliteTable("cases", {
-  case_id: text("case_id").primaryKey(),
-  court_incident_id: text("court_incident_id").notNull(),
-  incident_id: integer("incident_id"),
-  case_title: text("case_title").notNull(),
-  case_title_short: text("case_title_short"),
-  case_type_guess: text("case_type_guess").notNull(),
-  decision_date: text("decision_date").notNull(),
-  court_name: text("court_name"),
-  detail_url: text("detail_url").notNull(),
-  pdf_url: text("pdf_url").notNull(),
-  pdf_hash: text("pdf_hash"),
-  ingested_at: text("ingested_at")
-    .notNull()
-    .$onUpdate(() => new Date().toISOString()),
-});
-
-export const incident_categories = sqliteTable(
-  "incident_categories",
+export const cases = sqliteTable(
+  "cases",
   {
-    category_id: integer("category_id").primaryKey({ autoIncrement: true }),
-    code: text("code").notNull(),
-    label: text("label").notNull(),
-    description: text("description"),
-    active_from: text("active_from"),
-    active_to: text("active_to"),
+    case_id: text("case_id").primaryKey(),
+    court_incident_id: text("court_incident_id").notNull(),
+    incident_id: integer("incident_id"),
+    case_title: text("case_title").notNull(),
+    case_title_short: text("case_title_short"),
+    case_type_guess: text("case_type_guess").notNull(),
+    decision_date: text("decision_date").notNull(),
+    court_name: text("court_name"),
+    detail_url: text("detail_url").notNull(),
+    pdf_url: text("pdf_url").notNull(),
+    pdf_hash: text("pdf_hash"),
+    ingested_at: text("ingested_at")
+      .notNull()
+      .$onUpdate(() => new Date().toISOString()),
   },
-  (table) => ({
-    code_unique: uniqueIndex("incident_categories_code_unique").on(table.code),
-  }),
+  (table) => [
+    index("cases_court_incident_id_index").on(table.court_incident_id),
+  ],
 );
+
+export const incident_categories = sqliteTable("incident_categories", {
+  category_id: integer("category_id").primaryKey({ autoIncrement: true }),
+  code: text("code").notNull().unique(),
+  label: text("label").notNull(),
+  description: text("description"),
+  active_from: text("active_from"),
+  active_to: text("active_to"),
+});
 
 export const court_incidents = sqliteTable(
   "court_incidents",
@@ -78,47 +79,31 @@ export const case_judges = sqliteTable(
     opinion_stance: text("opinion_stance"),
     created_at: text("created_at").notNull(),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.case_id, table.judge_id] }),
-  }),
+  (table) => [primaryKey({ columns: [table.case_id, table.judge_id] })],
 );
 
-export const case_explanations = sqliteTable(
-  "case_explanations",
-  {
-    case_id: text("case_id").notNull(),
-    summary: text("summary").notNull(),
-    background: text("background").notNull(),
-    issues_json: text("issues_json").notNull(),
-    reasoning_json: text("reasoning_json").notNull(),
-    reasoning_markdown: text("reasoning_markdown"),
-    impact: text("impact").notNull(),
-    impacted_parties_json: text("impacted_parties_json").notNull(),
-    what_we_learned: text("what_we_learned").notNull(),
-    glossary_json: text("glossary_json").notNull(),
-    created_at: text("created_at").notNull(),
-  },
-  (table) => ({
-    case_id_unique: uniqueIndex("case_explanations_case_id_unique").on(
-      table.case_id,
-    ),
-  }),
-);
+export const case_explanations = sqliteTable("case_explanations", {
+  case_id: text("case_id").notNull().primaryKey(),
+  summary: text("summary").notNull(),
+  background: text("background").notNull(),
+  issues_json: text("issues_json").notNull(),
+  reasoning_json: text("reasoning_json").notNull(),
+  reasoning_markdown: text("reasoning_markdown"),
+  impact: text("impact").notNull(),
+  impacted_parties_json: text("impacted_parties_json").notNull(),
+  what_we_learned: text("what_we_learned").notNull(),
+  glossary_json: text("glossary_json").notNull(),
+  created_at: text("created_at").notNull(),
+});
 
-export const outcomes = sqliteTable(
-  "outcomes",
-  {
-    outcome_id: integer("outcome_id").primaryKey({ autoIncrement: true }),
-    case_id: text("case_id").notNull(),
-    outcome_type: text("outcome_type").notNull(),
-    main_text: text("main_text"),
-    result: text("result").notNull(),
-    created_at: text("created_at").notNull(),
-  },
-  (table) => ({
-    case_id_unique: uniqueIndex("outcomes_case_id_unique").on(table.case_id),
-  }),
-);
+export const outcomes = sqliteTable("outcomes", {
+  outcome_id: integer("outcome_id").primaryKey({ autoIncrement: true }),
+  case_id: text("case_id").notNull().unique(),
+  outcome_type: text("outcome_type").notNull(),
+  main_text: text("main_text"),
+  result: text("result").notNull(),
+  created_at: text("created_at").notNull(),
+});
 
 export const ai_outputs = sqliteTable("ai_outputs", {
   case_id: text("case_id").notNull(),
@@ -140,16 +125,14 @@ export const ingest_jobs = sqliteTable(
   "ingest_jobs",
   {
     ingest_job_id: text("ingest_job_id").primaryKey(),
-    case_id: text("case_id").notNull(),
+    case_id: text("case_id").notNull().unique(),
     status: text("status").notNull(),
     queued_at: text("queued_at").notNull(),
     started_at: text("started_at"),
     completed_at: text("completed_at"),
     error_message: text("error_message"),
   },
-  (table) => ({
-    case_id_unique: uniqueIndex("ingest_jobs_case_id_unique").on(table.case_id),
-  }),
+  (table) => [index("ingest_jobs_status_index").on(table.status)],
 );
 
 export type Database = {
