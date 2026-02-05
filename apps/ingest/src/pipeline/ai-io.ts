@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { Output, generateText } from "ai";
+import { NoObjectGeneratedError, Output, generateText } from "ai";
 
 import { putR2Object } from "@scpv/core";
 
@@ -71,25 +71,40 @@ export const callGemini = async (input: {
   pdfBytes: Uint8Array;
   metadata: AiMetadata;
 }) => {
-  return generateText({
-    model: GEMINI_MODEL,
-    output: Output.object({
-      schema: structuredOutputSchema,
-    }),
-    providerOptions: {
-      google: {
-        structuredOutputSchema: true,
+  try {
+    return generateText({
+      model: GEMINI_MODEL,
+      output: Output.object({
+        schema: structuredOutputSchema,
+      }),
+      providerOptions: {
+        google: {
+          structuredOutputSchema: true,
+        },
       },
-    },
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: input.config.gemini.prompt },
-          { type: "file", data: input.pdfBytes, mediaType: "application/pdf" },
-          { type: "text", text: JSON.stringify(input.metadata) },
-        ],
-      },
-    ],
-  });
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: input.config.gemini.prompt },
+            {
+              type: "file",
+              data: input.pdfBytes,
+              mediaType: "application/pdf",
+            },
+            { type: "text", text: JSON.stringify(input.metadata) },
+          ],
+        },
+      ],
+    });
+  } catch (error) {
+    if (NoObjectGeneratedError.isInstance(error)) {
+      console.log("NoObjectGeneratedError");
+      console.log("Cause:", error.cause);
+      console.log("Text:", error.text);
+      console.log("Response:", error.response);
+      console.log("Usage:", error.usage);
+      console.log("Finish Reason:", error.finishReason);
+    }
+  }
 };
