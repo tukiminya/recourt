@@ -4,6 +4,15 @@ on:
   schedule:
     - cron: "0 1 * * *"
   workflow_dispatch:
+    inputs:
+      start_date:
+        description: "Crawl start date (YYYY-MM-DD)"
+        required: false
+        type: string
+      end_date:
+        description: "Crawl end date (YYYY-MM-DD)"
+        required: false
+        type: string
 
 concurrency:
   group: crawler
@@ -37,7 +46,15 @@ jobs:
         run: touch apps/crawler/.env
       - name: Set crawl date range
         run: |
-          echo "CRAWL_START_DATE=$(date -u -d '7 days ago' +%F)" >> "$GITHUB_ENV"
-          echo "CRAWL_END_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+          if [ -n "${{ inputs.start_date }}" ]; then
+            echo "CRAWL_START_DATE=${{ inputs.start_date }}" >> "$GITHUB_ENV"
+          else
+            echo "CRAWL_START_DATE=$(date -u -d '7 days ago' +%F)" >> "$GITHUB_ENV"
+          fi
+          if [ -n "${{ inputs.end_date }}" ]; then
+            echo "CRAWL_END_DATE=${{ inputs.end_date }}" >> "$GITHUB_ENV"
+          else
+            echo "CRAWL_END_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+          fi
       - name: Run crawler
         run: pnpm --filter @recourt/crawler crawl
