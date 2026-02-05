@@ -1,5 +1,5 @@
 {
-  "name": "@scpv/ingest",
+  "name": "@recourt/ingest",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.21",
-    "@scpv/core": "workspace:*",
-    "@scpv/database": "workspace:*",
+    "@recourt/core": "workspace:*",
+    "@recourt/database": "workspace:*",
     "ai": "^6.0.70",
     "drizzle-orm": "^0.44.0",
     "zod": "^4.3.6"

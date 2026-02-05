@@ -1,4 +1,4 @@
-import { hashBuffer, normalizeKeySegment, putR2Object } from "@scpv/core";
+import { hashBuffer, normalizeKeySegment, putR2Object } from "@recourt/core";
 
 import type { PendingJob } from "./job-runner.js";
 
@@ -16,7 +16,7 @@ export const buildPdfKey = (job: PendingJob) =>
   `pdfs/${normalizeKeySegment(job.court_incident_id)}/${job.decision_date}.pdf`;
 
 export const storePdfToR2 = async (
-  r2Client: ReturnType<typeof import("@scpv/core").createR2Client>,
+  r2Client: ReturnType<typeof import("@recourt/core").createR2Client>,
   bucket: string,
   key: string,
   bytes: Uint8Array,

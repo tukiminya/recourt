@@ -1,7 +1,13 @@
 import { eq } from "drizzle-orm";
 
-import { createR2Client } from "@scpv/core";
-import { type NewAiOutput, ai_outputs, cases, createDatabase, runMigrations } from "@scpv/database";
+import { createR2Client } from "@recourt/core";
+import {
+  type NewAiOutput,
+  ai_outputs,
+  cases,
+  createDatabase,
+  runMigrations,
+} from "@recourt/database";
 
 import type { IngestConfig } from "../load-config.js";
 import {

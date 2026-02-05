@@ -9,7 +9,7 @@ import {
   incident_categories,
   judges,
   outcomes,
-} from "@scpv/database";
+} from "@recourt/database";
 
 import { getDatabase } from "./db.server.js";
 

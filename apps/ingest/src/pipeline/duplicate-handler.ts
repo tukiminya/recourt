@@ -1,7 +1,7 @@
 import { and, eq, ne } from "drizzle-orm";
 
-import { getR2Object } from "@scpv/core";
-import { ai_outputs, cases, type createDatabase } from "@scpv/database";
+import { getR2Object } from "@recourt/core";
+import { ai_outputs, cases, type createDatabase } from "@recourt/database";
 import type { IngestConfig } from "../load-config.js";
 import { structuredOutputSchema } from "../schema.js";
 import { normalizeStructuredOutput } from "./output-normalizer.js";
@@ -20,7 +20,7 @@ export const findDuplicateCase = async (
 
 export const reuseExistingAiOutputIfPossible = async (input: {
   db: ReturnType<typeof createDatabase>;
-  r2Client: ReturnType<typeof import("@scpv/core").createR2Client>;
+  r2Client: ReturnType<typeof import("@recourt/core").createR2Client>;
   config: IngestConfig;
   caseId: string;
   pdfHash: string;

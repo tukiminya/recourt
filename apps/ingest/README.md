@@ -4,35 +4,35 @@ Tursoの未処理ジョブを読み込み、Turso/R2/Geminiへ取り込むバッ
 
 ## 実行
 ```bash
-pnpm --filter @scpv/ingest process
+pnpm --filter @recourt/ingest process
 ```
 
 ## リトライ
 ```bash
-pnpm --filter @scpv/ingest retry -- --all
-pnpm --filter @scpv/ingest retry -- --all --processing
-pnpm --filter @scpv/ingest retry -- --all --processing --unsafe-all
-pnpm --filter @scpv/ingest retry -- --job-id <id>
+pnpm --filter @recourt/ingest retry -- --all
+pnpm --filter @recourt/ingest retry -- --all --processing
+pnpm --filter @recourt/ingest retry -- --all --processing --unsafe-all
+pnpm --filter @recourt/ingest retry -- --job-id <id>
 ```
 
 ## Lint
 ```bash
-pnpm --filter @scpv/ingest lint
+pnpm --filter @recourt/ingest lint
 ```
 
 ## テスト
 ```bash
-pnpm --filter @scpv/ingest test
+pnpm --filter @recourt/ingest test
 ```
 
 ## 型チェック
 ```bash
-pnpm --filter @scpv/ingest typecheck
+pnpm --filter @recourt/ingest typecheck
 ```
 
 ## ビルド
 ```bash
-pnpm --filter @scpv/ingest build
+pnpm --filter @recourt/ingest build
 ```
 
 ## 必須環境変数

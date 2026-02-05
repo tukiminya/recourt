@@ -35,4 +35,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run database migrations
-        run: pnpm --filter @scpv/database migrate
+        run: pnpm --filter @recourt/database migrate

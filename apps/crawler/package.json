@@ -1,5 +1,5 @@
 {
-  "name": "@scpv/crawler",
+  "name": "@recourt/crawler",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,8 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@scpv/core": "workspace:*",
-    "@scpv/database": "workspace:*",
+    "@recourt/core": "workspace:*",
+    "@recourt/database": "workspace:*",
     "cheerio": "1.0.0-rc.12",
     "crawlee": "^3.15.3",
     "dayjs": "^1.11.19",

@@ -40,4 +40,4 @@ jobs:
           echo "CRAWL_START_DATE=$(date -u -d '7 days ago' +%F)" >> "$GITHUB_ENV"
           echo "CRAWL_END_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
       - name: Run crawler
-        run: pnpm --filter @scpv/crawler crawl
+        run: pnpm --filter @recourt/crawler crawl

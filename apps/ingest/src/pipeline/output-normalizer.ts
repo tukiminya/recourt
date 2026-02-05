@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 
-import { createUuidV7, normalizeJudgeName } from "@scpv/core";
+import { createUuidV7, normalizeJudgeName } from "@recourt/core";
 import {
   type NewCaseExplanation,
   type NewCaseJudge,
@@ -12,7 +12,7 @@ import {
   type createDatabase,
   judges as judgesTable,
   outcomes,
-} from "@scpv/database";
+} from "@recourt/database";
 import type { StructuredOutput } from "../schema.js";
 
 export const normalizeStructuredOutput = async (
@@ -103,9 +103,7 @@ export const normalizeStructuredOutput = async (
       case_id: caseId,
       judge_id: judgeId,
       supplementary_opinion: judge?.supplementary_opinion ?? null,
-      opinion_summary: judge?.supplementary_opinion
-        ? (judge?.opinion_summary ?? null)
-        : null,
+      opinion_summary: judge?.supplementary_opinion ? (judge?.opinion_summary ?? null) : null,
       opinion_stance: judge?.opinion_stance ?? "unknown",
       created_at: createdAt,
     };

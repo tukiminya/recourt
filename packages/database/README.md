@@ -1,4 +1,4 @@
-# @scpv/database
+# @recourt/database
 
 Turso + Drizzle 用のデータベースヘルパーとスキーマを提供するパッケージです。
 
@@ -9,11 +9,11 @@ Turso + Drizzle 用のデータベースヘルパーとスキーマを提供す�
 
 ## コマンド
 ```bash
-pnpm --filter @scpv/database dev
-pnpm --filter @scpv/database generate
-pnpm --filter @scpv/database migrate
-pnpm --filter @scpv/database lint
-pnpm --filter @scpv/database typecheck
-pnpm --filter @scpv/database build
-pnpm --filter @scpv/database test
+pnpm --filter @recourt/database dev
+pnpm --filter @recourt/database generate
+pnpm --filter @recourt/database migrate
+pnpm --filter @recourt/database lint
+pnpm --filter @recourt/database typecheck
+pnpm --filter @recourt/database build
+pnpm --filter @recourt/database test
 ```

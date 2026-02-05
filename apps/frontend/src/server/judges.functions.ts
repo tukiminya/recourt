@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 
-import { case_judges, cases as casesTable, judges, outcomes } from "@scpv/database";
+import { case_judges, cases as casesTable, judges, outcomes } from "@recourt/database";
 
 import { getDatabase } from "./db.server.js";
 

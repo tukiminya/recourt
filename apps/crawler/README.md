@@ -4,27 +4,27 @@ Crawlee + CheerioCrawler で判例ページをクロールし、Tursoへ保存�
 
 ## 実行
 ```bash
-pnpm --filter @scpv/crawler crawl
+pnpm --filter @recourt/crawler crawl
 ```
 
 ## Lint
 ```bash
-pnpm --filter @scpv/crawler lint
+pnpm --filter @recourt/crawler lint
 ```
 
 ## テスト
 ```bash
-pnpm --filter @scpv/crawler test
+pnpm --filter @recourt/crawler test
 ```
 
 ## 型チェック
 ```bash
-pnpm --filter @scpv/crawler typecheck
+pnpm --filter @recourt/crawler typecheck
 ```
 
 ## ビルド
 ```bash
-pnpm --filter @scpv/crawler build
+pnpm --filter @recourt/crawler build
 ```
 
 ## 必須環境変数

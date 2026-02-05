@@ -23,10 +23,10 @@ importers:
 
   apps/crawler:
     dependencies:
-      '@scpv/core':
+      '@recourt/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@scpv/database':
+      '@recourt/database':
         specifier: workspace:*
         version: link:../../packages/database
       cheerio:
@@ -51,7 +51,7 @@ importers:
 
   apps/frontend:
     dependencies:
-      '@scpv/database':
+      '@recourt/database':
         specifier: workspace:*
         version: link:../../packages/database
       '@tailwindcss/vite':
@@ -160,10 +160,10 @@ importers:
       '@ai-sdk/google':
         specifier: ^3.0.21
         version: 3.0.21(zod@4.3.6)
-      '@scpv/core':
+      '@recourt/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@scpv/database':
+      '@recourt/database':
         specifier: workspace:*
         version: link:../../packages/database
       ai:

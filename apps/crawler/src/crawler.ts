@@ -1,4 +1,4 @@
-import { createUuidV7 } from "@scpv/core";
+import { createUuidV7 } from "@recourt/core";
 import {
   type NewCase,
   type NewCrawlRange,
@@ -12,7 +12,7 @@ import {
   ingest_jobs,
   outcomes,
   runMigrations,
-} from "@scpv/database";
+} from "@recourt/database";
 import type { CheerioAPI } from "crawlee";
 import { CheerioCrawler, RequestQueue } from "crawlee";
 import { and, eq } from "drizzle-orm";
@@ -91,11 +91,7 @@ export const runCrawler = async (config: CrawlerConfig) => {
             return;
           }
 
-          const incidentId = await ensureIncidentId(
-            db,
-            detail.court_incident_id,
-            log,
-          );
+          const incidentId = await ensureIncidentId(db, detail.court_incident_id, log);
           const caseId = createUuidV7();
           const ingestedAt = new Date().toISOString();
           const caseRow: NewCase = {
@@ -162,9 +158,7 @@ export const runCrawler = async (config: CrawlerConfig) => {
           if ($(".pagination a[title='次へ']").length > 0) {
             const params = new URLSearchParams(request.url);
             const currentOffset = params.get("offset");
-            const nextOffset = currentOffset
-              ? Number.parseInt(currentOffset, 10) + 10
-              : 10;
+            const nextOffset = currentOffset ? Number.parseInt(currentOffset, 10) + 10 : 10;
             const nextPageLink = new URL(request.url);
             nextPageLink.searchParams.set("offset", nextOffset.toString());
             await queue.addRequest({
@@ -190,23 +184,14 @@ export const runCrawler = async (config: CrawlerConfig) => {
   await crawler.run();
 };
 
-const extractDetail = (
-  $: CheerioAPI,
-  requestUrl: string,
-  config: CrawlerConfig,
-) => {
+const extractDetail = ($: CheerioAPI, requestUrl: string, config: CrawlerConfig) => {
   const pageUrl = requestUrl;
-  const pdfHref = normalizeText(
-    $(".module-sub-page-parts-table a[href$='.pdf']").attr("href"),
-  );
+  const pdfHref = normalizeText($(".module-sub-page-parts-table a[href$='.pdf']").attr("href"));
   const pdfUrl = pdfHref ? new URL(pdfHref, requestUrl).toString() : "";
 
   const getDetailValue = (label: string) => {
     const entry = $(".module-sub-page-parts-table dl")
-      .filter(
-        (_, element) =>
-          normalizeText($(element).children("dt").text()) === label,
-      )
+      .filter((_, element) => normalizeText($(element).children("dt").text()) === label)
       .first();
     if (!entry.length) {
       return "";

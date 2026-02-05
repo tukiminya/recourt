@@ -1,4 +1,4 @@
-# @scpv/core
+# @recourt/core
 
 共通ユーティリティをまとめたパッケージです。R2、Gemini、正規化、ハッシュ、ID生成を提供します。
 
@@ -11,8 +11,8 @@
 
 ## コマンド
 ```bash
-pnpm --filter @scpv/core lint
-pnpm --filter @scpv/core typecheck
-pnpm --filter @scpv/core build
-pnpm --filter @scpv/core test
+pnpm --filter @recourt/core lint
+pnpm --filter @recourt/core typecheck
+pnpm --filter @recourt/core build
+pnpm --filter @recourt/core test
 ```

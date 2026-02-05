@@ -1,5 +1,5 @@
 {
-  "name": "supreme-court-precedent-viewer",
+  "name": "recourt",
   "private": true,
   "packageManager": "pnpm@10.28.1",
   "scripts": {

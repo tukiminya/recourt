@@ -1,5 +1,5 @@
 import { loadConfig } from "./load-config.js";
-import { ingestPendingJobs } from "./pipeline.js";
+import { ingestPendingJobs } from "./pipeline/index.js";
 
 const config = loadConfig();
 

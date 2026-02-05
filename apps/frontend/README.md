@@ -4,32 +4,32 @@ TanStack Start を使ったフロントエンドです。
 
 ## 実行
 ```bash
-pnpm --filter frontend dev
+pnpm --filter @recourt/frontend dev
 ```
 
 ## ビルド
 ```bash
-pnpm --filter frontend build
+pnpm --filter @recourt/frontend build
 ```
 
 ## プレビュー
 ```bash
-pnpm --filter frontend preview
+pnpm --filter @recourt/frontend preview
 ```
 
 ## Lint
 ```bash
-pnpm --filter frontend lint
+pnpm --filter @recourt/frontend lint
 ```
 
 ## テスト
 ```bash
-pnpm --filter frontend test
+pnpm --filter @recourt/frontend test
 ```
 
 ## 型チェック
 ```bash
-pnpm --filter frontend typecheck
+pnpm --filter @recourt/frontend typecheck
 ```
 
 ## 環境変数

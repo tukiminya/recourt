@@ -1,4 +1,4 @@
-import { createDatabase } from "@scpv/database";
+import { createDatabase } from "@recourt/database";
 
 let dbInstance: ReturnType<typeof createDatabase> | null = null;
 

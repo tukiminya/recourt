@@ -48,4 +48,4 @@ jobs:
       - name: Ensure env file exists
         run: touch apps/ingest/.env
       - name: Run ingest
-        run: pnpm --filter @scpv/ingest process
+        run: pnpm --filter @recourt/ingest process

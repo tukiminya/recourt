@@ -1,7 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { NoObjectGeneratedError, Output, generateText } from "ai";
 
-import { putR2Object } from "@scpv/core";
+import { putR2Object } from "@recourt/core";
 
 import type { IngestConfig } from "../load-config.js";
 import { structuredOutputSchema } from "../schema.js";
@@ -40,7 +40,7 @@ export const buildAiRequestPayload = (input: {
 };
 
 export const storeAiRequest = async (
-  r2Client: ReturnType<typeof import("@scpv/core").createR2Client>,
+  r2Client: ReturnType<typeof import("@recourt/core").createR2Client>,
   bucket: string,
   key: string,
   payload: unknown,
@@ -49,7 +49,7 @@ export const storeAiRequest = async (
 };
 
 export const storeAiResponse = async (
-  r2Client: ReturnType<typeof import("@scpv/core").createR2Client>,
+  r2Client: ReturnType<typeof import("@recourt/core").createR2Client>,
   bucket: string,
   key: string,
   payload: unknown,
@@ -58,7 +58,7 @@ export const storeAiResponse = async (
 };
 
 export const storeAiOutput = async (
-  r2Client: ReturnType<typeof import("@scpv/core").createR2Client>,
+  r2Client: ReturnType<typeof import("@recourt/core").createR2Client>,
   bucket: string,
   key: string,
   payload: unknown,

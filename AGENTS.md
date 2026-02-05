@@ -32,20 +32,20 @@ No Cursor rules or Copilot instructions were found in this repo.
 ## Package-Scoped Commands
 Use pnpm filters to target a single package or app.
 
-- Frontend dev: `pnpm --filter frontend dev`
-- Frontend build: `pnpm --filter frontend build`
-- Frontend lint: `pnpm --filter frontend lint`
-- Frontend test: `pnpm --filter frontend test`
-- Frontend typecheck: `pnpm --filter frontend typecheck`
+- Frontend dev: `pnpm --filter @recourt/frontend dev`
+- Frontend build: `pnpm --filter @recourt/frontend build`
+- Frontend lint: `pnpm --filter @recourt/frontend lint`
+- Frontend test: `pnpm --filter @recourt/frontend test`
+- Frontend typecheck: `pnpm --filter @recourt/frontend typecheck`
 
-- Crawler run: `pnpm --filter @scpv/crawler crawl`
-- Crawler typecheck: `pnpm --filter @scpv/crawler typecheck`
-- Ingest run: `pnpm --filter @scpv/ingest process`
-- Ingest typecheck: `pnpm --filter @scpv/ingest typecheck`
+- Crawler run: `pnpm --filter @recourt/crawler crawl`
+- Crawler typecheck: `pnpm --filter @recourt/crawler typecheck`
+- Ingest run: `pnpm --filter @recourt/ingest process`
+- Ingest typecheck: `pnpm --filter @recourt/ingest typecheck`
 
-- Database dev (Turso local): `pnpm --filter @scpv/database dev`
-- Database generate (Drizzle): `pnpm --filter @scpv/database generate`
-- Database migrate (Drizzle): `pnpm --filter @scpv/database migrate`
+- Database dev (Turso local): `pnpm --filter @recourt/database dev`
+- Database generate (Drizzle): `pnpm --filter @recourt/database generate`
+- Database migrate (Drizzle): `pnpm --filter @recourt/database migrate`
 
 ## Linting and Formatting
 Linting is powered by Biome and invoked in most packages via:
@@ -59,9 +59,9 @@ Notes:
 ## Tests
 Only the frontend defines a test runner (Vitest).
 
-- All tests (frontend): `pnpm --filter frontend test`
-- Single test file: `pnpm --filter frontend test -- src/path/to/file.test.tsx`
-- Single test by name: `pnpm --filter frontend test -- -t "case list renders"`
+- All tests (frontend): `pnpm --filter @recourt/frontend test`
+- Single test file: `pnpm --filter @recourt/frontend test -- src/path/to/file.test.tsx`
+- Single test by name: `pnpm --filter @recourt/frontend test -- -t "case list renders"`
 
 Other packages currently echo "no test yet".
 
@@ -130,7 +130,7 @@ Follow existing patterns in the surrounding files and package.
 - Update docs/README if a new env var or command is required.
 
 ## Database Schema Changes
-- When editing the schema under `packages/database/`, run `pnpm --filter @scpv/database generate` and `pnpm --filter @scpv/database migrate`.
+- When editing the schema under `packages/database/`, run `pnpm --filter @recourt/database generate` and `pnpm --filter @recourt/database migrate`.
 - Do not edit anything under `packages/database/migrations/` manually.
 
 ## Paths Worth Knowing
