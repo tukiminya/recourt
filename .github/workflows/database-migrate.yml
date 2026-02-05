@@ -19,6 +19,7 @@ jobs:
   migrate:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: prod
     env:
       TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
       TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
