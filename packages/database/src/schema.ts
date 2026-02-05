@@ -1,4 +1,10 @@
-import { integer, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core";
 
 export type CaseTypeGuess = "civil" | "criminal" | "unknown";
 export type IngestJobStatus = "pending" | "processing" | "done" | "error";
@@ -93,7 +99,9 @@ export const case_explanations = sqliteTable(
     created_at: text("created_at").notNull(),
   },
   (table) => ({
-    case_id_unique: uniqueIndex("case_explanations_case_id_unique").on(table.case_id),
+    case_id_unique: uniqueIndex("case_explanations_case_id_unique").on(
+      table.case_id,
+    ),
   }),
 );
 

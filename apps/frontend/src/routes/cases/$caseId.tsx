@@ -22,10 +22,21 @@ function CaseDetail() {
     other: "その他",
     unknown: "不明",
   };
-  const stanceOrder: OpinionStance[] = ["agree", "dissent", "supplement", "other", "unknown"];
+  const stanceOrder: OpinionStance[] = [
+    "agree",
+    "dissent",
+    "supplement",
+    "other",
+    "unknown",
+  ];
 
   const normalizeStance = (value: string | null | undefined): OpinionStance => {
-    if (value === "agree" || value === "dissent" || value === "supplement" || value === "other") {
+    if (
+      value === "agree" ||
+      value === "dissent" ||
+      value === "supplement" ||
+      value === "other"
+    ) {
       return value;
     }
     return "unknown";
@@ -96,7 +107,9 @@ function CaseDetail() {
   const displayTitle = caseRow.case_title_short ?? caseRow.case_title;
   const judgesByStance = stanceOrder
     .map((stance) => {
-      const filtered = judges.filter((judge) => normalizeStance(judge.opinion_stance) === stance);
+      const filtered = judges.filter(
+        (judge) => normalizeStance(judge.opinion_stance) === stance,
+      );
       return { stance, label: stanceLabels[stance], judges: filtered };
     })
     .filter((group) => group.judges.length > 0);
@@ -166,7 +179,9 @@ function CaseDetail() {
                   <div>
                     <p className="text-[var(--ink-3)]">判断理由の要点</p>
                     {reasoningMarkdown ? (
-                      <div className="mt-2 scv-markdown">{renderMarkdown(reasoningMarkdown)}</div>
+                      <div className="mt-2 scv-markdown">
+                        {renderMarkdown(reasoningMarkdown)}
+                      </div>
                     ) : reasoning.length === 0 ? (
                       <p className="mt-1">-</p>
                     ) : (
@@ -277,7 +292,10 @@ function CaseDetail() {
                             className="text-sm text-[var(--ink-2)] scv-rise"
                             style={{ animationDelay: `${index * 60}ms` }}
                           >
-                            <a className="scv-link" href={`/judges/${judge.judge_id}`}>
+                            <a
+                              className="scv-link"
+                              href={`/judges/${judge.judge_id}`}
+                            >
                               {judge.judge_name}
                             </a>
                             {judge.opinion_summary && (
