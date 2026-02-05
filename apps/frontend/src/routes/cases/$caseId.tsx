@@ -92,7 +92,7 @@ function CaseDetail() {
   const impactedParties = parseStringArray(explanation?.impacted_parties_json);
   const glossary = parseGlossary(explanation?.glossary_json);
   const reasoningMarkdown = explanation?.reasoning_markdown ?? null;
-  const mainTextMarkdown = outcome?.main_text_markdown ?? outcome?.main_text ?? null;
+  const mainTextMarkdown = outcome?.main_text ?? null;
   const displayTitle = caseRow.case_title_short ?? caseRow.case_title;
   const judgesByStance = stanceOrder
     .map((stance) => {

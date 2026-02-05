@@ -1,0 +1,1 @@
+ALTER TABLE `outcomes` DROP COLUMN `main_text_markdown`;

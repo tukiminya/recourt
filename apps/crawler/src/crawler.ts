@@ -115,7 +115,6 @@ export const runCrawler = async (config: CrawlerConfig) => {
               case_id: caseId,
               outcome_type: detail.outcome_type ?? "不明",
               main_text: null,
-              main_text_markdown: null,
               result: detail.result ?? "不明",
               created_at: ingestedAt,
             };

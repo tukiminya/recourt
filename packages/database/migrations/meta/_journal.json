@@ -43,6 +43,13 @@
       "when": 1770098826781,
       "tag": "0005_lame_dormammu",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1770281419610,
+      "tag": "0006_strong_satana",
+      "breakpoints": true
     }
   ]
 }

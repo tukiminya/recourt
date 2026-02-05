@@ -33,11 +33,7 @@ export const structuredOutputSchema = z.object({
       opinion_summary: z.string().nullable(),
     }),
   ),
-  outcome: z.object({
-    type: z.string(),
-    main_text: z.string(),
-    result: z.string(),
-  }),
+  main_text: z.string(),
   decision_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   court_incident_id: z.string().min(1),
   court_name: z.string(),

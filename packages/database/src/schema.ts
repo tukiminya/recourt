@@ -104,7 +104,6 @@ export const outcomes = sqliteTable(
     case_id: text("case_id").notNull(),
     outcome_type: text("outcome_type").notNull(),
     main_text: text("main_text"),
-    main_text_markdown: text("main_text_markdown"),
     result: text("result").notNull(),
     created_at: text("created_at").notNull(),
   },
