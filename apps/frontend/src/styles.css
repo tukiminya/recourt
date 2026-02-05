@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --paper-1: #f8f2e9;
-  --paper-2: #f1e6d6;
-  --paper-3: #eadac7;
-  --ink-1: #1f2a35;
-  --ink-2: #3a4a5c;
-  --ink-3: #5b6b78;
-  --accent-1: #c2412d;
-  --accent-2: #1f5c8f;
-  --border-1: #d7c7b4;
-  --border-2: #cbb7a1;
-  --shadow-1: 0 22px 46px rgba(31, 42, 53, 0.16);
-  --shadow-2: 0 12px 26px rgba(31, 42, 53, 0.12);
+  --paper-1: #f6f7ff;
+  --paper-2: #eef1ff;
+  --paper-3: #e3e8fb;
+  --ink-1: #0f1a3a;
+  --ink-2: #1f2d55;
+  --ink-3: #3a4a70;
+  --accent-1: #000967;
+  --accent-2: #000967;
+  --border-1: #c9d3ee;
+  --border-2: #b7c3e6;
+  --shadow-1: 0 22px 46px rgba(15, 26, 58, 0.16);
+  --shadow-2: 0 12px 26px rgba(15, 26, 58, 0.12);
+  --table-hover: rgba(201, 211, 238, 0.45);
   --font-body: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   --font-display: "Kaisei Tokumin", "Hiragino Mincho ProN", "Yu Mincho", serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -24,7 +25,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--ink-1);
-  background: linear-gradient(160deg, #f4ede2 0%, #f2e6d7 40%, #e7d7c2 100%);
+  background: linear-gradient(160deg, #f4f6ff 0%, #eef1ff 40%, #e6ebfb 100%);
   min-height: 100%;
   position: relative;
   isolation: isolate;
@@ -36,8 +37,8 @@ body::before {
   content: "";
   position: fixed;
   inset: -10% -15% 0;
-  background: radial-gradient(600px circle at 8% 0%, rgba(31, 92, 143, 0.18), transparent 60%),
-    radial-gradient(520px circle at 88% 5%, rgba(194, 65, 45, 0.16), transparent 58%),
+  background: radial-gradient(600px circle at 8% 0%, rgba(0, 9, 103, 0.16), transparent 60%),
+    radial-gradient(520px circle at 88% 5%, rgba(0, 9, 103, 0.1), transparent 58%),
     radial-gradient(680px circle at 50% 100%, rgba(31, 42, 53, 0.12), transparent 60%);
   pointer-events: none;
   z-index: 0;
@@ -47,8 +48,8 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(rgba(31, 42, 53, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(31, 42, 53, 0.035) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(15, 26, 58, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 26, 58, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.5;
   pointer-events: none;
@@ -94,14 +95,14 @@ h4 {
 }
 
 .scv-card {
-  background: rgba(248, 242, 233, 0.9);
+  background: rgba(246, 247, 255, 0.92);
   border: 1px solid var(--border-1);
   border-radius: 22px;
   box-shadow: var(--shadow-1);
 }
 
 .scv-panel {
-  background: rgba(248, 242, 233, 0.72);
+  background: rgba(238, 241, 255, 0.72);
   border: 1px solid var(--border-2);
   border-radius: 20px;
   box-shadow: var(--shadow-2);
@@ -134,7 +135,7 @@ h4 {
 .scv-select:focus {
   outline: none;
   border-color: var(--accent-2);
-  box-shadow: 0 0 0 3px rgba(31, 92, 143, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 9, 103, 0.2);
 }
 
 .scv-button {
@@ -144,14 +145,14 @@ h4 {
   padding: 0.65rem 1.6rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  box-shadow: 0 12px 22px rgba(194, 65, 45, 0.25);
+  box-shadow: 0 12px 22px rgba(0, 9, 103, 0.22);
   transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .scv-button:hover {
-  background: #d15a49;
+  background: #00158a;
   transform: translateY(-1px);
-  box-shadow: 0 14px 26px rgba(194, 65, 45, 0.3);
+  box-shadow: 0 14px 26px rgba(0, 9, 103, 0.28);
 }
 
 .scv-chip {
@@ -206,17 +207,25 @@ h4 {
 }
 
 .scv-masthead {
-  background: rgba(248, 242, 233, 0.9);
+  background: rgba(246, 247, 255, 0.9);
   border-bottom: 1px solid var(--border-1);
   backdrop-filter: blur(10px);
 }
 
 .scv-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--ink-1);
   letter-spacing: 0.08em;
+}
+
+.scv-logo {
+  height: 28px;
+  width: auto;
 }
 
 .scv-navlink {

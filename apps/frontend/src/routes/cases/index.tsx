@@ -75,7 +75,7 @@ function CasesIndex() {
         <div className="space-y-10">
           <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start">
             <div className="space-y-4">
-              <p className="scv-kicker">Supreme Court Digest</p>
+              <p className="scv-kicker">再考裁</p>
               <h1 className="scv-title">判例一覧</h1>
               <p className="scv-lead">事件番号（分割入力）と判決日で最高裁判例を検索できます。</p>
               <div className="flex flex-wrap gap-2">
@@ -335,7 +335,7 @@ function CasesIndex() {
                       {cases.map((caseItem: CaseListItem, index: number) => (
                         <tr
                           key={caseItem.case_id}
-                          className="hover:bg-[color:rgba(215,199,180,0.3)] scv-rise"
+                          className="hover:bg-[var(--table-hover)] scv-rise"
                           style={{ animationDelay: `${index * 35}ms` }}
                         >
                           <td className="px-4 py-3">

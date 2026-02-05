@@ -6,11 +6,15 @@ export default function Header() {
       <div className="scv-container flex items-center justify-between py-4">
         <div className="flex items-center gap-4">
           <Link to="/cases" search={{ sort: "desc" }} className="scv-brand">
-            最高裁判例アーカイブ
+            <img
+              src="/saikousai.svg"
+              alt="再考裁"
+              className="scv-logo"
+              loading="eager"
+              decoding="async"
+            />
+            <span className="sr-only">再考裁</span>
           </Link>
-          <span className="hidden md:inline text-xs text-[var(--ink-3)] tracking-[0.3em]">
-            Supreme Court Viewer
-          </span>
         </div>
         <nav className="flex items-center gap-6">
           <Link to="/cases" search={{ sort: "desc" }} className="scv-navlink">
