@@ -15,11 +15,11 @@
     "@ai-sdk/google": "^3.0.21",
     "@recourt/core": "workspace:*",
     "@recourt/database": "workspace:*",
-    "ai": "^6.0.70",
-    "drizzle-orm": "^0.44.0",
+    "ai": "^6.0.71",
+    "drizzle-orm": "catalog:",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "tsx": "^4.21.0"
+    "tsx": "catalog:"
   }
 }

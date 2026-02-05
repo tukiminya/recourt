@@ -19,9 +19,9 @@
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
-    "drizzle-orm": "^0.44.0"
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.30.0"
+    "drizzle-kit": "^0.31.8"
   }
 }
