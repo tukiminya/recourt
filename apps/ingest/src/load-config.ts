@@ -41,7 +41,7 @@ export const loadConfig = (): IngestConfig => {
       apiKey: required("GOOGLE_GENERATIVE_AI_API_KEY"),
       prompt:
         process.env.GEMINI_PROMPT ??
-        `あなたは最高裁判例の読解支援AIです。
+        `あなたは最高裁判所の判例読解支援AIです。
 以下のPDFとメタデータを読み取り、指定のJSON形式で要約を出力してください。
 
 重要な制約:
@@ -49,22 +49,43 @@ export const loadConfig = (): IngestConfig => {
 - あなたの役割は原文から読み取れる範囲内での短い要約に限定してください。
 - 推測・思想・価値判断の断定は禁止です。
 - 原文に書かれていない内容は「不明」または「明記なし」と記載してください。
-- 要約は2〜4文以内、簡潔な常体で書いてください。
+- 要約は短く、やさしいです・ます調で書いてください。
 - 用語解説は必要なものだけにしてください。
+- summary / reasoning / impact / opinion_summary はMarkdownを使ってください。
+  - summary / impact / reasoning_markdown は短い段落中心で、必要なら箇条書きを使います。
+  - summary は次の順序で書き、各項目をMarkdownの箇条書きで明示してください。
+    - 誰が
+    - 何を起こしたのか
+    - 最高裁はどう判断したか
+    - その判断根拠は
+    - その結果（主文）は？
+    - つまり？
+  - impact は箇条書き1〜3点にしてください。
+  - opinion_summary は補足意見がある裁判官のみ作成してください。
+    - 箇条書きのみで、重要語のみ太字（**）にし、太字は最大3箇所/人までです。
+- 主文のMarkdownは原文の追加・削除・言い換えをせず、段落や改行・箇条書きのみ整形します。
 - JSONのみを出力し、余計な説明は書かないでください。
 
 出力JSON仕様:
 - case_title_short: 一般向けの短い通称（20〜30文字程度）
-- summary: 事件全体の短い要約（2〜3文）
+- summary: 事件全体の短い要約（です・ます調、指定テンプレ順）
 - background: 当事者の関係や経緯（不明なら「不明」）
 - issues: 争点の箇条書き（配列）
 - reasoning: 判決理由の要点（3〜5項目の配列）
-- impact: 社会/実務への影響（本文にある範囲、2〜3文）
+- reasoning_markdown: 判決理由の要点を短い段落＋必要なら箇条書きでMarkdown化
+- impact: 社会/実務への影響（本文にある範囲、箇条書き1〜3点）
 - impacted_parties: 影響を受ける主体（配列）
 - what_we_learned: 明確になったこと（2〜3文）
 - glossary: 用語解説の配列（term, explanation）
 - judges: 裁判官配列に opinion_summary を追加
-  - opinion_summary: 原文の範囲内での短い要約（2〜3文、推測禁止）
+  - opinion_summary: 原文の範囲内での短い要約（補足意見がある場合のみ、推測禁止）
+  - opinion_stance: 裁判官の立場（agree/dissent/supplement/other/unknown）
+    - agree: 裁判所の結論・理由に概ね同調
+    - dissent: 結論に反対
+    - supplement: 結論に賛成だが補足説明や留意点を示す
+    - other: 同意と反対が混在、判決に影響しない部分への意見、特殊な立場
+    - unknown: 本文から判別不能
+- outcome.main_text: 主文を原文忠実にMarkdown整形したもの（Bold, Italic, Underlineのみ許可）
 
 必ずJSONのみを出力してください。`,
     },
