@@ -16,6 +16,7 @@ export const structuredOutputSchema = z.object({
   background: z.string().min(1),
   issues: z.array(z.string().min(1)),
   reasoning: z.array(z.string().min(1)),
+  reasoning_markdown: z.string().min(1).optional(),
   impact: z.string().min(1),
   impacted_parties: z.array(z.string().min(1)),
   what_we_learned: z.string().min(1),
@@ -31,6 +32,9 @@ export const structuredOutputSchema = z.object({
       judge_id: z.string().min(1),
       supplementary_opinion: z.string().nullable(),
       opinion_summary: z.string().nullable(),
+      opinion_stance: z
+        .enum(["agree", "dissent", "supplement", "other", "unknown"])
+        .optional(),
     }),
   ),
   main_text: z.string(),
