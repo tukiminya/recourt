@@ -30,6 +30,7 @@ export const cases = sqliteTable(
   },
   (table) => [
     index("cases_court_incident_id_index").on(table.court_incident_id),
+    index("cases_decision_date_index").on(table.decision_date),
   ],
 );
 
