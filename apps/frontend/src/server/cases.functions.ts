@@ -52,6 +52,7 @@ export const listCases = createServerFn({ method: "GET" })
         result: outcomes.result,
       })
       .from(cases)
+      .innerJoin(case_explanations, eq(case_explanations.case_id, cases.case_id))
       .leftJoin(outcomes, eq(outcomes.case_id, cases.case_id));
 
     const query = whereClause ? baseQuery.where(whereClause) : baseQuery;
