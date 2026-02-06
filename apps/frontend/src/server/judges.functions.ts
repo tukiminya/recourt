@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { case_judges, cases as casesTable, judges, outcomes } from "@recourt/database";
@@ -38,3 +38,21 @@ export const getJudgeDetail = createServerFn({ method: "GET" })
 
     return { judge, cases: caseRows };
   });
+
+export const listJudges = createServerFn({ method: "GET" }).handler(async () => {
+  const db = getDatabase();
+  const caseCount = sql<number>`count(${case_judges.case_id})`;
+  const rows = await db
+    .select({
+      judge_id: judges.judge_id,
+      judge_name: judges.judge_name,
+      case_count: caseCount,
+    })
+    .from(judges)
+    .leftJoin(case_judges, eq(case_judges.judge_id, judges.judge_id))
+    .groupBy(judges.judge_id, judges.judge_name)
+    .orderBy(desc(caseCount), judges.judge_name)
+    .all();
+
+  return rows;
+});

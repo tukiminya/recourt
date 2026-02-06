@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+// import { useState } from "react";
 import { z } from "zod";
 
-import SearchField from "../../components/SearchField";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
+// import SearchField from "../../components/SearchField";
+// import { Button } from "../../components/ui/button";
+// import { Input } from "../../components/ui/input";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "../../components/ui/select";
 import { listCases, listIncidentCategories } from "../../server/cases.functions";
 
 const searchSchema = z.object({
@@ -57,17 +57,17 @@ function CasesIndex() {
     cases: CaseListItem[];
     categories: IncidentCategory[];
   };
-  const search = Route.useSearch();
-  const navigate = Route.useNavigate();
-  const [era, setEra] = useState<string | undefined>(search.era);
-  const [year, setYear] = useState(search.year ?? "");
-  const [code, setCode] = useState<string | undefined>(search.code);
-  const [number, setNumber] = useState(search.number ?? "");
-  const [from, setFrom] = useState(search.from ?? "");
-  const [to, setTo] = useState(search.to ?? "");
-  const [sort, setSort] = useState<"desc" | "asc">(search.sort ?? "desc");
-  const [formError, setFormError] = useState<string | null>(null);
-  const emptySelectValue = "none";
+  // const search = Route.useSearch();
+  // const navigate = Route.useNavigate();
+  // const [era, setEra] = useState<string | undefined>(search.era);
+  // const [year, setYear] = useState(search.year ?? "");
+  // const [code, setCode] = useState<string | undefined>(search.code);
+  // const [number, setNumber] = useState(search.number ?? "");
+  // const [from, setFrom] = useState(search.from ?? "");
+  // const [to, setTo] = useState(search.to ?? "");
+  // const [sort, setSort] = useState<"desc" | "asc">(search.sort ?? "desc");
+  // const [formError, setFormError] = useState<string | null>(null);
+  // const emptySelectValue = "none";
 
   return (
     <div className="min-h-screen text-[var(--ink-1)] scv-page">
@@ -77,19 +77,19 @@ function CasesIndex() {
             <div className="space-y-4">
               <p className="scv-kicker">再考裁</p>
               <h1 className="scv-title">判例一覧</h1>
-              <p className="scv-lead">事件番号（分割入力）と判決日で最高裁判例を検索できます。</p>
+              {/*<p className="scv-lead">事件番号（分割入力）と判決日で最高裁判例を検索できます。</p>
               <div className="flex flex-wrap gap-2">
                 <span className="scv-chip">事件番号で検索</span>
                 <span className="scv-chip">判決日で絞り込み</span>
                 <span className="scv-chip">新旧順を切替</span>
-              </div>
+              </div>*/}
             </div>
             <div className="scv-panel p-5">
-              <p className="text-sm text-[var(--ink-2)] leading-relaxed">
+              {/*<p className="text-sm text-[var(--ink-2)] leading-relaxed">
                 事件番号は「元号 + 年 + 符号 + 番号」を分割して入力します。
                 判決日は日付範囲を指定できます。
-              </p>
-              <div className="mt-5 grid gap-3 text-xs text-[var(--ink-3)]">
+              </p>*/}
+              <div className="grid gap-3 text-xs text-[var(--ink-3)]">
                 <div className="flex items-center justify-between border-b border-[var(--border-1)] pb-2">
                   <span>検索対象</span>
                   <span className="text-[var(--ink-2)]">最高裁判例</span>
@@ -106,6 +106,8 @@ function CasesIndex() {
             </div>
           </section>
 
+          {/* 検索機能の不具合対応で一時的に検索フォームを非表示 */}
+          {/*
           <form
             className="scv-card grid gap-4 p-6 md:grid-cols-12"
             onSubmit={(event) => {
@@ -278,6 +280,7 @@ function CasesIndex() {
               </SearchField>
             </div>
           </form>
+          */}
 
           <section className="space-y-4">
             {cases.length === 0 ? (

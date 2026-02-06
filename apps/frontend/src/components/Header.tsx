@@ -20,6 +20,9 @@ export default function Header() {
           <Link to="/cases" search={{ sort: "desc" }} className="scv-navlink">
             判例一覧
           </Link>
+          <Link to="/judges" className="scv-navlink">
+            裁判官一覧
+          </Link>
         </nav>
       </div>
     </header>
