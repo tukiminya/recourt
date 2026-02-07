@@ -121,12 +121,13 @@ export const callGemini = async (input: {
     });
   } catch (error) {
     if (NoObjectGeneratedError.isInstance(error)) {
-      console.log("NoObjectGeneratedError");
-      console.log("Cause:", error.cause);
-      console.log("Text:", error.text);
-      console.log("Response:", error.response);
-      console.log("Usage:", error.usage);
-      console.log("Finish Reason:", error.finishReason);
+      console.error("[callGemini] NoObjectGeneratedError");
+      console.error("Cause:", error.cause);
+      console.error("Text:", error.text);
+      console.error("Response:", error.response);
+      console.error("Usage:", error.usage);
+      console.error("Finish Reason:", error.finishReason);
     }
+    throw error;
   }
 };
