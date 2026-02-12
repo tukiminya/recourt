@@ -2,13 +2,15 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "includes": [
-      "!node_modules/*",
-      "!dist/*",
-      "!build/*",
-      "!.turbo/*",
-      "!storage/*",
+      "**",
+      "!**/node_modules/*",
+      "!**/dist/*",
+      "!**/.output/*",
+      "!**/build/*",
+      "!**/.turbo/*",
+      "!**/storage/*",
       "!**/routeTree.gen.ts",
-      "!migrations/*"
+      "!**/migrations/*"
     ]
   },
   "formatter": {
