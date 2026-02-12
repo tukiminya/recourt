@@ -6,17 +6,17 @@
   "lsp": {
     "biome": {
       "settings": {
-        "config_path": "./biome.json",
-      },
-    },
+        "config_path": "./biome.json"
+      }
+    }
   },
   "formatter": {
     "language_server": {
-      "name": "biome",
-    },
+      "name": "biome"
+    }
   },
   "code_actions_on_format": {
-      "source.fixAll.biome": true,
-      "source.organizeImports.biome": true
-    }
+    "source.fixAll.biome": true,
+    "source.organizeImports.biome": true
+  }
 }
