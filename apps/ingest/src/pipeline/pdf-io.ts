@@ -39,7 +39,9 @@ export const fetchPdfBytes = async (url: string): Promise<Uint8Array> => {
   const bytes = new Uint8Array(await pdfResponse.arrayBuffer());
 
   if (bytes.length > MAX_PDF_SIZE_BYTES) {
-    throw new Error(`PDF too large: ${bytes.length} bytes exceeds limit of ${MAX_PDF_SIZE_BYTES} bytes`);
+    throw new Error(
+      `PDF too large: ${bytes.length} bytes exceeds limit of ${MAX_PDF_SIZE_BYTES} bytes`,
+    );
   }
 
   if (!isPdfMagicBytes(bytes)) {

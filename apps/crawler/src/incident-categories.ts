@@ -1,6 +1,5 @@
-import { load } from "cheerio";
-
 import { createDatabase, incident_categories, runMigrations } from "@recourt/database";
+import { load } from "cheerio";
 
 const INCIDENT_CATEGORIES_URL = "https://www.courts.go.jp/hanrei/search2/index.html";
 

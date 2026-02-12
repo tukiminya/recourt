@@ -22,21 +22,10 @@ function CaseDetail() {
     other: "その他",
     unknown: "不明",
   };
-  const stanceOrder: OpinionStance[] = [
-    "agree",
-    "dissent",
-    "supplement",
-    "other",
-    "unknown",
-  ];
+  const stanceOrder: OpinionStance[] = ["agree", "dissent", "supplement", "other", "unknown"];
 
   const normalizeStance = (value: string | null | undefined): OpinionStance => {
-    if (
-      value === "agree" ||
-      value === "dissent" ||
-      value === "supplement" ||
-      value === "other"
-    ) {
+    if (value === "agree" || value === "dissent" || value === "supplement" || value === "other") {
       return value;
     }
     return "unknown";
@@ -107,9 +96,7 @@ function CaseDetail() {
   const displayTitle = caseRow.case_title_short ?? caseRow.case_title;
   const judgesByStance = stanceOrder
     .map((stance) => {
-      const filtered = judges.filter(
-        (judge) => normalizeStance(judge.opinion_stance) === stance,
-      );
+      const filtered = judges.filter((judge) => normalizeStance(judge.opinion_stance) === stance);
       return { stance, label: stanceLabels[stance], judges: filtered };
     })
     .filter((group) => group.judges.length > 0);
@@ -129,12 +116,10 @@ function CaseDetail() {
               <h2 className="text-lg font-semibold mb-4">判決結果</h2>
               <div className="space-y-3 text-sm text-[var(--ink-2)]">
                 <p>
-                  <span className="text-[var(--ink-3)]">種別:</span>{" "}
-                  {outcome?.outcome_type ?? "-"}
+                  <span className="text-[var(--ink-3)]">種別:</span> {outcome?.outcome_type ?? "-"}
                 </p>
                 <p>
-                  <span className="text-[var(--ink-3)]">結果:</span>{" "}
-                  {outcome?.result ?? "-"}
+                  <span className="text-[var(--ink-3)]">結果:</span> {outcome?.result ?? "-"}
                 </p>
                 <div className="scv-markdown">
                   <span className="text-[var(--ink-3)]">主文:</span>
@@ -146,23 +131,17 @@ function CaseDetail() {
             <section className="scv-card p-6">
               <h2 className="text-lg font-semibold mb-4">AIによる事件の整理</h2>
               {!explanation && (
-                <p className="text-sm text-[var(--ink-3)]">
-                  AIによる解説がありません。
-                </p>
+                <p className="text-sm text-[var(--ink-3)]">AIによる解説がありません。</p>
               )}
               {explanation && (
                 <div className="space-y-4 text-sm text-[var(--ink-2)]">
                   <div>
                     <p className="text-[var(--ink-3)]">概要</p>
-                    <div className="mt-2 scv-markdown">
-                      {renderMarkdown(explanation.summary)}
-                    </div>
+                    <div className="mt-2 scv-markdown">{renderMarkdown(explanation.summary)}</div>
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">背景</p>
-                    <p className="mt-1 whitespace-pre-line">
-                      {explanation.background}
-                    </p>
+                    <p className="mt-1 whitespace-pre-line">{explanation.background}</p>
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">争点</p>
@@ -179,9 +158,7 @@ function CaseDetail() {
                   <div>
                     <p className="text-[var(--ink-3)]">判断理由の要点</p>
                     {reasoningMarkdown ? (
-                      <div className="mt-2 scv-markdown">
-                        {renderMarkdown(reasoningMarkdown)}
-                      </div>
+                      <div className="mt-2 scv-markdown">{renderMarkdown(reasoningMarkdown)}</div>
                     ) : reasoning.length === 0 ? (
                       <p className="mt-1">-</p>
                     ) : (
@@ -194,9 +171,7 @@ function CaseDetail() {
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">影響</p>
-                    <div className="mt-2 scv-markdown">
-                      {renderMarkdown(explanation.impact)}
-                    </div>
+                    <div className="mt-2 scv-markdown">{renderMarkdown(explanation.impact)}</div>
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">影響を受ける主体</p>
@@ -211,12 +186,8 @@ function CaseDetail() {
                     )}
                   </div>
                   <div>
-                    <p className="text-[var(--ink-3)]">
-                      この裁判で明確になったこと
-                    </p>
-                    <p className="mt-1 whitespace-pre-line">
-                      {explanation.what_we_learned}
-                    </p>
+                    <p className="text-[var(--ink-3)]">この裁判で明確になったこと</p>
+                    <p className="mt-1 whitespace-pre-line">{explanation.what_we_learned}</p>
                   </div>
                   <div>
                     <p className="text-[var(--ink-3)]">用語解説</p>
@@ -226,12 +197,8 @@ function CaseDetail() {
                       <dl className="mt-1 space-y-2">
                         {glossary.map((item) => (
                           <div key={item.term}>
-                            <dt className="text-[var(--ink-2)] font-medium">
-                              {item.term}
-                            </dt>
-                            <dd className="text-[var(--ink-3)]">
-                              {item.explanation}
-                            </dd>
+                            <dt className="text-[var(--ink-2)] font-medium">{item.term}</dt>
+                            <dd className="text-[var(--ink-3)]">{item.explanation}</dd>
                           </div>
                         ))}
                       </dl>
@@ -248,27 +215,19 @@ function CaseDetail() {
               <dl className="mt-4 space-y-3 text-sm">
                 <div className="flex items-center justify-between">
                   <dt className="text-[var(--ink-3)]">事件番号</dt>
-                  <dd className="text-[var(--ink-1)]">
-                    {caseRow.court_incident_id}
-                  </dd>
+                  <dd className="text-[var(--ink-1)]">{caseRow.court_incident_id}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-[var(--ink-3)]">判決日</dt>
-                  <dd className="text-[var(--ink-1)]">
-                    {caseRow.decision_date}
-                  </dd>
+                  <dd className="text-[var(--ink-1)]">{caseRow.decision_date}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-[var(--ink-3)]">法廷</dt>
-                  <dd className="text-[var(--ink-1)]">
-                    {caseRow.court_name ?? "-"}
-                  </dd>
+                  <dd className="text-[var(--ink-1)]">{caseRow.court_name ?? "-"}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-[var(--ink-3)]">結果</dt>
-                  <dd className="text-[var(--ink-1)]">
-                    {outcome?.result ?? "-"}
-                  </dd>
+                  <dd className="text-[var(--ink-1)]">{outcome?.result ?? "-"}</dd>
                 </div>
               </dl>
             </section>
@@ -277,9 +236,7 @@ function CaseDetail() {
               <h2 className="text-base font-semibold mb-4">裁判官</h2>
               <div className="space-y-4">
                 {judges.length === 0 && (
-                  <p className="text-sm text-[var(--ink-3)]">
-                    裁判官情報がありません。
-                  </p>
+                  <p className="text-sm text-[var(--ink-3)]">裁判官情報がありません。</p>
                 )}
                 {judges.length > 0 &&
                   judgesByStance.map((group) => (
@@ -292,10 +249,7 @@ function CaseDetail() {
                             className="text-sm text-[var(--ink-2)] scv-rise"
                             style={{ animationDelay: `${index * 60}ms` }}
                           >
-                            <a
-                              className="scv-link"
-                              href={`/judges/${judge.judge_id}`}
-                            >
+                            <a className="scv-link" href={`/judges/${judge.judge_id}`}>
                               {judge.judge_name}
                             </a>
                             {judge.opinion_summary && (

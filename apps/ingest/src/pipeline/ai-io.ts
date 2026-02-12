@@ -1,7 +1,6 @@
-import { google, GoogleGenerativeAIProviderOptions } from "@ai-sdk/google";
-import { NoObjectGeneratedError, Output, generateText } from "ai";
-
+import { type GoogleGenerativeAIProviderOptions, google } from "@ai-sdk/google";
 import { putR2Object } from "@recourt/core";
+import { generateText, NoObjectGeneratedError, Output } from "ai";
 
 import type { IngestConfig } from "../load-config.js";
 import { structuredOutputSchema } from "../schema.js";
@@ -45,13 +44,7 @@ export const storeAiRequest = async (
   key: string,
   payload: unknown,
 ) => {
-  await putR2Object(
-    r2Client,
-    bucket,
-    key,
-    JSON.stringify(payload),
-    "application/json",
-  );
+  await putR2Object(r2Client, bucket, key, JSON.stringify(payload), "application/json");
 };
 
 export const storeAiResponse = async (
@@ -60,13 +53,7 @@ export const storeAiResponse = async (
   key: string,
   payload: unknown,
 ) => {
-  await putR2Object(
-    r2Client,
-    bucket,
-    key,
-    JSON.stringify(payload),
-    "application/json",
-  );
+  await putR2Object(r2Client, bucket, key, JSON.stringify(payload), "application/json");
 };
 
 export const storeAiOutput = async (
@@ -75,13 +62,7 @@ export const storeAiOutput = async (
   key: string,
   payload: unknown,
 ) => {
-  await putR2Object(
-    r2Client,
-    bucket,
-    key,
-    JSON.stringify(payload),
-    "application/json",
-  );
+  await putR2Object(r2Client, bucket, key, JSON.stringify(payload), "application/json");
 };
 
 export const callGemini = async (input: {

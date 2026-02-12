@@ -1,18 +1,17 @@
-import { eq } from "drizzle-orm";
-
 import { createUuidV7, normalizeJudgeName } from "@recourt/core";
 import {
-  type NewCaseExplanation,
-  type NewCaseJudge,
-  type NewJudge,
-  type NewOutcome,
   case_explanations,
   case_judges,
   cases,
   type createDatabase,
   judges as judgesTable,
+  type NewCaseExplanation,
+  type NewCaseJudge,
+  type NewJudge,
+  type NewOutcome,
   outcomes,
 } from "@recourt/database";
+import { eq } from "drizzle-orm";
 import type { StructuredOutput } from "../schema.js";
 
 export const normalizeStructuredOutput = async (

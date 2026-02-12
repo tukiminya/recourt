@@ -1,26 +1,26 @@
-import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
+import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 
 const getCurrentServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => await new Date().toISOString())
+  method: "GET",
+}).handler(async () => await new Date().toISOString());
 
-export const Route = createFileRoute('/demo/start/server-funcs')({
+export const Route = createFileRoute("/demo/start/server-funcs")({
   component: Home,
   loader: async () => await getCurrentServerTime(),
-})
+});
 
 function Home() {
-  const originalTime = Route.useLoaderData()
-  const [time, setTime] = useState(originalTime)
+  const originalTime = Route.useLoaderData();
+  const [time, setTime] = useState(originalTime);
 
   return (
     <div
       className="flex items-center justify-center min-h-screen bg-gradient-to-br from-zinc-800 to-black p-4 text-white"
       style={{
         backgroundImage:
-          'radial-gradient(50% 50% at 20% 60%, #23272a 0%, #18181b 50%, #000000 100%)',
+          "radial-gradient(50% 50% at 20% 60%, #23272a 0%, #18181b 50%, #000000 100%)",
       }}
     >
       <div className="w-full max-w-2xl p-8 rounded-xl backdrop-blur-md bg-black/50 shadow-xl border-8 border-black/10">
@@ -37,5 +37,5 @@ function Home() {
         </div>
       </div>
     </div>
-  )
+  );
 }

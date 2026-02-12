@@ -1,23 +1,22 @@
 import { createUuidV7 } from "@recourt/core";
 import {
-  type NewCase,
-  type NewCrawlRange,
-  type NewIngestJob,
-  type NewOutcome,
   cases,
   court_incidents,
   crawl_ranges,
   createDatabase,
   incident_categories,
   ingest_jobs,
+  type NewCase,
+  type NewCrawlRange,
+  type NewIngestJob,
+  type NewOutcome,
   outcomes,
   runMigrations,
 } from "@recourt/database";
 import type { CheerioAPI } from "crawlee";
 import { CheerioCrawler, RequestQueue } from "crawlee";
-import { and, eq } from "drizzle-orm";
-
 import dayjs from "dayjs";
+import { and, eq } from "drizzle-orm";
 import type { CrawlerConfig } from "./config.js";
 import { parseCourtIncidentId } from "./incident.js";
 import { normalizeDate, normalizeText } from "./normalize.js";

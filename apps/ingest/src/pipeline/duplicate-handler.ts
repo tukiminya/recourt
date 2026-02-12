@@ -1,7 +1,6 @@
-import { and, eq, ne } from "drizzle-orm";
-
 import { getR2Object } from "@recourt/core";
 import { ai_outputs, cases, type createDatabase } from "@recourt/database";
+import { and, eq, ne } from "drizzle-orm";
 import type { IngestConfig } from "../load-config.js";
 import { structuredOutputSchema } from "../schema.js";
 import { normalizeStructuredOutput } from "./output-normalizer.js";

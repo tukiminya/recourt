@@ -37,7 +37,8 @@ body::before {
   content: "";
   position: fixed;
   inset: -10% -15% 0;
-  background: radial-gradient(600px circle at 8% 0%, rgba(0, 9, 103, 0.16), transparent 60%),
+  background:
+    radial-gradient(600px circle at 8% 0%, rgba(0, 9, 103, 0.16), transparent 60%),
     radial-gradient(520px circle at 88% 5%, rgba(0, 9, 103, 0.1), transparent 58%),
     radial-gradient(680px circle at 50% 100%, rgba(31, 42, 53, 0.12), transparent 60%);
   pointer-events: none;
@@ -48,7 +49,8 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(rgba(15, 26, 58, 0.05) 1px, transparent 1px),
+  background-image:
+    linear-gradient(rgba(15, 26, 58, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 26, 58, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.5;
@@ -124,7 +126,9 @@ h4 {
   font-size: 0.9rem;
   color: var(--ink-1);
   width: 100%;
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .scv-input::placeholder {
@@ -146,7 +150,10 @@ h4 {
   font-weight: 600;
   letter-spacing: 0.08em;
   box-shadow: 0 12px 22px rgba(0, 9, 103, 0.22);
-  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
 }
 
 .scv-button:hover {

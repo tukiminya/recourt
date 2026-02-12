@@ -67,13 +67,9 @@ function JudgesIndex() {
                         <a className="scv-link" href={`/judges/${judge.judge_id}`}>
                           {judge.judge_name}
                         </a>
-                        <span className="scv-chip">
-                          {judge.case_count ?? 0} 件
-                        </span>
+                        <span className="scv-chip">{judge.case_count ?? 0} 件</span>
                       </div>
-                      <p className="mt-2 text-xs text-[var(--ink-3)]">
-                        関与事件数
-                      </p>
+                      <p className="mt-2 text-xs text-[var(--ink-3)]">関与事件数</p>
                     </div>
                   ))}
                 </div>

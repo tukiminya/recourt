@@ -1,6 +1,5 @@
+import { cases, type createDatabase, type IngestJobStatus, ingest_jobs } from "@recourt/database";
 import { and, asc, eq } from "drizzle-orm";
-
-import { type IngestJobStatus, cases, type createDatabase, ingest_jobs } from "@recourt/database";
 
 export type PendingJob = {
   ingest_job_id: string;

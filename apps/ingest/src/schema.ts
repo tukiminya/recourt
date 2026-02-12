@@ -32,9 +32,7 @@ export const structuredOutputSchema = z.object({
       judge_id: z.string().min(1),
       supplementary_opinion: z.string().nullable(),
       opinion_summary: z.string().nullable(),
-      opinion_stance: z
-        .enum(["agree", "dissent", "supplement", "other", "unknown"])
-        .optional(),
+      opinion_stance: z.enum(["agree", "dissent", "supplement", "other", "unknown"]).optional(),
     }),
   ),
   main_text: z.string(),

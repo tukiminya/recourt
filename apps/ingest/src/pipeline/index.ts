@@ -1,20 +1,19 @@
-import { eq } from "drizzle-orm";
-
 import { createR2Client } from "@recourt/core";
 import {
-  type NewAiOutput,
   ai_outputs,
   cases,
   createDatabase,
+  type NewAiOutput,
   runMigrations,
 } from "@recourt/database";
+import { eq } from "drizzle-orm";
 
 import type { IngestConfig } from "../load-config.js";
 import {
   type AiMetadata,
-  GEMINI_MODEL,
   buildAiRequestPayload,
   callGemini,
+  GEMINI_MODEL,
   storeAiOutput,
   storeAiRequest,
   storeAiResponse,

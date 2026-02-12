@@ -1,6 +1,5 @@
-import { and, eq, inArray } from "drizzle-orm";
-
 import { createDatabase, ingest_jobs, runMigrations } from "@recourt/database";
+import { and, eq, inArray } from "drizzle-orm";
 
 import { loadConfig } from "./load-config.js";
 
