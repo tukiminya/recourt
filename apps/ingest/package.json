@@ -12,10 +12,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.22",
+    "@ai-sdk/google": "^3.0.29",
     "@recourt/core": "workspace:*",
     "@recourt/database": "workspace:*",
-    "ai": "^6.0.77",
+    "ai": "^6.0.86",
     "drizzle-orm": "catalog:",
     "zod": "^4.3.6"
   },
