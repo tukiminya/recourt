@@ -7,9 +7,6 @@ import {
   uniqueIndex,
 } from "drizzle-orm/sqlite-core";
 
-export type CaseTypeGuess = "civil" | "criminal" | "unknown";
-export type IngestJobStatus = "pending" | "processing" | "done" | "error";
-
 export const cases = sqliteTable(
   "cases",
   {
@@ -148,36 +145,3 @@ export type Database = {
   crawl_ranges: typeof crawl_ranges;
   ingest_jobs: typeof ingest_jobs;
 };
-
-export type CaseRow = typeof cases.$inferSelect;
-export type NewCase = typeof cases.$inferInsert;
-export type CaseUpdate = Partial<typeof cases.$inferInsert>;
-
-export type IncidentCategoryRow = typeof incident_categories.$inferSelect;
-export type NewIncidentCategory = typeof incident_categories.$inferInsert;
-
-export type CourtIncidentRow = typeof court_incidents.$inferSelect;
-export type NewCourtIncident = typeof court_incidents.$inferInsert;
-
-export type JudgeRow = typeof judges.$inferSelect;
-export type NewJudge = typeof judges.$inferInsert;
-export type JudgeUpdate = Partial<typeof judges.$inferInsert>;
-
-export type CaseJudgeRow = typeof case_judges.$inferSelect;
-export type NewCaseJudge = typeof case_judges.$inferInsert;
-
-export type CaseExplanationRow = typeof case_explanations.$inferSelect;
-export type NewCaseExplanation = typeof case_explanations.$inferInsert;
-
-export type OutcomeRow = typeof outcomes.$inferSelect;
-export type NewOutcome = typeof outcomes.$inferInsert;
-
-export type AiOutputRow = typeof ai_outputs.$inferSelect;
-export type NewAiOutput = typeof ai_outputs.$inferInsert;
-
-export type CrawlRangeRow = typeof crawl_ranges.$inferSelect;
-export type NewCrawlRange = typeof crawl_ranges.$inferInsert;
-
-export type IngestJobRow = typeof ingest_jobs.$inferSelect;
-export type NewIngestJob = typeof ingest_jobs.$inferInsert;
-export type IngestJobUpdate = Partial<typeof ingest_jobs.$inferInsert>;

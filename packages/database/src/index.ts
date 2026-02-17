@@ -1,5 +1,17 @@
 export { createDatabase } from "./db.js";
 export { runMigrations } from "./migrator.js";
+export {
+  ai_outputs,
+  case_explanations,
+  case_judges,
+  cases,
+  court_incidents,
+  crawl_ranges,
+  incident_categories,
+  ingest_jobs,
+  judges,
+  outcomes,
+} from "./schema.js";
 export type {
   AiOutputRow,
   CaseExplanationRow,
@@ -25,16 +37,4 @@ export type {
   NewJudge,
   NewOutcome,
   OutcomeRow,
-} from "./schema.js";
-export {
-  ai_outputs,
-  case_explanations,
-  case_judges,
-  cases,
-  court_incidents,
-  crawl_ranges,
-  incident_categories,
-  ingest_jobs,
-  judges,
-  outcomes,
-} from "./schema.js";
+} from "./types.js";
