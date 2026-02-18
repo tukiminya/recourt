@@ -218,6 +218,9 @@ importers:
       '@tanstack/router-plugin':
         specifier: ^1.132.0
         version: 1.158.1(@tanstack/react-router@1.158.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))
+      cva:
+        specifier: npm:class-variance-authority@^0.7.1
+        version: class-variance-authority@0.7.1
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.2.4)
