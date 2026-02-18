@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+JP:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+JP:wght@100..900&display=swap");
 @import "tailwindcss";
 
 body {
@@ -12,14 +12,14 @@ code {
 }
 
 @theme {
-    --font-noto: "Noto Sans JP", sans-serif;
-    --font-inter: "Inter", sans-serif;
-    --font-bizud: "BIZ UDPGothic", sans-serif;
-    --font-sans: "Inter", "Noto Sans JP", sans-serif;
+  --font-noto: "Noto Sans JP", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-bizud: "BIZ UDPGothic", sans-serif;
+  --font-sans: "Inter", "Noto Sans JP", sans-serif;
 }
 
 @layer components {
-    .read-area {
-        @apply font-medium text-neutral-800 leading-loose font-bizud;
-    }
+  .read-area {
+    @apply font-medium text-neutral-800 leading-loose font-bizud;
+  }
 }
