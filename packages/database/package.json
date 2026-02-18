@@ -18,6 +18,7 @@
     "migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "@recourt/utils": "workspace:*",
     "@libsql/client": "^0.17.0",
     "drizzle-orm": "catalog:"
   },

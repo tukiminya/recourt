@@ -1,0 +1,11 @@
+{
+  "name": "@recourt/utils",
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.28.1",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "uuid": "^13.0.0"
+  }
+}

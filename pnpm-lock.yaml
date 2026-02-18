@@ -288,6 +288,9 @@ importers:
       '@libsql/client':
         specifier: ^0.17.0
         version: 0.17.0
+      '@recourt/utils':
+        specifier: workspace:*
+        version: link:../utils
       drizzle-orm:
         specifier: 'catalog:'
         version: 0.45.1(@libsql/client@0.17.0)(@opentelemetry/api@1.9.0)(better-sqlite3@12.6.2)(gel@2.2.0)(kysely@0.28.10)
@@ -295,6 +298,12 @@ importers:
       drizzle-kit:
         specifier: ^0.31.8
         version: 0.31.8
+
+  packages/utils:
+    dependencies:
+      uuid:
+        specifier: ^13.0.0
+        version: 13.0.0
 
 packages:
 
