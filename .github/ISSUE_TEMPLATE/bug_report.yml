@@ -1,0 +1,86 @@
+name: "🐛 バグ報告"
+description: 不具合を報告する
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        不具合報告ありがとうございます。再現に必要な情報をできるだけ具体的にご記入ください。
+
+  - type: checkboxes
+    id: precheck
+    attributes:
+      label: 事前確認
+      options:
+        - label: 同様の Issue が既にないことを確認しました
+          required: true
+        - label: 最新の main ブランチでも再現することを確認しました
+          required: false
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 発生事象
+      description: どのような問題が起きているかを簡潔に記載してください。
+      placeholder: 例) 判例詳細ページで本文が表示されず、ローディングのまま止まる
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 再現手順
+      description: 問題を再現するための手順を番号付きで記載してください。
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待される挙動
+      placeholder: 例) 判例本文が通常どおり表示される
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の挙動
+      placeholder: 例) ローディングが終了せず、本文が表示されない
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 実行環境
+      description: 可能な範囲で埋めてください。
+      placeholder: |
+        - OS:
+        - ブラウザ:
+        - Node.js:
+        - pnpm:
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: スクリーンショット・ログ
+      description: 画面キャプチャやエラーログがあれば添付してください。
+    validations:
+      required: false
+
+  - type: textarea
+    id: note
+    attributes:
+      label: 補足情報
+      description: その他、調査に役立つ情報があれば記載してください。
+    validations:
+      required: false

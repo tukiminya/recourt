@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "💡 機能提案 (Discussions)"
+    url: "https://github.com/tukiminya/recourt/discussions"
+    about: "新機能や改善提案は Discussions でお願いします。"
+  - name: "❓ 質問 (Discussions)"
+    url: "https://github.com/tukiminya/recourt/discussions"
+    about: "使い方や実装方針の質問は Discussions でお願いします。"
+  - name: "🛟 サポート相談 (Discussions)"
+    url: "https://github.com/tukiminya/recourt/discussions"
+    about: "トラブル相談やサポートは Discussions でお願いします。"
