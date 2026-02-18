@@ -5,7 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema.ts"
+    "./v2": "./src/v2/index.ts"
   },
   "scripts": {
     "build": "echo 'no build yet'",
