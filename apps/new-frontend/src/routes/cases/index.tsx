@@ -5,5 +5,9 @@ export const Route = createFileRoute("/cases/")({
 });
 
 function RouteComponent() {
-  return <div>Hello "/cases/"!</div>;
+  return (
+    <div className="min-h-screen">
+      <section className="bg-linear-to-br from-neutral-50 to-neutral-100 min-h-72"></section>
+    </div>
+  );
 }
