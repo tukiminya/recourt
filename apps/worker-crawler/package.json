@@ -1,0 +1,16 @@
+{
+  "name": "@recourt/worker-crawler",
+  "version": "0.0.0",
+  "description": "",
+  "author": "tukiminya",
+  "packageManager": "pnpm@10.28.1",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "test-cron": "curl \"http://localhost:8703/cdn-cgi/handler/scheduled?cron=*+*+*+*+*\"",
+    "typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@recourt/utils": "workspace:*",
+    "cheerio": "1.2.0"
+  }
+}

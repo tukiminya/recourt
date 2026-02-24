@@ -1,0 +1,24 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "recourt-crawler",
+  "compatibility_date": "2026-02-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/index.ts",
+  "queues": {
+    "consumers": [
+      {
+        "queue": "recourt-crawler-queue",
+        "max_concurrency": 1
+      }
+    ],
+    "producers": [
+      {
+        "queue": "recourt-crawler-queue",
+        "binding": "CRAWLER_QUEUE"
+      }
+    ]
+  },
+  "dev": {
+    "port": 8703
+  }
+}
