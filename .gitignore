@@ -16,3 +16,9 @@ todos.json
 dev.turso.db*
 
 apps/crawler/storage
+
+# Terraform files
+*.tfstate
+*.tfstate.backup
+.terraform*
+terraform.tfvars
