@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^typegen"]
     },
     "dev": {
       "cache": false,
@@ -21,6 +21,7 @@
     },
     "test": {
       "dependsOn": ["^test"]
-    }
+    },
+    "typegen": {}
   }
 }

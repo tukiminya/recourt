@@ -8,13 +8,15 @@
     "lint": "turbo lint",
     "format": "turbo format",
     "test": "turbo test",
+    "typegen": "turbo typegen",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.14",
     "@types/node": "^24.10.10",
     "turbo": "^2.8.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "catalog:"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

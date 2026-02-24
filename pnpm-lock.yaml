@@ -32,6 +32,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      wrangler:
+        specifier: 'catalog:'
+        version: 4.64.0
 
   apps/crawler:
     dependencies:
@@ -192,6 +195,12 @@ importers:
         specifier: 'catalog:'
         version: 4.21.0
 
+  apps/internal:
+    dependencies:
+      '@recourt/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+
   apps/new-frontend:
     dependencies:
       '@cloudflare/vite-plugin':
@@ -276,6 +285,15 @@ importers:
       wrangler:
         specifier: 'catalog:'
         version: 4.64.0
+
+  apps/worker-crawler:
+    dependencies:
+      '@recourt/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
+      cheerio:
+        specifier: 1.2.0
+        version: 1.2.0
 
   packages/core:
     dependencies:
@@ -5211,6 +5229,7 @@ packages:
   prebuild-install@7.1.3:
     resolution: {integrity: sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==}
     engines: {node: '>=10'}
+    deprecated: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
     hasBin: true
 
   prettier@3.8.1:
