@@ -1,0 +1,14 @@
+{
+  "name": "@recourt/internal",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@recourt/database": "workspace:*"
+  },
+  "author": "tukiminya",
+  "packageManager": "pnpm@10.28.1"
+}
