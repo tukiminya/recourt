@@ -40,3 +40,8 @@ resource "cloudflare_queue" "recourt_crawler_queue" {
   account_id = var.cloudflare_account_id
   queue_name = "recourt-crawler-queue"
 }
+
+resource "cloudflare_queue" "recourt_extract_queue" {
+  account_id = var.cloudflare_account_id
+  queue_name = "recourt-extract-queue"
+}

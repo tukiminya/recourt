@@ -15,6 +15,10 @@
       {
         "queue": "recourt-crawler-queue",
         "binding": "CRAWLER_QUEUE"
+      },
+      {
+        "queue": "recourt-extract-queue",
+        "binding": "EXTRACT_QUEUE"
       }
     ]
   },
