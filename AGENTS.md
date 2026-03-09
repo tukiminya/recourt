@@ -128,6 +128,7 @@ Follow existing patterns in the surrounding files and package.
 - Keep side effects in entrypoints; keep helpers pure where possible.
 - Add minimal logging; ensure failures are actionable.
 - Update docs/README if a new env var or command is required.
+- Read each package `README.md` before coding.
 
 ## Database Schema Changes
 - When editing the schema under `packages/database/`, run `pnpm --filter @recourt/database generate` and `pnpm --filter @recourt/database migrate`.
