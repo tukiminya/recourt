@@ -1,0 +1,19 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "recourt-extract",
+  "compatibility_date": "2026-03-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/index.ts",
+  "queues": {
+    "consumers": [
+      {
+        "queue": "recourt-extract-queue",
+        "max_concurrency": 1
+      }
+    ]
+  },
+  "dev": {
+    "port": 8704,
+    "inspector_port": 9204
+  }
+}
