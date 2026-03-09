@@ -3,7 +3,7 @@ import { type LucideProps, LucideSquareArrowOutUpRight } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
 
 const link = cva(
-  "text-blue-800 border-dashed border-b-2 border-blue-800 visited:text-purple-900 visited:border-purple-900 hover:border-solid w-fit flex gap-1 items-center",
+  "text-blue-800 border-b border-blue-800 visited:text-purple-900 visited:border-purple-900 hover:border-b-2 w-fit inline-flex mx-1 gap-1 items-center",
   {
     variants: {
       size: {
