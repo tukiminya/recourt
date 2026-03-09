@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 body {
-  @apply m-0;
+  @apply m-0 font-sans text-neutral-900 min-h-screen h-full w-full;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -16,6 +16,7 @@ code {
   --font-inter: "Inter", sans-serif;
   --font-bizud: "BIZ UDPGothic", sans-serif;
   --font-sans: "Inter", "Noto Sans JP", sans-serif;
+  --container-8xl: 90rem;
 }
 
 @layer components {
