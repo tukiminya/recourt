@@ -23,7 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "catalog:",
-    "lucide-react": "^0.563.0",
+    "lucide-react": "^0.577.0",
     "nitro": "npm:nitro-nightly@3.0.1-20260127-164246-ef01b092",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
