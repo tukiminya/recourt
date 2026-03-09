@@ -3,5 +3,9 @@
   "name": "tanstack-start-app",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry"
+  "main": "@tanstack/react-start/server-entry",
+  "dev": {
+    "port": 8700,
+    "inspector_port": 9200
+  }
 }

@@ -19,6 +19,7 @@
     ]
   },
   "dev": {
-    "port": 8703
+    "port": 8703,
+    "inspector_port": 9203
   }
 }
