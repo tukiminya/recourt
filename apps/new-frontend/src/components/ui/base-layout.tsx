@@ -9,7 +9,7 @@ export function GridSystem({ children }: { children: ReactNode }) {
 
 export function BasicBaseLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-7xl min-h-screen flex flex-col">
+    <div className="mx-auto max-w-7xl min-h-screen flex flex-col px-16">
       <Header>
         <Link to="/">
           <HeaderLogo />
