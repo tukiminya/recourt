@@ -1,5 +1,5 @@
 {
-  "name": "new-frontend",
+  "name": "@recourt/new-frontend",
   "private": true,
   "type": "module",
   "scripts": {
