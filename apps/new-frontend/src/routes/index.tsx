@@ -6,7 +6,6 @@ import {
   LucideSquareArrowOutUpRight,
   LucideX,
 } from "lucide-react";
-import { Logo } from "@/components/Logo";
 import { BasicBaseLayout } from "@/components/ui/base-layout";
 import { Link } from "@/components/ui/link";
 
@@ -82,13 +81,6 @@ function App() {
           </div>
         </div>
       </div>
-      <footer className="border-t border-neutral-300 py-12">
-        <div className="grid grid-cols-4 gap-6"></div>
-        <div className="text-neutral-700 text-xs w-fit mx-auto mt-8">
-          <Logo className="h-5 mx-auto mb-4" />
-          <span>© {new Date().getFullYear()} 再考裁</span>
-        </div>
-      </footer>
     </BasicBaseLayout>
   );
 }

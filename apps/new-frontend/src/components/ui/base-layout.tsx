@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Header, HeaderLogo } from "../Header";
+import { Logo } from "../Logo";
 
 export function GridSystemBaseLayout({ children }: { children: ReactNode }) {
   return (
@@ -31,6 +32,12 @@ export function BasicBaseLayout({ children }: { children: ReactNode }) {
         </div>
       </Header>
       {children}
+      <footer className="border-t border-neutral-200 py-12 mt-16">
+        <div className="text-neutral-700 text-xs w-fit mx-auto">
+          <Logo className="h-5 mx-auto mb-4" />
+          <span>© {new Date().getFullYear()} 再考裁</span>
+        </div>
+      </footer>
     </div>
   );
 }
