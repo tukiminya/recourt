@@ -3,10 +3,8 @@ import type { ReactNode } from "react";
 import { Header, HeaderLogo } from "../Header";
 import { Logo } from "../Logo";
 
-export function GridSystemBaseLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="grid grid-cols-12 auto-cols-[64px] gap-8 mx-auto max-w-7xl">{children}</div>
-  );
+export function GridSystem({ children }: { children: ReactNode }) {
+  return <div className="grid grid-cols-12 auto-cols-[64px] gap-8">{children}</div>;
 }
 
 export function BasicBaseLayout({ children }: { children: ReactNode }) {
