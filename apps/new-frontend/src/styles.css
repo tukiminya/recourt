@@ -21,6 +21,6 @@ code {
 
 @layer components {
   .read-area {
-    @apply font-medium text-neutral-800 leading-loose font-bizud;
+    @apply text-neutral-900 leading-loose tracking-wide font-bizud;
   }
 }
