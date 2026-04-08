@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 catalog:
-  drizzle-orm: ^0.45.1
+  drizzle-orm: ^0.45.2
   tsx: ^4.21.0
 
 onlyBuiltDependencies:
