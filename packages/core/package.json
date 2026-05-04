@@ -18,6 +18,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.996.0",
     "@aws-sdk/s3-request-presigner": "^3.996.0",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   }
 }
