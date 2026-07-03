@@ -1,0 +1,22 @@
+packages:
+  - app/web
+  - packages/lint
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vitest: 4.1.9
+  vite-plus: latest
+  wrangler: ^4.106.0
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"
