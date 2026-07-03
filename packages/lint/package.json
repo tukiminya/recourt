@@ -1,0 +1,19 @@
+{
+  "name": "@recourt/lint",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm tsc --outDir dist plugin.ts"
+  },
+  "dependencies": {
+    "@oxlint/plugins": "^1.72.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
