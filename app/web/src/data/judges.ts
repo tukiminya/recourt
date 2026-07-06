@@ -26,7 +26,10 @@ export type Tip = {
 
 export type JudgeCase = {
   id: string;
-  title: string;
+  title: {
+    name: string;
+    markdown: string;
+  };
   kind: string;
   result: string;
   order: string;
@@ -48,7 +51,10 @@ export type JudgeCase = {
 export const judges: Array<JudgeCase> = [
   {
     id: "religious-corporation-dissolution",
-    title: "[世界平和統一家庭連合](#tip-family-federation)に対しての解散命令の決定",
+    title: {
+      name: "世界平和統一家庭連合に対しての解散命令の決定",
+      markdown: "[世界平和統一家庭連合](#tip-family-federation)に対しての解散命令の決定",
+    },
     kind: "決定",
     result: "棄却",
     order: "本件抗告を棄却する。抗告費用は抗告人の負担とする。",
