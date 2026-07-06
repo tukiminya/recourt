@@ -1,4 +1,4 @@
-import { Rule } from "@oxlint/plugins";
+import type { Rule } from "@oxlint/plugins";
 
 export const lucideImportRule = {
   create(context) {
