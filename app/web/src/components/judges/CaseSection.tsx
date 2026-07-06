@@ -8,17 +8,13 @@ type CaseSectionProps = {
 
 export default function CaseSection({ section, showTitle = true }: CaseSectionProps) {
   return (
-    <section className="space-y-[18px]">
+    <section className="space-y-4">
       {showTitle ? (
-        <h2 className="text-[11px] font-medium whitespace-nowrap text-neutral-600">
-          {section.title}
-        </h2>
+        <h2 className="text-xs font-medium whitespace-nowrap text-neutral-600">{section.title}</h2>
       ) : null}
       <div className="space-y-2">
         {section.heading ? (
-          <h3 className="text-[20px] leading-normal font-medium text-neutral-900">
-            {section.heading}
-          </h3>
+          <h3 className="text-lg leading-normal font-medium text-neutral-900">{section.heading}</h3>
         ) : null}
         <div className="space-y-4">
           {section.body.map((paragraph, index) => (
