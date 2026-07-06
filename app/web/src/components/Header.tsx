@@ -15,7 +15,7 @@ export default function Header() {
 
           <div className="hidden items-center gap-9 md:flex">
             <RouterLink
-              to="/judges/$id"
+              to="/cases/$id"
               params={{ id: "religious-corporation-dissolution" }}
               className="flex items-center gap-0.5 text-[14px] leading-none font-normal whitespace-nowrap text-neutral-900"
             >

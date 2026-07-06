@@ -8,7 +8,7 @@ import JudgeList from "../components/judges/JudgeList";
 import { getJudgeCase } from "../data/judges";
 import { MarkdownRenderer } from "../integrations/markdown/markdown";
 
-export const Route = createFileRoute("/judges/$id")({
+export const Route = createFileRoute("/cases/$id")({
   loader: ({ params }) => {
     const judgeCase = getJudgeCase(params.id);
 
@@ -27,12 +27,12 @@ function JudgeCasePage() {
   return (
     <main className="px-5 pt-[67px]">
       <div className="mx-auto grid max-w-[992px] grid-cols-1 gap-y-12 lg:grid-cols-[552px_388px] lg:gap-x-[52px]">
-        <article className="relative space-y-12">
+        <article className="relative space-y-16">
           <h1 className="text-[32px] leading-[1.4] font-medium text-neutral-900">
-            <MarkdownRenderer inline>{judgeCase.title}</MarkdownRenderer>
+            <MarkdownRenderer inline>{judgeCase.title.markdown}</MarkdownRenderer>
           </h1>
 
-          <div className="pt-0 lg:pt-[96px]">
+          <div>
             <CaseSummary summary={judgeCase.summary} />
           </div>
 
@@ -75,7 +75,7 @@ function JudgeCasePage() {
 
           <AffectedParties parties={judgeCase.affectedParties} />
 
-          <CaseSummary summary={judgeCase.summary} repeated />
+          <CaseSummary summary={judgeCase.summary} />
         </article>
 
         <aside className="space-y-[18px] lg:pt-0">
