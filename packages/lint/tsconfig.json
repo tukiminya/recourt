@@ -1,0 +1,8 @@
+{
+  "include": ["./plugin.ts", "./rules/*.ts"],
+  "compilerOptions": {
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler"
+  }
+}
