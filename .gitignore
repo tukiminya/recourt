@@ -2,6 +2,10 @@ node_modules
 
 # framework
 .wrangler
+target
 
 # dist
 dist
+
+# terraform
+.terraform
