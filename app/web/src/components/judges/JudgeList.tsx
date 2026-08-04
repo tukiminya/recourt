@@ -1,5 +1,5 @@
-import Badge from "../Badge";
 import type { Judge } from "../../data/judges";
+import Label from "../Label";
 
 type JudgeListProps = {
   judges: Array<Judge>;
@@ -35,8 +35,8 @@ function JudgeGroup({
             <span className="text-[14px] font-medium whitespace-nowrap text-neutral-900">
               {judge.name}
             </span>
-            <Badge tone="success">{judge.opinion}</Badge>
-            {showRoleBadge ? <Badge tone="brand">{judge.role}</Badge> : null}
+            <Label tone="success">{judge.opinion}</Label>
+            {showRoleBadge ? <Label tone="brand">{judge.role}</Label> : null}
           </li>
         ))}
       </ul>
