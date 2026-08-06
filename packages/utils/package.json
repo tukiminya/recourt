@@ -1,0 +1,20 @@
+{
+  "name": "@recourt/utils",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./src/entry.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@recourt/types": "workspace:*",
+    "uuid": "^14.0.1"
+  }
+}
