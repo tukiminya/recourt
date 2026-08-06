@@ -1,6 +1,9 @@
 packages:
   - app/web
   - packages/lint
+  - packages/database
+  - packages/utils
+  - packages/types
 allowBuilds:
   esbuild: true
   sharp: true
