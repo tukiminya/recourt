@@ -16,10 +16,10 @@
     "@recourt/core": "workspace:*",
     "@recourt/database": "workspace:*",
     "cheerio": "1.2.0",
-    "crawlee": "^3.16.0",
-    "dayjs": "^1.11.19",
+    "crawlee": "^3.18.0",
+    "dayjs": "^1.11.21",
     "drizzle-orm": "catalog:",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "tsx": "catalog:"

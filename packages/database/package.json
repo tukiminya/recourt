@@ -18,10 +18,10 @@
     "migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.0",
+    "@libsql/client": "^0.17.4",
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.9"
+    "drizzle-kit": "^0.31.10"
   }
 }

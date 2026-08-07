@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.996.0",
-    "@aws-sdk/s3-request-presigner": "^3.996.0",
-    "uuid": "^13.0.0"
+    "@aws-sdk/client-s3": "^3.1105.0",
+    "@aws-sdk/s3-request-presigner": "^3.1105.0",
+    "uuid": "^13.0.2"
   }
 }
