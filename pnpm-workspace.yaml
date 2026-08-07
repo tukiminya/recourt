@@ -1,4 +1,6 @@
 packages:
+  - app/api
+  - app/external-service
   - app/web
   - packages/lint
   - packages/database
@@ -13,6 +15,10 @@ catalog:
   vitest: 4.1.9
   vite-plus: latest
   wrangler: ^4.106.0
+  hono: ^4.13.0
+  ai: ^7.0.52
+  "@ai-sdk/openai": ^4.0.30
+  zod: ^4.4.3
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
