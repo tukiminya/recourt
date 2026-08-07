@@ -10,5 +10,8 @@ dist
 # terraform
 .terraform
 
-# Secrets
+# Secret
 .dev.vars
+.env
+.env.keys
+terraform.tfvars
