@@ -1,5 +1,5 @@
 resource "cloudflare_r2_bucket" "recourt" {
-  name = "recourt"
+  name = "recourt-v1"
   account_id = var.cloudflare_account_id
   location = "apac"
 }
