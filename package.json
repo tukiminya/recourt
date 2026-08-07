@@ -15,11 +15,5 @@
     "@types/node": "^24.13.3",
     "turbo": "^2.10.8",
     "typescript": "^7.0.2"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "esbuild"
-    ]
   }
 }
