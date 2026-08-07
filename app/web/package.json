@@ -28,7 +28,8 @@
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
     "remark-cjk-friendly": "^2.3.1",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
