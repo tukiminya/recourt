@@ -9,6 +9,7 @@ dist
 
 # terraform
 .terraform
+terraform.tfstate*
 
 # Secret
 .dev.vars
