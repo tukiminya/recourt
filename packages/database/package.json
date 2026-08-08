@@ -8,7 +8,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@recourt/types": "workspace:*",
