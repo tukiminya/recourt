@@ -5,7 +5,7 @@ export default defineConfig({
     "*": "vp check --fix",
   },
   fmt: {
-    ignorePatterns: ["app/web/src/routeTree.gen.ts"],
+    ignorePatterns: ["app/web/src/routeTree.gen.ts", "worker-configuration.d.ts"],
   },
   lint: {
     ignorePatterns: [
