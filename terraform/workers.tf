@@ -17,4 +17,10 @@ resource "cloudflare_worker" "recourt-frontend" {
 resource "cloudflare_worker" "recourt-extractor" {
   name = "recourt-extractor"
   account_id = var.cloudflare_account_id
+  observability = {
+    enabled = true
+    traces = {
+      enabled = true
+    }
+  }
 }
