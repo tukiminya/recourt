@@ -1,0 +1,16 @@
+{
+  "name": "@recourt/internal",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "hono": "catalog:"
+  }
+}

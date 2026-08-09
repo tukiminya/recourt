@@ -24,3 +24,14 @@ resource "cloudflare_worker" "recourt-extractor" {
     }
   }
 }
+
+resource "cloudflare_worker" "recourt-internal" {
+  name = "recourt-internal"
+  account_id = var.cloudflare_account_id
+  observability = {
+    enabled = true
+    traces = {
+      enabled = true
+    }
+  }
+}

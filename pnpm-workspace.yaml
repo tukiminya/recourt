@@ -2,6 +2,7 @@ packages:
   - app/api
   - app/external-service
   - app/extract
+  - app/internal
   - app/web
   - packages/lint
   - packages/database
