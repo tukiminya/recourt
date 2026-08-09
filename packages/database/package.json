@@ -7,6 +7,9 @@
   "author": "",
   "type": "module",
   "main": "index.js",
+  "exports": {
+    ".": "./src/entry.ts"
+  },
   "scripts": {
     "migrate:generate": "drizzle-kit generate"
   },
