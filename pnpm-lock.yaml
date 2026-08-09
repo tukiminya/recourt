@@ -369,6 +369,9 @@ importers:
       vitest:
         specifier: 4.1.9
         version: 4.1.9(@types/node@22.20.0)(@vitest/browser-preview@4.1.9)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.6)(typescript@6.0.3))(jsdom@28.1.0)
+      wrangler:
+        specifier: 'catalog:'
+        version: 4.120.0
 
   packages/database:
     dependencies:
