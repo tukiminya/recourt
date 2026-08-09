@@ -14,6 +14,7 @@ export default defineConfig({
       "pnpm-lock.yaml",
       "pnpm-workspace.yaml",
       "app/web/src/routeTree.gen.ts",
+      "worker-configuration.d.ts",
     ],
     jsPlugins: [
       { name: "vite-plus", specifier: "vite-plus/oxlint-plugin" },
