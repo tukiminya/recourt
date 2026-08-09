@@ -10,18 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as JudgesIdRouteImport } from './routes/judges.$id'
-import { Route as CourtsIdRouteImport } from './routes/courts.$id'
 import { Route as CasesIdRouteImport } from './routes/cases.$id'
+import { Route as CourtsIdRouteImport } from './routes/courts.$id'
+import { Route as JudgesIdRouteImport } from './routes/judges.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const JudgesIdRoute = JudgesIdRouteImport.update({
-  id: '/judges/$id',
-  path: '/judges/$id',
+const CasesIdRoute = CasesIdRouteImport.update({
+  id: '/cases/$id',
+  path: '/cases/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CourtsIdRoute = CourtsIdRouteImport.update({
@@ -29,9 +29,9 @@ const CourtsIdRoute = CourtsIdRouteImport.update({
   path: '/courts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CasesIdRoute = CasesIdRouteImport.update({
-  id: '/cases/$id',
-  path: '/cases/$id',
+const JudgesIdRoute = JudgesIdRouteImport.update({
+  id: '/judges/$id',
+  path: '/judges/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -78,11 +78,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/judges/$id': {
-      id: '/judges/$id'
-      path: '/judges/$id'
-      fullPath: '/judges/$id'
-      preLoaderRoute: typeof JudgesIdRouteImport
+    '/cases/$id': {
+      id: '/cases/$id'
+      path: '/cases/$id'
+      fullPath: '/cases/$id'
+      preLoaderRoute: typeof CasesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courts/$id': {
@@ -92,11 +92,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CourtsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cases/$id': {
-      id: '/cases/$id'
-      path: '/cases/$id'
-      fullPath: '/cases/$id'
-      preLoaderRoute: typeof CasesIdRouteImport
+    '/judges/$id': {
+      id: '/judges/$id'
+      path: '/judges/$id'
+      fullPath: '/judges/$id'
+      preLoaderRoute: typeof JudgesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
