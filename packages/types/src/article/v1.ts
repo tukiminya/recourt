@@ -23,15 +23,9 @@ const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
 export const recourtCasePageSchema = z
   .object({
     schema_version: z.literal("2026-08"),
-
     id: z.uuid(),
-    url: z.url().nullable(),
     created_time: z.iso.datetime(),
-    last_edited_time: z.iso.datetime(),
-
     title: z.array(rich_text),
-
-    // TODO: entities の設計は現在進行中
     // mention の参照先。ホバーカードはここだけを読めば描画できる。
     entities: entities,
 
