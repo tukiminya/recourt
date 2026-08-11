@@ -20,7 +20,10 @@ const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
   }
 };
 
-export const recourtCasePageSchema = z
+/**
+ * @description 判例ページに用いられるv1スキーマです。基本的に `latestCaseArticleSchema` を用いること。
+ */
+export const caseArticleSchemaV1 = z
   .object({
     schema_version: z.literal("2026-08"),
     id: z.uuid(),
