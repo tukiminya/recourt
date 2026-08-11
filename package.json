@@ -17,6 +17,7 @@
   "devDependencies": {
     "node-addon-api": "^8.9.1",
     "node-gyp": "^13.0.1",
+    "tsx": "^4.23.12",
     "vite-plus": "catalog:",
     "wrangler": "catalog:"
   },

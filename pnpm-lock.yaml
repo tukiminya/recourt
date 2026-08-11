@@ -242,6 +242,9 @@ importers:
       node-gyp:
         specifier: ^13.0.1
         version: 13.0.1
+      tsx:
+        specifier: ^4.23.12
+        version: 4.23.12
       vite-plus:
         specifier: 'catalog:'
         version: 0.2.8(@types/node@24.13.3)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(jsdom@28.1.0(supports-color@10.2.2))(tsx@4.23.12)(typescript@7.0.2)
@@ -364,7 +367,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       vite:
-        specifier: npm:@voidzero-dev/vite-plus-core@^0.2.8
+        specifier: npm:@voidzero-dev/vite-plus-core@latest
         version: '@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3)'
       vitest:
         specifier: 4.1.9
