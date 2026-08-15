@@ -4,4 +4,10 @@
   "compatibility_date": "2026-07-07",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "recourt-v1",
+    },
+  ],
 }
