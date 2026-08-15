@@ -1,0 +1,29 @@
+name: Deploy All Cloudflare Workers
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - worker: api
+            build_web: false
+          - worker: external-service
+            build_web: false
+          - worker: extract
+            build_web: false
+          - worker: internal
+            build_web: false
+          - worker: web
+            build_web: true
+    uses: ./.github/workflows/cf-worker-deploy.yaml
+    with:
+      worker: ${{ matrix.worker }}
+      build_web: ${{ matrix.build_web }}
+    secrets: inherit

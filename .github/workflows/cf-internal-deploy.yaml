@@ -1,0 +1,23 @@
+name: Deploy Cloudflare Internal Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/internal/**
+      - packages/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/cf-worker-deploy.yaml
+    with:
+      worker: internal
+    secrets: inherit

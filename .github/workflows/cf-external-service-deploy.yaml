@@ -1,0 +1,23 @@
+name: Deploy Cloudflare External Service Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/external-service/**
+      - packages/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/cf-worker-deploy.yaml
+    with:
+      worker: external-service
+    secrets: inherit
