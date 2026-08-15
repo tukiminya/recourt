@@ -1,0 +1,28 @@
+"name": "Resources apply with OpenTofu"
+
+"on":
+  # push:
+  #   branches:
+  #     - "main"
+  #   paths:
+  #     - "terraform/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy resources with OpenTofu
+    runs-on: "ubuntu-slim"
+    steps:
+      - name: "✅ Checkout"
+        uses: "actions/checkout@v7"
+
+      - name: "📦 Setup opentofu runtime"
+        uses: "opentofu/setup-opentofu@v2"
+
+      - name: "⛽️ Initialize opentofu"
+        working-directory: "./terraform"
+        run: "tofu init"
+
+      - name: "💨 Deploy resources"
+        working-directory: "./terraform"
+        run: "tofu apply"

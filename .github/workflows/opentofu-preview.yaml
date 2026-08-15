@@ -1,0 +1,47 @@
+"name": "Resources apply preview"
+
+"on":
+  # pull_request:
+  #   paths:
+  #     - "terraform/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy resources with OpenTofu
+    runs-on: "ubuntu-slim"
+    environment:
+      name: "v1"
+    steps:
+      - name: "✅ Checkout"
+        uses: "actions/checkout@v7"
+
+      - name: "🔑 Generate GitHub App token"
+        id: "gh_app"
+        uses: "actions/create-github-app-token@v3"
+        with:
+          client-id: ${{ vars.RECOURT_GITHUB_APP_CLIENT_ID }}
+          client-secret: ${{ secrets.RECOURT_GITHUB_APP_CLIENT_SECRET }}
+
+      - name: "📦 Setup opentofu runtime"
+        uses: "opentofu/setup-opentofu@v2"
+
+      - name: "⛽️ Initialize opentofu"
+        working-directory: "./terraform"
+        run: "tofu init"
+
+      - name: "💨 Generate & save plan"
+        working-directory: "./terraform"
+        run: "mkdir -p dist && tofu plan -no-color -concise > dist/tfplan-plain.txt"
+
+      - name: "💬 Send plan to PR"
+        working-directory: "./terraform"
+        env:
+          GH_TOKEN: ${{ steps.gh_app.outputs.token }}
+        run: |
+          {
+            printf '%s\n' '# OpenTofu plan result'
+            printf '%s\n' '```'
+            cat dist/tfplan-plain.txt
+            printf '%s\n' '```'
+          } | gh pr comment ${{ github.event.number }} --create-if-none --edit-last --body-file -
