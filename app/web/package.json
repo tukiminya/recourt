@@ -15,6 +15,7 @@
     "types": "wrangler types"
   },
   "dependencies": {
+    "@recourt/types": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-query": "latest",

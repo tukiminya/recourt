@@ -281,6 +281,9 @@ importers:
 
   app/web:
     dependencies:
+      '@recourt/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3))
@@ -371,7 +374,7 @@ importers:
         version: '@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3)'
       vitest:
         specifier: 4.1.9
-        version: 4.1.9(@types/node@22.20.1)(@vitest/browser-preview@4.1.10(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@7.0.2))(vitest@4.1.9))(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3))(jsdom@28.1.0(supports-color@10.2.2))
+        version: 4.1.9(@types/node@22.20.1)(@vitest/browser-preview@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3))(jsdom@28.1.0(supports-color@10.2.2))
       wrangler:
         specifier: 'catalog:'
         version: 4.120.1
@@ -7615,7 +7618,7 @@ snapshots:
     optionalDependencies:
       vite: '@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3)'
 
-  vitest@4.1.9(@types/node@22.20.1)(@vitest/browser-preview@4.1.10(@voidzero-dev/vite-plus-core@0.2.8(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@7.0.2))(vitest@4.1.9))(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3))(jsdom@28.1.0(supports-color@10.2.2)):
+  vitest@4.1.9(@types/node@22.20.1)(@vitest/browser-preview@4.1.10)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3))(jsdom@28.1.0(supports-color@10.2.2)):
     dependencies:
       '@vitest/expect': 4.1.9
       '@vitest/mocker': 4.1.9(@voidzero-dev/vite-plus-core@0.2.8(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(typescript@6.0.3))
