@@ -17,6 +17,8 @@ const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
       return articleBlock.bulleted_list_item.rich_text;
     case "numbered_list_item":
       return articleBlock.numbered_list_item.rich_text;
+    case "with_icon_list_item":
+      return articleBlock.with_icon_list_item.rich_text;
   }
 };
 
@@ -33,6 +35,17 @@ export const caseArticleSchemaV1 = z
     entities: entities,
 
     sections: z.array(section),
+
+    summary: z.object({
+      type: z
+        .literal(["opening_and_closing", "opening_only", "closing_only"])
+        .default("opening_and_closing"),
+      items: z.array(
+        z.object({
+          blocks: z.array(rich_text),
+        }),
+      ),
+    }),
   })
   .check((ctx) => {
     const entityIds = new Set(Object.keys(ctx.value.entities));

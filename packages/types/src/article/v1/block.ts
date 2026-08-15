@@ -29,4 +29,12 @@ export const block = z.discriminatedUnion("type", [
       rich_text: z.array(rich_text),
     }),
   }),
+
+  z.object({
+    type: z.literal("with_icon_list_item"),
+    with_icon_list_item: z.object({
+      icon: z.literal(["issue", "organization", "people", "goverment"]),
+      rich_text: z.array(rich_text),
+    }),
+  }),
 ]);
