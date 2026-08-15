@@ -13,6 +13,9 @@
     "types": "wrangler types"
   },
   "dependencies": {
-    "hono": "catalog:"
+    "@recourt/types": "workspace:*",
+    "@recourt/utils": "workspace:*",
+    "hono": "catalog:",
+    "zod": "catalog:"
   }
 }
