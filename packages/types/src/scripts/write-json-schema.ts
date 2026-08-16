@@ -1,8 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
-import { latestCaseArticleSchema } from "../entry";
+import { LatestCaseArticleStorage } from "../entry";
 
 async function createFile() {
-  const jsonSchema = latestCaseArticleSchema.toJSONSchema();
+  const jsonSchema = LatestCaseArticleStorage.toJSONSchema();
 
   await mkdir("./dist", { recursive: true });
 

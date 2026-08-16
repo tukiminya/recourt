@@ -1,11 +1,11 @@
-import type { latestCaseArticleSchema } from "@recourt/types";
+import type { LatestCaseArticleStorage } from "@recourt/types";
 import { generateArticleObjectKey, type GenerateArticleObjectKeyProps } from "@recourt/utils";
 import { InternalServerError } from "@recourt/utils/error";
 import { env } from "cloudflare:workers";
 import type z from "zod";
 
 export async function putArticleWithId(
-  article: z.infer<typeof latestCaseArticleSchema>,
+  article: z.infer<typeof LatestCaseArticleStorage>,
   props: GenerateArticleObjectKeyProps,
 ) {
   try {

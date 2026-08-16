@@ -1,2 +1,2 @@
 export * from "./uuid";
-export * from "./article";
+export * from "./storage/entry";

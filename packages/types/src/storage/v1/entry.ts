@@ -1,11 +1,8 @@
-import { z } from "zod";
-import { block } from "./v1/block";
-import { rich_text } from "./v1/rich-text";
-import { section } from "./v1/sections";
-import { entities } from "./v1/entity";
-
-// Notion API の仕様を参考にしてる。
-// https://developers.notion.com/reference/rich-text
+import z from "zod";
+import { rich_text } from "./rich-text";
+import { entities } from "./entity";
+import { section } from "./sections";
+import type { block } from "./block";
 
 const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
   switch (articleBlock.type) {
@@ -22,10 +19,7 @@ const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
   }
 };
 
-/**
- * @description 判例ページに用いられるv1スキーマです。基本的に `latestCaseArticleSchema` を用いること。
- */
-export const caseArticleSchemaV1 = z
+export const CaseArticleStorageV1 = z
   .object({
     schema_version: z.literal("2026-08"),
     id: z.uuid(),
