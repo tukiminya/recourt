@@ -16,7 +16,7 @@
     "@recourt/core": "workspace:*",
     "@recourt/database": "workspace:*",
     "cheerio": "1.2.0",
-    "crawlee": "^3.18.0",
+    "crawlee": "^3.18.1",
     "dayjs": "^1.11.21",
     "drizzle-orm": "catalog:",
     "zod": "^4.4.3"
