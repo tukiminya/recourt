@@ -4,7 +4,7 @@ packages:
 
 catalog:
   drizzle-orm: ^0.45.2
-  tsx: ^4.23.10
+  tsx: ^4.23.12
 
 onlyBuiltDependencies:
   - better-sqlite3
