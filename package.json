@@ -11,10 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "vp config"
   },
-  "dependencies": {
-    "@types/node": "^24.13.3"
-  },
   "devDependencies": {
+    "@types/node": "^24.13.3",
     "node-addon-api": "^8.9.2",
     "node-gyp": "^13.0.1",
     "tsx": "^4.23.12",

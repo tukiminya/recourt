@@ -231,11 +231,10 @@ overrides:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@types/node':
         specifier: ^24.13.3
         version: 24.13.3
-    devDependencies:
       node-addon-api:
         specifier: ^8.9.2
         version: 8.9.2
