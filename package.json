@@ -15,9 +15,10 @@
     "@types/node": "^24.13.3"
   },
   "devDependencies": {
-    "node-addon-api": "^8.9.1",
+    "node-addon-api": "^8.9.2",
     "node-gyp": "^13.0.1",
     "tsx": "^4.23.12",
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.9",
     "vite-plus": "catalog:",
     "wrangler": "catalog:"
   },

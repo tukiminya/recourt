@@ -14,7 +14,7 @@
     "@oxlint/plugins": "^1.78.0"
   },
   "devDependencies": {
-    "rolldown": "^1.2.3",
+    "rolldown": "^1.2.4",
     "typescript": "^7.0.2"
   }
 }

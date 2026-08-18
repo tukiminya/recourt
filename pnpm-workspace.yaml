@@ -13,13 +13,13 @@ allowBuilds:
   sharp: true
   workerd: true
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: 4.1.9
-  vite-plus: ^0.2.8
-  wrangler: ^4.120.1
-  hono: ^4.13.1
-  ai: ^7.0.58
-  "@ai-sdk/openai": ^4.0.36
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.9
+  vitest: 4.1.10
+  vite-plus: 0.2.9
+  wrangler: ^4.123.0
+  hono: ^4.13.2
+  ai: ^7.0.66
+  "@ai-sdk/openai": ^4.0.42
   zod: ^4.4.3
 overrides:
   vite: "catalog:"
