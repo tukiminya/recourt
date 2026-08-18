@@ -1,4 +1,4 @@
-import { expect, test, vi } from "vite-plus/test";
+import { expect, test, vi } from "vitest";
 import { uuidv7 } from "./uuid";
 
 vi.mock(import("uuid"), () => ({

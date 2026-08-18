@@ -6,11 +6,11 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vp dev --port 5137",
+    "dev": "vite dev --port 5137",
     "generate-routes": "tsr generate",
-    "build": "vp build",
-    "preview": "vp preview",
-    "test": "vp test run",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vite test run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"
   },

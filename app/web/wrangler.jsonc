@@ -3,6 +3,7 @@
   "name": "recourt-frontend",
   "compatibility_date": "2026-07-07",
   "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
   "workers_dev": false,
   "routes": [
     {

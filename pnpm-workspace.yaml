@@ -13,21 +13,10 @@ allowBuilds:
   sharp: true
   workerd: true
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.9
-  vitest: 4.1.10
-  vite-plus: 0.2.9
+  vite: ^8.2.1
+  vitest: ^4.1.10
   wrangler: ^4.123.0
   hono: ^4.13.2
   ai: ^7.0.66
   "@ai-sdk/openai": ^4.0.42
   zod: ^4.4.3
-overrides:
-  vite: "catalog:"
-  vitest: "catalog:"
-peerDependencyRules:
-  allowAny:
-    - vite
-    - vitest
-  allowedVersions:
-    vite: "*"
-    vitest: "*"
