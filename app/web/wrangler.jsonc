@@ -3,4 +3,11 @@
   "name": "recourt-frontend",
   "compatibility_date": "2026-07-07",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "routes": [
+    {
+      "custom_domain": true,
+      "pattern": "recourt-v1.tuki.dev",
+    },
+  ],
 }
