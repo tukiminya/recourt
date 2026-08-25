@@ -13,7 +13,13 @@
     "types": "wrangler types"
   },
   "dependencies": {
+    "@ai-sdk/amazon-bedrock": "catalog:",
     "@ai-sdk/openai": "catalog:",
-    "ai": "catalog:"
+    "ai": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@recourt/types": "workspace:*"
   }
 }
