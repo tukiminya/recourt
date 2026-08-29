@@ -2,7 +2,9 @@ import z from "zod";
 import { rich_text } from "./rich-text";
 import { entities } from "./entity";
 import { section } from "./sections";
-import type { block } from "./block";
+import { block } from "./block";
+
+export { rich_text, entities, section, block };
 
 const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
   switch (articleBlock.type) {
