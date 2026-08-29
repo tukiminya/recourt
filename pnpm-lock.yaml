@@ -279,6 +279,9 @@ importers:
       '@ai-sdk/openai':
         specifier: 'catalog:'
         version: 4.0.42(zod@4.4.3)
+      '@recourt/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       ai:
         specifier: 'catalog:'
         version: 7.0.66(zod@4.4.3)
@@ -288,10 +291,6 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.4.3
-    devDependencies:
-      '@recourt/types':
-        specifier: workspace:*
-        version: link:../../packages/types
 
   app/internal:
     dependencies:
