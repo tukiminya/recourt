@@ -10,4 +10,4 @@ export const CaseArticleStorage = z.union([CaseArticleStorageV1]);
  * 最新版のStorageスキーマを返却します。
  */
 export const LatestCaseArticleStorage = CaseArticleStorageV1;
-export * from "./v1/entry";
+export { CaseArticleStorageV1 };
