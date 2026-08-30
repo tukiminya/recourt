@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { rich_text } from "./rich-text";
 
+export const support_icon = z.literal(["issue", "organization", "people", "goverment"]);
+
 export const block = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("heading_3"),
@@ -33,7 +35,7 @@ export const block = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("with_icon_list_item"),
     with_icon_list_item: z.object({
-      icon: z.literal(["issue", "organization", "people", "goverment"]),
+      icon: support_icon,
       rich_text: z.array(rich_text),
     }),
   }),
