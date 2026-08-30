@@ -18,6 +18,4 @@ catalog:
   wrangler: ^4.123.0
   hono: ^4.13.2
   ai: ^7.0.66
-  "@ai-sdk/openai": ^4.0.42
   zod: ^4.4.3
-  '@ai-sdk/amazon-bedrock': ^5.0.61
