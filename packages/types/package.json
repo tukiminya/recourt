@@ -9,7 +9,8 @@
   "main": "index.js",
   "exports": {
     ".": "./src/entry.ts",
-    "./storage/v1": "./src/storage/v1/entry.ts"
+    "./storage/v1": "./src/storage/v1/entry.ts",
+    "./generation": "./src/generation/entry.ts"
   },
   "scripts": {
     "script:write-json-schema": "tsx src/scripts/write-json-schema.ts",
