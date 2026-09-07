@@ -1,5 +1,3 @@
 export * from "drizzle-orm";
-export * from "./schema/cases";
-export * from "./schema/courts";
-export * from "./schema/judges";
-export * from "./schema/utils";
+export * from "./schema/entry";
+export * from "./connect";
