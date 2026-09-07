@@ -4,8 +4,8 @@ import { drizzleUuidColmns, drizzleUuidColmnsWithDefault } from "./utils";
 export const courts = pgTable(
   "courts",
   {
-    id: drizzleUuidColmnsWithDefault.primaryKey(),
-    parent_id: drizzleUuidColmns,
+    id: drizzleUuidColmnsWithDefault().primaryKey(),
+    parent_id: drizzleUuidColmns(),
     name: text().notNull(),
   },
   (table) => [

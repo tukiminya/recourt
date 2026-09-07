@@ -16,7 +16,7 @@ import { judges } from "./judges";
 export const case_id_by_courts = pgTable(
   "case_id_by_courts",
   {
-    random_id: drizzleUuidColmnsWithDefault.primaryKey(), // 機械的にアクセスしやすいランダムな UUID を割り当て。cases テーブルからの references はこのカラムに向ける
+    random_id: drizzleUuidColmnsWithDefault().primaryKey(), // 機械的にアクセスしやすいランダムな UUID を割り当て。cases テーブルからの references はこのカラムに向ける
     era: text().$type<EraName>(),
     year: smallint(),
     type: text(),
@@ -30,13 +30,15 @@ export const case_id_by_courts = pgTable(
 );
 
 export const cases = pgTable("cases", {
-  id: drizzleUuidColmnsWithDefault.primaryKey(),
+  id: drizzleUuidColmnsWithDefault().primaryKey(),
 });
 
 export const case_revisions = pgTable("case_revisions", {
-  id: drizzleUuidColmnsWithDefault.primaryKey(),
-  case_id: drizzleUuidColmns.notNull(),
-  case_id_by_courts: drizzleUuidColmns.references(() => case_id_by_courts.random_id),
+  id: drizzleUuidColmnsWithDefault().primaryKey(),
+  case_id: drizzleUuidColmns()
+    .notNull()
+    .references(() => cases.id),
+  case_id_by_courts: drizzleUuidColmns().references(() => case_id_by_courts.random_id),
   comments: text(),
   article_schema_version: smallint(),
   is_published: boolean().default(false).notNull(),
@@ -45,13 +47,17 @@ export const case_revisions = pgTable("case_revisions", {
 });
 
 export const case_revision_judges = pgTable("case_revision_judges", {
-  revision_id: drizzleUuidColmns.primaryKey().references(() => case_revisions.id),
-  judge_id: drizzleUuidColmns.references(() => judges.id),
+  revision_id: drizzleUuidColmns()
+    .primaryKey()
+    .references(() => case_revisions.id),
+  judge_id: drizzleUuidColmns().references(() => judges.id),
   is_presiding: boolean().notNull(),
   opinion_type: text().notNull(),
   opinion_text: json(),
 });
 
 export const case_revision_acts = pgTable("case_revision_acts", {
-  revision_id: drizzleUuidColmns.primaryKey().references(() => case_revisions.id),
+  revision_id: drizzleUuidColmns()
+    .primaryKey()
+    .references(() => case_revisions.id),
 });
