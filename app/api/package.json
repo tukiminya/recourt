@@ -12,6 +12,10 @@
     "types": "wrangler types"
   },
   "dependencies": {
-    "hono": "catalog:"
+    "@hono/standard-validator": "^0.4.0",
+    "@recourt/database": "workspace:*",
+    "@recourt/types": "workspace:*",
+    "hono": "catalog:",
+    "zod": "catalog:"
   }
 }
