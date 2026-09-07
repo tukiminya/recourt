@@ -16,7 +16,8 @@
   "dependencies": {
     "@recourt/types": "workspace:*",
     "@recourt/utils": "workspace:*",
-    "drizzle-orm": "^0.45.2"
+    "drizzle-orm": "^0.45.2",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.10"
