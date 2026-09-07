@@ -1,29 +1,22 @@
 import { Link } from "../Link";
-import type { JudgeCase } from "../../data/judges";
+import type { CaseEntity } from "../../data/judges";
 
 type CaseMetadataProps = {
-  judgeCase: JudgeCase;
+  caseEntity?: CaseEntity;
 };
 
-export default function CaseMetadata({ judgeCase }: CaseMetadataProps) {
+export default function CaseMetadata({ caseEntity }: CaseMetadataProps) {
   return (
     <section className="space-y-[18px] text-[14px]">
-      <div className="grid grid-cols-2 gap-[18px]">
-        <MetaField label="種別">
-          <Link href="#">{judgeCase.kind}</Link>
+      <MetaField label="事件名">{caseEntity?.title ?? "—"}</MetaField>
+      <MetaField label="事件番号">{caseEntity?.case_number ?? "—"}</MetaField>
+      <MetaField label="法廷">{caseEntity?.court ?? "—"}</MetaField>
+      <MetaField label="裁判日">{caseEntity?.decision_date ?? "—"}</MetaField>
+      {caseEntity?.url ? (
+        <MetaField label="出典">
+          <Link href={caseEntity.url}>裁判所の公式情報</Link>
         </MetaField>
-        <MetaField label="結果">
-          <Link href="#">{judgeCase.result}</Link>
-        </MetaField>
-      </div>
-      <MetaField label="主文">{judgeCase.order}</MetaField>
-      <Divider />
-      <MetaField label="事件名">{judgeCase.caseName}</MetaField>
-      <MetaField label="事件番号">{judgeCase.caseNumber}</MetaField>
-      <MetaField label="法廷">{judgeCase.court}</MetaField>
-      <MetaField label="判例符号">
-        <Link href="#">{judgeCase.codeDescription}</Link>
-      </MetaField>
+      ) : null}
       <Divider />
     </section>
   );

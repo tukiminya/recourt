@@ -9,7 +9,7 @@ import {
   LucideSearch,
 } from "lucide-react";
 import { cloneElement, type ReactElement, type ReactNode } from "react";
-import { judges } from "../data/judges";
+import { getCaseEntity, judges, richTextToMarkdown } from "../data/judges";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -52,42 +52,7 @@ function App() {
           />
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {featuredCases.map((judgeCase) => (
-              <Link
-                key={judgeCase.id}
-                to="/cases/$id"
-                params={{ id: judgeCase.id }}
-                className="group flex min-h-[260px] flex-col rounded-lg border border-neutral-200 bg-white p-6 hover:border-recourt-brandblue"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <Pill>{judgeCase.kind}</Pill>
-                  <Pill>{judgeCase.result}</Pill>
-                </div>
-                <h3 className="mt-5 text-[20px] leading-[1.45] font-medium text-neutral-900 group-hover:text-recourt-brandblue">
-                  {judgeCase.title.name}
-                </h3>
-                <p className="mt-3 text-[12px] leading-normal text-neutral-600">
-                  {judgeCase.court}
-                </p>
-                <ul className="mt-5 space-y-2">
-                  {judgeCase.summary.slice(0, 3).map((summary) => (
-                    <li
-                      key={summary}
-                      className="flex items-start gap-2 text-[14px] leading-[1.6] text-neutral-800"
-                    >
-                      <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-recourt-brandblue" />
-                      <span>{summary}</span>
-                    </li>
-                  ))}
-                </ul>
-                <span className="mt-auto inline-flex items-center gap-1 pt-6 text-[13px] font-medium text-recourt-brandblue">
-                  判例を読む
-                  <LucideArrowRight
-                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                    strokeWidth={1.7}
-                    aria-hidden="true"
-                  />
-                </span>
-              </Link>
+              <FeaturedCaseCard key={judgeCase.id} judgeCase={judgeCase} />
             ))}
           </div>
         </section>
@@ -142,6 +107,46 @@ function App() {
         </section>
       </div>
     </main>
+  );
+}
+
+function FeaturedCaseCard({ judgeCase }: { judgeCase: (typeof judges)[number] }) {
+  const caseEntity = getCaseEntity(judgeCase);
+
+  return (
+    <Link
+      to="/cases/$id"
+      params={{ id: judgeCase.id }}
+      className="group flex min-h-[260px] flex-col rounded-lg border border-neutral-200 bg-white p-6 hover:border-recourt-brandblue"
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill>判例</Pill>
+        {caseEntity?.decision_date ? <Pill>{caseEntity.decision_date}</Pill> : null}
+      </div>
+      <h3 className="mt-5 text-[20px] leading-[1.45] font-medium text-neutral-900 group-hover:text-recourt-brandblue">
+        {richTextToMarkdown(judgeCase.title, judgeCase.entities)}
+      </h3>
+      <p className="mt-3 text-[12px] leading-normal text-neutral-600">{caseEntity?.court}</p>
+      <ul className="mt-5 space-y-2">
+        {judgeCase.summary.items.slice(0, 3).map((summary, index) => (
+          <li
+            key={index}
+            className="flex items-start gap-2 text-[14px] leading-[1.6] text-neutral-800"
+          >
+            <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-recourt-brandblue" />
+            <span>{richTextToMarkdown(summary.blocks, judgeCase.entities)}</span>
+          </li>
+        ))}
+      </ul>
+      <span className="mt-auto inline-flex items-center gap-1 pt-6 text-[13px] font-medium text-recourt-brandblue">
+        判例を読む
+        <LucideArrowRight
+          className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+          strokeWidth={1.7}
+          aria-hidden="true"
+        />
+      </span>
+    </Link>
   );
 }
 
