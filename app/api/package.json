@@ -8,6 +8,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"
   },
@@ -17,5 +18,8 @@
     "@recourt/types": "workspace:*",
     "hono": "catalog:",
     "zod": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
   }
 }
