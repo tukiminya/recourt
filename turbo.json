@@ -1,0 +1,49 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "web#build": {
+      "dependsOn": ["^build", "web#types", "web#generate-routes"],
+      "inputs": ["$TURBO_DEFAULT$", "!worker-configuration.d.ts", "!src/routeTree.gen.ts"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "web#dev": {
+      "dependsOn": ["web#types", "web#generate-routes"],
+      "cache": false,
+      "persistent": true
+    },
+    "types": {
+      "cache": false,
+      "inputs": ["src/**", "wrangler.jsonc", "tsconfig.json"]
+    },
+    "generate-routes": {
+      "cache": false,
+      "inputs": ["src/routes/**", "tsr.config.json", "vite.config.ts"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "@recourt/api#typecheck": {
+      "dependsOn": ["^typecheck", "@recourt/api#types"]
+    },
+    "@recourt/external-service#typecheck": {
+      "dependsOn": ["^typecheck", "@recourt/external-service#types"]
+    },
+    "@recourt/extract#typecheck": {
+      "dependsOn": ["^typecheck", "@recourt/extract#types"]
+    },
+    "@recourt/internal#typecheck": {
+      "dependsOn": ["^typecheck", "@recourt/internal#types"]
+    },
+    "web#typecheck": {
+      "dependsOn": ["^typecheck", "web#types", "web#generate-routes"]
+    }
+  }
+}
