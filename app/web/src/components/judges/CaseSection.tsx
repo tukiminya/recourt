@@ -1,11 +1,11 @@
 import { LucideGavel } from "lucide-react";
 import { AffectedPartyItem } from "./AffectedParties";
-import type { CaseSection as CaseSectionData, JudgeCase } from "../../data/judges";
+import type { JudgeCase } from "../../data/judges";
 import { getBlockRichText, richTextToMarkdown } from "../../data/judges";
 import { MarkdownRenderer } from "../../integrations/markdown/markdown";
 
 type CaseSectionProps = {
-  section: CaseSectionData;
+  section: JudgeCase["sections"][number];
   entities: JudgeCase["entities"];
   showTitle?: boolean;
 };

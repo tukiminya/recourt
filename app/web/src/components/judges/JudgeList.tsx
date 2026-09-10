@@ -1,8 +1,8 @@
-import type { PersonEntity } from "../../data/judges";
+import type { JudgeCase } from "../../data/judges";
 import Label from "../Label";
 
 type JudgeListProps = {
-  judges: Array<PersonEntity>;
+  judges: Array<Extract<JudgeCase["entities"][string], { type: "person" }>>;
 };
 
 export default function JudgeList({ judges }: JudgeListProps) {
@@ -23,7 +23,7 @@ function JudgeGroup({
   showRoleBadge = false,
 }: {
   label: string;
-  judges: Array<PersonEntity>;
+  judges: Array<Extract<JudgeCase["entities"][string], { type: "person" }>>;
   showRoleBadge?: boolean;
 }) {
   return (

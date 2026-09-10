@@ -2,14 +2,8 @@ import { CaseArticleStorage } from "@recourt/types";
 import { z } from "zod";
 
 export type JudgeCase = z.infer<typeof CaseArticleStorage>;
-export type RichText = JudgeCase["title"][number];
-export type CaseSection = JudgeCase["sections"][number];
-export type CaseBlock = CaseSection["blocks"][number];
-export type CaseEntity = Extract<JudgeCase["entities"][string], { type: "case" }>;
-export type PersonEntity = Extract<JudgeCase["entities"][string], { type: "person" }>;
-export type AffectedPartyBlock = Extract<CaseBlock, { type: "with_icon_list_item" }>;
 
-const text = (content: string, link: string | null = null): RichText => ({
+const text = (content: string, link: string | null = null): JudgeCase["title"][number] => ({
   type: "text",
   text: { content, link },
   annotations: { bold: false, underline: false, strikethrough: false },
@@ -18,31 +12,37 @@ const text = (content: string, link: string | null = null): RichText => ({
 const mention = (
   entity_id: string,
   entity_type: "statute" | "case" | "person" | "organization" | "legal_term" | "source",
-): RichText => ({
+): JudgeCase["title"][number] => ({
   type: "mention",
   mention: { entity_id, entity_type },
   annotations: { bold: false, underline: false, strikethrough: false },
 });
 
-const paragraph = (...rich_text: RichText[]): CaseBlock => ({
+const paragraph = (
+  ...rich_text: Array<JudgeCase["title"][number]>
+): JudgeCase["sections"][number]["blocks"][number] => ({
   type: "paragraph",
   paragraph: { rich_text },
 });
 
-const heading = (...rich_text: RichText[]): CaseBlock => ({
+const heading = (
+  ...rich_text: Array<JudgeCase["title"][number]>
+): JudgeCase["sections"][number]["blocks"][number] => ({
   type: "heading_3",
   heading_3: { rich_text },
 });
 
-const bulletedListItem = (...rich_text: RichText[]): CaseBlock => ({
+const bulletedListItem = (
+  ...rich_text: Array<JudgeCase["title"][number]>
+): JudgeCase["sections"][number]["blocks"][number] => ({
   type: "bulleted_list_item",
   bulleted_list_item: { rich_text },
 });
 
 const affectedParty = (
   icon: "organization" | "people" | "goverment",
-  ...rich_text: RichText[]
-): CaseBlock => ({
+  ...rich_text: Array<JudgeCase["title"][number]>
+): JudgeCase["sections"][number]["blocks"][number] => ({
   type: "with_icon_list_item",
   with_icon_list_item: { icon, rich_text },
 });
@@ -263,7 +263,7 @@ const article = CaseArticleStorage.parse({
 export const judges: Array<JudgeCase> = [article];
 
 export function richTextToMarkdown(
-  richText: Array<RichText>,
+  richText: Array<JudgeCase["title"][number]>,
   entities: JudgeCase["entities"],
 ): string {
   return richText
@@ -291,7 +291,9 @@ export function richTextToMarkdown(
     .join("");
 }
 
-export function getBlockRichText(block: CaseBlock): Array<RichText> {
+export function getBlockRichText(
+  block: JudgeCase["sections"][number]["blocks"][number],
+): Array<JudgeCase["title"][number]> {
   switch (block.type) {
     case "heading_3":
       return block.heading_3.rich_text;
@@ -306,15 +308,21 @@ export function getBlockRichText(block: CaseBlock): Array<RichText> {
   }
 }
 
-export function getCaseEntity(article: JudgeCase): CaseEntity | undefined {
+export function getCaseEntity(
+  article: JudgeCase,
+): Extract<JudgeCase["entities"][string], { type: "case" }> | undefined {
   return Object.values(article.entities).find(
-    (entity): entity is CaseEntity => entity.type === "case",
+    (entity): entity is Extract<JudgeCase["entities"][string], { type: "case" }> =>
+      entity.type === "case",
   );
 }
 
-export function getJudgeEntities(article: JudgeCase): Array<PersonEntity> {
+export function getJudgeEntities(
+  article: JudgeCase,
+): Array<Extract<JudgeCase["entities"][string], { type: "person" }>> {
   return Object.values(article.entities).filter(
-    (entity): entity is PersonEntity => entity.type === "person",
+    (entity): entity is Extract<JudgeCase["entities"][string], { type: "person" }> =>
+      entity.type === "person",
   );
 }
 

@@ -1,8 +1,8 @@
 import { Link } from "../Link";
-import type { CaseEntity } from "../../data/judges";
+import type { JudgeCase } from "../../data/judges";
 
 type CaseMetadataProps = {
-  caseEntity?: CaseEntity;
+  caseEntity?: Extract<JudgeCase["entities"][string], { type: "case" }>;
 };
 
 export default function CaseMetadata({ caseEntity }: CaseMetadataProps) {

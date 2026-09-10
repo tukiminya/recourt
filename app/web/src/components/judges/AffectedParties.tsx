@@ -1,9 +1,11 @@
 import { LucideBuilding, LucideGavel, LucideLandmark, LucideUsersRound } from "lucide-react";
-import type { AffectedPartyBlock, JudgeCase } from "../../data/judges";
+import type { JudgeCase } from "../../data/judges";
 import { richTextToMarkdown } from "../../data/judges";
 
 type AffectedPartiesProps = {
-  parties: Array<AffectedPartyBlock>;
+  parties: Array<
+    Extract<JudgeCase["sections"][number]["blocks"][number], { type: "with_icon_list_item" }>
+  >;
   entities: JudgeCase["entities"];
 };
 
@@ -15,7 +17,7 @@ const iconByStorageType = {
 } as const;
 
 type AffectedPartyItemProps = {
-  party: AffectedPartyBlock;
+  party: Extract<JudgeCase["sections"][number]["blocks"][number], { type: "with_icon_list_item" }>;
   entities: JudgeCase["entities"];
 };
 

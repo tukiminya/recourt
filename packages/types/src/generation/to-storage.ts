@@ -2,14 +2,13 @@ import { z } from "zod";
 
 import { CaseArticleStorageV1, block, rich_text } from "../storage/v1/entry";
 import type { support_icon } from "../storage/v1/block";
-import { CaseArticleGeneration } from "./article";
+import type { CaseArticleGeneration } from "./article";
 import type { GenerationBlock } from "./block";
 import type { GenerationRichText } from "./rich-text";
 
 type CaseArticleStorageV1Data = z.infer<typeof CaseArticleStorageV1>;
 type Block = z.infer<typeof block>;
 type RichText = z.infer<typeof rich_text>;
-type ArticleGeneration = z.infer<typeof CaseArticleGeneration>;
 
 const toStorageRichText = (part: GenerationRichText): RichText => ({
   type: "text",
@@ -30,7 +29,7 @@ const toStorageBlock = (source: GenerationBlock): Block => ({
 const toStorageTitle = (title: GenerationRichText[]): RichText[] => title.map(toStorageRichText);
 
 const affectedPartyIcon = (
-  kind: ArticleGeneration["affected_parties"][number]["kind"],
+  kind: CaseArticleGeneration["affected_parties"][number]["kind"],
 ): z.infer<typeof support_icon> => {
   switch (kind) {
     case "person":
@@ -42,7 +41,7 @@ const affectedPartyIcon = (
   }
 };
 
-const affectedParty = (party: ArticleGeneration["affected_parties"][number]): Block => ({
+const affectedParty = (party: CaseArticleGeneration["affected_parties"][number]): Block => ({
   type: "with_icon_list_item",
   with_icon_list_item: {
     icon: affectedPartyIcon(party.kind),
@@ -67,7 +66,7 @@ export function toCaseArticleStorageV1({
   id,
   createdTime,
 }: {
-  draft: ArticleGeneration;
+  draft: CaseArticleGeneration;
   id: string;
   createdTime: string;
 }): CaseArticleStorageV1Data {
