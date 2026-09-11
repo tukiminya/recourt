@@ -1,5 +1,5 @@
 resource "cloudflare_worker" "recourt-api" {
-  name = "recourt-api"
+  name       = "recourt-api"
   account_id = var.cloudflare_account_id
   observability = {
     enabled = true
@@ -10,12 +10,12 @@ resource "cloudflare_worker" "recourt-api" {
 }
 
 resource "cloudflare_worker" "recourt-frontend" {
-  name = "recourt-frontend"
+  name       = "recourt-frontend"
   account_id = var.cloudflare_account_id
 }
 
 resource "cloudflare_worker" "recourt-extractor" {
-  name = "recourt-extractor"
+  name       = "recourt-extractor"
   account_id = var.cloudflare_account_id
   observability = {
     enabled = true
@@ -26,7 +26,7 @@ resource "cloudflare_worker" "recourt-extractor" {
 }
 
 resource "cloudflare_worker" "recourt-internal" {
-  name = "recourt-internal"
+  name       = "recourt-internal"
   account_id = var.cloudflare_account_id
   observability = {
     enabled = true

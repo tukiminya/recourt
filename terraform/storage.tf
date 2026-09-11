@@ -1,13 +1,13 @@
 resource "cloudflare_r2_bucket" "recourt" {
-  name = "recourt-v1"
+  name       = "recourt-v1"
   account_id = var.cloudflare_account_id
-  location = "apac"
+  location   = "apac"
 }
 
 resource "cloudflare_r2_custom_domain" "recourt-custom-domain" {
-  account_id = var.cloudflare_account_id
+  account_id  = var.cloudflare_account_id
   bucket_name = cloudflare_r2_bucket.recourt.name
-  enabled = true
-  domain = "cdn.${var.cloudflare_recourt_domain}"
-  zone_id = var.cloudflare_recourt_zone_id
+  enabled     = true
+  domain      = "cdn.${var.cloudflare_recourt_domain}"
+  zone_id     = var.cloudflare_recourt_zone_id
 }
