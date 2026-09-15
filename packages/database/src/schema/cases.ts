@@ -1,16 +1,26 @@
 import {
   boolean,
+  check,
   integer,
   json,
+  pgEnum,
   pgTable,
   smallint,
   text,
   timestamp,
   unique,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { drizzleUuidColmns, drizzleUuidColmnsWithDefault } from "./utils";
 import { type EraName } from "@recourt/utils";
 import { judges } from "./judges";
+
+export const caseRevisionStatus = pgEnum("case_revision_status", [
+  "draft",
+  "publishing",
+  "published",
+  "deleting",
+]);
 
 // 裁判所の事件ID `平成17(行コ)134` といった形式を正規化して保存
 export const case_id_by_courts = pgTable(
@@ -31,18 +41,29 @@ export const cases = pgTable("cases", {
   id: drizzleUuidColmnsWithDefault().primaryKey(),
 });
 
-export const case_revisions = pgTable("case_revisions", {
-  id: drizzleUuidColmnsWithDefault().primaryKey(),
-  case_id: drizzleUuidColmns()
-    .notNull()
-    .references(() => cases.id),
-  case_id_by_courts: drizzleUuidColmns().references(() => case_id_by_courts.random_id),
-  comments: text(),
-  article_schema_version: smallint(),
-  is_published: boolean().default(false).notNull(),
-  created_at: timestamp().defaultNow(),
-  published_at: timestamp().defaultNow(),
-});
+export const case_revisions = pgTable(
+  "case_revisions",
+  {
+    id: drizzleUuidColmnsWithDefault().primaryKey(),
+    case_id: drizzleUuidColmns()
+      .notNull()
+      .references(() => cases.id),
+    case_id_by_courts: drizzleUuidColmns().references(() => case_id_by_courts.random_id),
+    comments: text(),
+    title: text().notNull(),
+    article_schema_version: smallint().notNull(),
+    article_sha256: text().notNull(),
+    status: caseRevisionStatus().default("draft").notNull(),
+    created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+    published_at: timestamp({ withTimezone: true }),
+  },
+  (table) => [
+    check(
+      "case_revisions_published_at_matches_status",
+      sql`(${table.status} = 'published' AND ${table.published_at} IS NOT NULL) OR (${table.status} <> 'published' AND ${table.published_at} IS NULL)`,
+    ),
+  ],
+);
 
 export const case_revision_judges = pgTable("case_revision_judges", {
   revision_id: drizzleUuidColmns()
