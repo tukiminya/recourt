@@ -12,6 +12,10 @@ export default defineConfig({
   jsPlugins: ["./packages/lint/dist/plugin.js"],
   rules: {
     "recourt-lint/import-lucide-start-by-lucide": "warn",
+    "max-lines": ["warn", { max: 400, skipBlankLines: true, skipComments: true }],
+    "max-lines-per-function": ["warn", { max: 70, skipBlankLines: true, skipComments: true }],
+    "max-depth": ["warn", { max: 5 }],
+    "max-params": ["warn", { max: 4 }],
   },
   options: { typeAware: true, typeCheck: true },
 });
