@@ -21,6 +21,24 @@ const getBlockRichText = (articleBlock: z.infer<typeof block>) => {
   }
 };
 
+function checkRichTextEntities(
+  richText: z.infer<typeof rich_text>[],
+  entityIds: Set<string>,
+  path: PropertyKey[],
+  issues: z.core.$ZodRawIssue[],
+) {
+  richText.forEach((part, partIndex) => {
+    if (part.type !== "mention" || entityIds.has(part.mention.entity_id)) return;
+
+    issues.push({
+      code: "custom",
+      input: part.mention.entity_id,
+      path: [...path, partIndex, "mention", "entity_id"],
+      message: `Unknown entity_id: ${part.mention.entity_id}`,
+    });
+  });
+}
+
 export const CaseArticleStorageV1 = z
   .object({
     schema_version: z.literal("2026-08"),
@@ -34,7 +52,7 @@ export const CaseArticleStorageV1 = z
 
     summary: z.object({
       type: z
-        .literal(["opening_and_closing", "opening_only", "closing_only"])
+        .enum(["opening_and_closing", "opening_only", "closing_only"])
         .default("opening_and_closing"),
       items: z.array(
         z.object({
@@ -46,29 +64,25 @@ export const CaseArticleStorageV1 = z
   .check((ctx) => {
     const entityIds = new Set(Object.keys(ctx.value.entities));
 
-    ctx.value.sections.forEach((section) => {
+    checkRichTextEntities(ctx.value.title, entityIds, ["title"], ctx.issues);
+
+    ctx.value.sections.forEach((section, sectionIndex) => {
       section.blocks.forEach((block, blockIndex) => {
-        const richText = getBlockRichText(block);
-
-        richText.forEach((part, partIndex) => {
-          if (part.type !== "mention") return;
-          if (entityIds.has(part.mention.entity_id)) return;
-
-          ctx.issues.push({
-            code: "custom",
-            input: part.mention.entity_id,
-            path: [
-              "blocks",
-              blockIndex,
-              block.type,
-              "rich_text",
-              partIndex,
-              "mention",
-              "entity_id",
-            ],
-            message: `Unknown entity_id: ${part.mention.entity_id}`,
-          });
-        });
+        checkRichTextEntities(
+          getBlockRichText(block),
+          entityIds,
+          ["sections", sectionIndex, "blocks", blockIndex, block.type, "rich_text"],
+          ctx.issues,
+        );
       });
+    });
+
+    ctx.value.summary.items.forEach((item, itemIndex) => {
+      checkRichTextEntities(
+        item.blocks,
+        entityIds,
+        ["summary", "items", itemIndex, "blocks"],
+        ctx.issues,
+      );
     });
   });
