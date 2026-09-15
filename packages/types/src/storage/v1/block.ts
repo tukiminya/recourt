@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { rich_text } from "./rich-text";
 
-export const support_icon = z.literal(["issue", "organization", "people", "goverment"]);
+export const support_icon = z.enum(["issue", "organization", "people", "goverment"]);
 
 export const block = z.discriminatedUnion("type", [
   z.object({
