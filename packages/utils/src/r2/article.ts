@@ -1,8 +1,8 @@
 export type GenerateArticleObjectKeyProps = {
-  articleId: string;
+  caseId: string;
   revisionId: string;
 };
 
 export function generateArticleObjectKey(props: GenerateArticleObjectKeyProps) {
-  return `article/${props.articleId}/revision/${props.revisionId}`;
+  return `article/${props.caseId}/revision/${props.revisionId}`;
 }
