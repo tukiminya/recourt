@@ -3,10 +3,10 @@ import {
   integer,
   json,
   pgTable,
-  primaryKey,
   smallint,
   text,
   timestamp,
+  unique,
 } from "drizzle-orm/pg-core";
 import { drizzleUuidColmns, drizzleUuidColmnsWithDefault } from "./utils";
 import { type EraName } from "@recourt/utils";
@@ -17,15 +17,13 @@ export const case_id_by_courts = pgTable(
   "case_id_by_courts",
   {
     random_id: drizzleUuidColmnsWithDefault().primaryKey(), // 機械的にアクセスしやすいランダムな UUID を割り当て。cases テーブルからの references はこのカラムに向ける
-    era: text().$type<EraName>(),
-    year: smallint(),
-    type: text(),
-    case_id: integer(),
+    era: text().$type<EraName>().notNull(),
+    year: smallint().notNull(),
+    type: text().notNull(),
+    case_id: integer().notNull(),
   },
   (table) => [
-    primaryKey({
-      columns: [table.era, table.year, table.type, table.case_id],
-    }),
+    unique("case_id_by_courts_natural_key").on(table.era, table.year, table.type, table.case_id),
   ],
 );
 
