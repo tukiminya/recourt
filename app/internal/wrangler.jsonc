@@ -1,12 +1,16 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "recourt-internal",
-  "compatibility_date": "2026-07-07",
+  "compatibility_date": "2026-09-10",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
   "r2_buckets": [
     {
-      "binding": "R2",
+      "binding": "DRAFT_ARTICLES",
+      "bucket_name": "recourt-drafts-v1",
+    },
+    {
+      "binding": "PUBLISHED_ARTICLES",
       "bucket_name": "recourt-v1",
     },
   ],
