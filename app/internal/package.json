@@ -9,13 +9,19 @@
   "main": "index.js",
   "scripts": {
     "dev": "wrangler dev",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"
   },
   "dependencies": {
+    "@hono/standard-validator": "^0.4.0",
+    "@recourt/database": "workspace:*",
     "@recourt/types": "workspace:*",
     "@recourt/utils": "workspace:*",
     "hono": "catalog:",
     "zod": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
   }
 }
