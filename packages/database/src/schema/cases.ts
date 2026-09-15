@@ -49,7 +49,7 @@ export const case_revisions = pgTable("case_revisions", {
 export const case_revision_judges = pgTable("case_revision_judges", {
   revision_id: drizzleUuidColmns()
     .primaryKey()
-    .references(() => case_revisions.id),
+    .references(() => case_revisions.id, { onDelete: "cascade" }),
   judge_id: drizzleUuidColmns().references(() => judges.id),
   is_presiding: boolean().notNull(),
   opinion_type: text().notNull(),
@@ -59,5 +59,5 @@ export const case_revision_judges = pgTable("case_revision_judges", {
 export const case_revision_acts = pgTable("case_revision_acts", {
   revision_id: drizzleUuidColmns()
     .primaryKey()
-    .references(() => case_revisions.id),
+    .references(() => case_revisions.id, { onDelete: "cascade" }),
 });
