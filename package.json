@@ -19,7 +19,7 @@
     "node-addon-api": "^8.9.2",
     "node-gyp": "^13.0.1",
     "oxfmt": "^0.63.0",
-    "oxlint": "^1.78.0",
+    "oxlint": "^1.83.0",
     "oxlint-tsgolint": "^7.0.2001",
     "tsx": "^4.23.12",
     "turbo": "^2.10.12",
