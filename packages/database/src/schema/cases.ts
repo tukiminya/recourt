@@ -22,24 +22,38 @@ export const caseRevisionStatus = pgEnum("case_revision_status", [
   "deleting",
 ]);
 
-// 裁判所の事件ID `平成17(行コ)134` といった形式を正規化して保存
+// 裁判所・支部と `平成17(行コ)134` のような事件番号を正規化して保存
 export const case_id_by_courts = pgTable(
   "case_id_by_courts",
   {
     random_id: drizzleUuidColmnsWithDefault().primaryKey(), // 機械的にアクセスしやすいランダムな UUID を割り当て。cases テーブルからの references はこのカラムに向ける
+    court_name: text().notNull(),
+    branch_name: text().notNull(),
     era: text().$type<EraName>().notNull(),
     year: smallint().notNull(),
     type: text().notNull(),
     case_id: integer().notNull(),
   },
   (table) => [
-    unique("case_id_by_courts_natural_key").on(table.era, table.year, table.type, table.case_id),
+    unique("case_id_by_courts_natural_key").on(
+      table.court_name,
+      table.branch_name,
+      table.era,
+      table.year,
+      table.type,
+      table.case_id,
+    ),
   ],
 );
 
-export const cases = pgTable("cases", {
-  id: drizzleUuidColmnsWithDefault().primaryKey(),
-});
+export const cases = pgTable(
+  "cases",
+  {
+    id: drizzleUuidColmnsWithDefault().primaryKey(),
+    case_id_by_courts: drizzleUuidColmns().references(() => case_id_by_courts.random_id),
+  },
+  (table) => [unique("cases_case_id_by_courts").on(table.case_id_by_courts)],
+);
 
 export const case_revisions = pgTable(
   "case_revisions",
@@ -48,11 +62,11 @@ export const case_revisions = pgTable(
     case_id: drizzleUuidColmns()
       .notNull()
       .references(() => cases.id),
-    case_id_by_courts: drizzleUuidColmns().references(() => case_id_by_courts.random_id),
     comments: text(),
     title: text().notNull(),
     article_schema_version: smallint().notNull(),
     article_sha256: text().notNull(),
+    source_document_sha256: text(),
     status: caseRevisionStatus().default("draft").notNull(),
     created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
     published_at: timestamp({ withTimezone: true }),
@@ -61,6 +75,14 @@ export const case_revisions = pgTable(
     check(
       "case_revisions_published_at_matches_status",
       sql`(${table.status} = 'published' AND ${table.published_at} IS NOT NULL) OR (${table.status} <> 'published' AND ${table.published_at} IS NULL)`,
+    ),
+    check(
+      "case_revisions_source_document_sha256",
+      sql`${table.source_document_sha256} IS NULL OR ${table.source_document_sha256} ~ '^[0-9a-f]{64}$'`,
+    ),
+    unique("case_revisions_case_id_source_document_sha256").on(
+      table.case_id,
+      table.source_document_sha256,
     ),
   ],
 );
