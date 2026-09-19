@@ -10,8 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "turbo run build",
-    "dev": "turbo run dev --filter=@recourt/external-service --filter=@recourt/extract --filter=@recourt/internal --filter=web",
-    "pregen": "turbo run types --filter=@recourt/api --filter=@recourt/external-service --filter=@recourt/extract --filter=@recourt/internal --filter=web && turbo run generate-routes --filter=web",
+    "dev": "turbo run dev --filter=@recourt/crawler --filter=@recourt/external-service --filter=@recourt/extract --filter=@recourt/internal --filter=web",
+    "pregen": "turbo run types --filter=@recourt/api --filter=@recourt/crawler --filter=@recourt/external-service --filter=@recourt/extract --filter=@recourt/internal --filter=web && turbo run generate-routes --filter=web",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {

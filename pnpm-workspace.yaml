@@ -1,5 +1,6 @@
 packages:
   - app/api
+  - app/crawler
   - app/external-service
   - app/extract
   - app/internal

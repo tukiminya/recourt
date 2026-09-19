@@ -33,6 +33,9 @@
     "@recourt/api#typecheck": {
       "dependsOn": ["^typecheck", "@recourt/api#types"]
     },
+    "@recourt/crawler#typecheck": {
+      "dependsOn": ["^typecheck", "@recourt/crawler#types"]
+    },
     "@recourt/external-service#typecheck": {
       "dependsOn": ["^typecheck", "@recourt/external-service#types"]
     },

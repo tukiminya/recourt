@@ -284,6 +284,25 @@ importers:
         specifier: 'catalog:'
         version: 4.1.10(@types/node@24.13.3)(jsdom@28.1.0(supports-color@10.2.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12))
 
+  app/crawler:
+    dependencies:
+      '@hono/standard-validator':
+        specifier: ^0.4.0
+        version: 0.4.0(@standard-schema/spec@1.1.0)(hono@4.13.2)
+      '@recourt/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      hono:
+        specifier: 'catalog:'
+        version: 4.13.2
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(jsdom@28.1.0(supports-color@10.2.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12))
+
   app/external-service:
     dependencies:
       '@hono/standard-validator':

@@ -1,0 +1,21 @@
+{
+  "name": "@recourt/crawler",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types"
+  },
+  "dependencies": {
+    "@hono/standard-validator": "^0.4.0",
+    "@recourt/types": "workspace:*",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  }
+}
