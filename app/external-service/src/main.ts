@@ -1,6 +1,7 @@
 import { sValidator } from "@hono/standard-validator";
 import { Hono } from "hono";
 import type { Context } from "hono";
+import { z } from "zod";
 
 import {
   chizaiQuery,
@@ -22,8 +23,23 @@ import {
   type SearchPage,
   type SearchQueryParams,
 } from "./courts/search-url";
+import {
+  CourtDetailFormatError,
+  fetchCourtDetail,
+  InvalidCourtDetailUrlError,
+} from "./courts/detail";
+import { findPreviousJudgment } from "./courts/previous";
+import { searchWikipedia } from "./wikipedia";
 
 const app = new Hono();
+
+// TODO: ここらへんのクエリのスキーマを括り出す
+const detailQuery = z.strictObject({ url: z.url() });
+const wikipediaQuery = z.strictObject({
+  query: z.string().trim().min(1).max(200),
+  limit: z.coerce.number().int().min(1).max(5).default(5),
+});
+const previousQuery = z.strictObject({ caseNumber: z.string().trim().min(1).max(100) });
 
 const errorBody = (code: string, message: string) => ({ error: { code, message } });
 
@@ -122,6 +138,52 @@ app.get("/courts/hanrei/search/rodo", sValidator("query", rodoQuery, validationH
 
 app.get("/courts/hanrei/search/chizai", sValidator("query", chizaiQuery, validationHook), (c) =>
   searchCourt(c, "chizai", 7, c.req.valid("query")),
+);
+
+app.get(
+  "/courts/hanrei/detail",
+  sValidator("query", detailQuery, validationHook),
+  async (context) => {
+    try {
+      return context.json(await fetchCourtDetail(context.req.valid("query").url));
+    } catch (error) {
+      if (error instanceof InvalidCourtDetailUrlError) {
+        return context.json(errorBody("VALIDATION_ERROR", error.message), 400);
+      }
+      if (error instanceof CourtDetailFormatError) {
+        return context.json(errorBody("UPSTREAM_FORMAT_ERROR", error.message), 422);
+      }
+      console.error("Court detail request failed", error);
+      return context.json(errorBody("UPSTREAM_ERROR", "The court detail could not be read"), 502);
+    }
+  },
+);
+
+app.get(
+  "/wikipedia/search",
+  sValidator("query", wikipediaQuery, validationHook),
+  async (context) => {
+    const { query, limit } = context.req.valid("query");
+    try {
+      return context.json(await searchWikipedia(query, limit));
+    } catch (error) {
+      console.error("Wikipedia search failed", error);
+      return context.json(errorBody("UPSTREAM_ERROR", "Wikipedia search failed"), 502);
+    }
+  },
+);
+
+app.get(
+  "/courts/hanrei/previous",
+  sValidator("query", previousQuery, validationHook),
+  async (context) => {
+    try {
+      return context.json(await findPreviousJudgment(context.req.valid("query").caseNumber));
+    } catch (error) {
+      console.error("Previous judgment lookup failed", error);
+      return context.json(errorBody("UPSTREAM_ERROR", "Previous judgment lookup failed"), 502);
+    }
+  },
 );
 
 app.notFound((context) => context.json(errorBody("NOT_FOUND", "Route not found"), 404));

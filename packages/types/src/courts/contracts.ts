@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { uuidv7 } from "../uuid";
+import { caseCourtId } from "../api/internal-cases";
 import { courtSearchCategory } from "./search-query";
 
 export const courtDocument = z.object({
@@ -28,8 +28,6 @@ export const courtCaseSource = z.object({
   documents: z.array(courtDocument),
 });
 export type CourtCaseSource = z.infer<typeof courtCaseSource>;
-export const courtCaseUpsertResult = z.object({ caseId: uuidv7, shouldExtract: z.boolean() });
-export const courtCaseSourceResult = courtCaseSource.extend({ caseId: uuidv7 });
 export const crawlerQueueMessage = z.object({
   version: z.literal(1),
   crawlRunId: z.string().uuid(),
@@ -43,7 +41,8 @@ export const extractQueueMessage = z.object({
   version: z.literal(1),
   crawlRunId: z.string().uuid(),
   jobId: z.string().min(1).max(100),
-  caseId: uuidv7,
+  courtCaseId: caseCourtId,
+  source: courtCaseSource,
   pdfUrl: z.url(),
 });
 export type ExtractQueueMessage = z.infer<typeof extractQueueMessage>;

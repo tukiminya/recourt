@@ -4,6 +4,8 @@ import { LatestCaseArticleStorage } from "../storage/entry";
 import type { UUIDv7 } from "../uuid";
 
 export const caseCourtId = z.object({
+  court_name: z.string().trim().min(1),
+  branch_name: z.string().trim().min(1).nullable(),
   era: z.enum(["showa", "heisei", "reiwa"]),
   year: z.number().int().positive().max(32_767),
   type: z.string().trim().min(1),
