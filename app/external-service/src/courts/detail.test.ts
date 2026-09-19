@@ -1,16 +1,14 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
+import { expect, test } from "vitest";
 
-import { InvalidCourtDetailUrlError, validateCourtDetailUrl } from "./detail.ts";
+import { InvalidCourtDetailUrlError, validateCourtDetailUrl } from "./detail";
 
 test("accepts only canonical courts.go.jp detail URLs", () => {
-  assert.deepEqual(
+  expect(
     validateCourtDetailUrl("https://www.courts.go.jp/hanrei/97044/detail2/index.html"),
-    {
-      url: new URL("https://www.courts.go.jp/hanrei/97044/detail2/index.html"),
-      courtDetailId: "97044",
-    },
-  );
+  ).toEqual({
+    url: new URL("https://www.courts.go.jp/hanrei/97044/detail2/index.html"),
+    courtDetailId: "97044",
+  });
 
   for (const value of [
     "https://example.com/hanrei/97044/detail2/index.html",
@@ -18,6 +16,6 @@ test("accepts only canonical courts.go.jp detail URLs", () => {
     "https://www.courts.go.jp/hanrei/97044/detail2/index.html?next=https://example.com",
     "https://www.courts.go.jp/assets/hanrei/hanrei-pdf-97044.pdf",
   ]) {
-    assert.throws(() => validateCourtDetailUrl(value), InvalidCourtDetailUrlError);
+    expect(() => validateCourtDetailUrl(value)).toThrow(InvalidCourtDetailUrlError);
   }
 });

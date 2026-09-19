@@ -1,20 +1,18 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
+import { expect, test, vi } from "vitest";
 
-import app from "../main.ts";
+import app from "../main";
 
-async function search(path) {
-  let upstreamUrl;
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url) => {
-    upstreamUrl = new URL(url);
+async function search(path: string) {
+  let upstreamUrl: URL | undefined;
+  const fetch = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+    upstreamUrl = new URL(input instanceof Request ? input.url : input);
     return new Response("busy", { status: 429 });
-  };
+  });
   try {
     const response = await app.request(`https://external-service.internal${path}`);
     return { response, upstreamUrl };
   } finally {
-    globalThis.fetch = originalFetch;
+    fetch.mockRestore();
   }
 }
 
@@ -27,13 +25,12 @@ test("each named endpoint targets the corresponding court search page", async ()
     ["gyosei", 5],
     ["rodo", 6],
     ["chizai", 7],
-  ]) {
+  ] as const) {
     const { response, upstreamUrl } = await search(`/courts/hanrei/search/${category}?query1=賃金`);
-    assert.equal(response.status, 503);
-    assert.equal(upstreamUrl.pathname, `/hanrei/search${page}/index.html`);
-    assert.equal(upstreamUrl.searchParams.get("query1"), "賃金");
-    assert.equal(
-      upstreamUrl.searchParams.get("courtCaseType"),
+    expect(response.status).toBe(503);
+    expect(upstreamUrl?.pathname).toBe(`/hanrei/search${page}/index.html`);
+    expect(upstreamUrl?.searchParams.get("query1")).toBe("賃金");
+    expect(upstreamUrl?.searchParams.get("courtCaseType")).toBe(
       page === 1 ? null : page === 7 ? "6 7" : String(page - 1),
     );
   }
@@ -43,30 +40,30 @@ test("Zod validates repeated selections and preserves their values", async () =>
   const { response, upstreamUrl } = await search(
     "/courts/hanrei/search/gyosei?filter%5BcaseType%5D%5B%5D=1&filter%5BcaseType%5D%5B%5D=3&offset=30",
   );
-  assert.equal(response.status, 503);
-  assert.deepEqual(upstreamUrl.searchParams.getAll("filter[caseType][]"), ["1", "3"]);
-  assert.equal(upstreamUrl.searchParams.get("offset"), "30");
+  expect(response.status).toBe(503);
+  expect(upstreamUrl?.searchParams.getAll("filter[caseType][]")).toEqual(["1", "3"]);
+  expect(upstreamUrl?.searchParams.get("offset")).toBe("30");
 });
 
 test("chizai view selects its own filters and fixed court category", async () => {
   const { response, upstreamUrl } = await search(
     "/courts/hanrei/search/chizai?view=chizai&filter%5BchizaiCaseType%5D%5B%5D=1",
   );
-  assert.equal(response.status, 503);
-  assert.equal(upstreamUrl.searchParams.get("courtCaseType"), "7");
-  assert.equal(upstreamUrl.searchParams.get("view"), "chizai");
+  expect(response.status).toBe(503);
+  expect(upstreamUrl?.searchParams.get("courtCaseType")).toBe("7");
+  expect(upstreamUrl?.searchParams.get("view")).toBe("chizai");
 
   const invalid = await search(
     "/courts/hanrei/search/chizai?view=chizai&filter%5BrightType%5D%5B%5D=1",
   );
-  assert.equal(invalid.response.status, 400);
-  assert.equal(invalid.upstreamUrl, undefined);
+  expect(invalid.response.status).toBe(400);
+  expect(invalid.upstreamUrl).toBeUndefined();
 });
 
 test("invalid category and query strings do not reach the court", async () => {
   const unknown = await search("/courts/hanrei/search/8?query1=x");
-  assert.equal(unknown.response.status, 404);
-  assert.equal(unknown.upstreamUrl, undefined);
+  expect(unknown.response.status).toBe(404);
+  expect(unknown.upstreamUrl).toBeUndefined();
 
   for (const query of [
     "courtCaseType=9&query1=x",
@@ -77,7 +74,7 @@ test("invalid category and query strings do not reach the court", async () => {
     "offset=0",
   ]) {
     const { response, upstreamUrl } = await search(`/courts/hanrei/search/kakyusai?${query}`);
-    assert.equal(response.status, 400, query);
-    assert.equal(upstreamUrl, undefined);
+    expect(response.status, query).toBe(400);
+    expect(upstreamUrl).toBeUndefined();
   }
 });
