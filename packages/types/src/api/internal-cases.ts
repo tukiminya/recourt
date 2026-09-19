@@ -18,6 +18,10 @@ export const createRevisionBody = z.object({
   article: LatestCaseArticleStorage,
   comments: z.string().nullable().optional(),
   court_case_id: caseCourtId.nullable().optional(),
+  source_document_sha256: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/)
+    .optional(),
 });
 
 export type CreateRevisionBody = z.infer<typeof createRevisionBody>;
@@ -31,6 +35,7 @@ export type RevisionMetadata = {
   title: string;
   comments: string | null;
   court_case_id: CaseCourtId | null;
+  source_document_sha256: string | null;
   article_schema_version: number;
   status: RevisionStatus;
   created_at: string;
