@@ -11,6 +11,7 @@ import { ConflictError, InternalServerError, NotFoundError } from "@recourt/util
 import { sha256Hex, type ArticleStore } from "./article-store/article-store";
 import {
   createCasesRepository,
+  type CreatedRevisionRecord,
   type CasesRepository,
   type NewRevisionRecord,
   type RevisionRecord,
@@ -78,6 +79,7 @@ function toMetadata(record: RevisionRecord): RevisionMetadata {
     title: record.title,
     comments: record.comments,
     court_case_id: record.courtCaseId,
+    source_document_sha256: record.sourceDocumentSha256,
     article_schema_version: record.articleSchemaVersion,
     status: record.status,
     created_at: record.createdAt.toISOString(),
@@ -131,30 +133,42 @@ async function prepareRecord(
       revisionId,
       title: articleTitle(input.article),
       comments: input.comments ?? null,
-      courtCaseId: input.court_case_id ?? null,
       articleSchemaVersion: articleSchemaVersion(input.article),
       articleSha256: await sha256Hex(serialized),
+      sourceDocumentSha256: input.source_document_sha256 ?? null,
     },
   };
 }
 
-async function createStoredRevision(
-  articleStore: ArticleStore,
-  createRecord: (record: NewRevisionRecord) => Promise<RevisionRecord | undefined>,
-  caseId: UUIDv7,
-  input: CreateRevisionBody,
-): Promise<CaseWithRevision> {
+async function createStoredRevision({
+  articleStore,
+  createRecord,
+  caseId,
+  input,
+}: {
+  articleStore: ArticleStore;
+  createRecord: (record: NewRevisionRecord) => Promise<CreatedRevisionRecord | undefined>;
+  caseId: UUIDv7;
+  input: CreateRevisionBody;
+}): Promise<CaseWithRevision> {
   const revisionId = uuidv7();
   const location = { caseId, revisionId };
   const { record, serialized } = await prepareRecord(caseId, revisionId, input);
 
   try {
     await articleStore.putDraft(location, serialized, record.articleSha256);
-    const created = await createRecord(record);
-    if (created === undefined) {
+    const result = await createRecord(record);
+    if (result === undefined) {
       throw new NotFoundError("Case not found");
     }
-    return { id: caseId, revision: toMetadata(created) };
+    if (!result.created) {
+      try {
+        await articleStore.deleteDraft(location);
+      } catch (cleanupError) {
+        logDraftCleanupFailure("idempotent-create", location, cleanupError);
+      }
+    }
+    return { id: caseId, revision: toMetadata(result.record) };
   } catch (error) {
     const isExistingObjectConflict =
       error instanceof ConflictError && error.code === "ARTICLE_ALREADY_EXISTS";
@@ -174,32 +188,54 @@ async function createCase(
   articleStore: ArticleStore,
   input: CreateRevisionBody,
 ): Promise<CaseWithRevision> {
+  let ensured: { caseId: UUIDv7; created: boolean } | undefined;
   try {
-    const caseId = uuidv7();
-    return await createStoredRevision(
+    ensured = await repository.ensureCase(uuidv7(), input.court_case_id ?? null);
+    return await createStoredRevision({
       articleStore,
-      (record) => repository.createCaseWithRevision(record),
-      caseId,
+      createRecord: (record) => repository.createRevision(record),
+      caseId: ensured.caseId,
       input,
-    );
+    });
   } catch (error) {
+    if (ensured?.created) {
+      try {
+        await repository.deleteCaseIfEmpty(ensured.caseId);
+      } catch (cleanupError) {
+        console.error(
+          JSON.stringify({
+            message: "Empty case cleanup failed",
+            caseId: ensured.caseId,
+            error:
+              cleanupError instanceof Error
+                ? { name: cleanupError.name, message: cleanupError.message }
+                : String(cleanupError),
+          }),
+        );
+      }
+    }
     return asServiceError("Failed to create case", error);
   }
 }
 
-async function createRevision(
-  repository: CasesRepository,
-  articleStore: ArticleStore,
-  caseId: UUIDv7,
-  input: CreateRevisionBody,
-): Promise<CaseWithRevision> {
+async function createRevision({
+  repository,
+  articleStore,
+  caseId,
+  input,
+}: {
+  repository: CasesRepository;
+  articleStore: ArticleStore;
+  caseId: UUIDv7;
+  input: CreateRevisionBody;
+}): Promise<CaseWithRevision> {
   try {
-    return await createStoredRevision(
+    return await createStoredRevision({
       articleStore,
-      (record) => repository.createRevision(record),
+      createRecord: (record) => repository.createRevision(record),
       caseId,
       input,
-    );
+    });
   } catch (error) {
     return asServiceError("Failed to create revision", error);
   }
@@ -354,7 +390,7 @@ export function createCasesService(
 ): CasesService {
   return {
     createCase: (input) => createCase(repository, articleStore, input),
-    createRevision: (caseId, input) => createRevision(repository, articleStore, caseId, input),
+    createRevision: (caseId, input) => createRevision({ repository, articleStore, caseId, input }),
     listRevisions: (caseId, input) => listRevisions(repository, caseId, input),
     getArticle: (caseId, revisionId) => getArticle(repository, articleStore, caseId, revisionId),
     deleteRevision: (caseId, revisionId) =>

@@ -134,7 +134,15 @@ flowchart LR
     B -- "一覧 JSON" --> A
 ```
 
-`external-service` は検索1回分のURL構築、入力検証、HTTP取得、結果一覧の抽出だけを行う。Cron、Queue、ページの反復、再試行、重複排除、保存、記事生成はここでは行わない。将来の Crawler Worker が必要に応じてこれらを担当する。
+`external-service` は検索1回分のURL構築、入力検証、HTTP取得、結果一覧の抽出だけを行う。Cron、Queue、ページの反復、再試行、重複排除、保存、記事生成はここでは行わず、Crawler Workerが担当する。
+
+Crawler Worker向けに、同じService Binding上で次の補助APIも提供する。これらも外部公開せず、上流サービスへの1回分のアクセスとレスポンス正規化だけを担当する。
+
+| エンドポイント | 用途 |
+|---|---|
+| `GET /courts/hanrei/detail?url=...` | 判例HTMLからメタデータと全文・要旨PDF URLを抽出 |
+| `GET /courts/hanrei/previous?caseNumber=...` | 統合検索で原審事件番号を完全一致検索し、公開メタデータを返却 |
+| `GET /wikipedia/search?query=...&limit=...` | 日本語版Wikipedia検索結果を最大5件に正規化 |
 
 ### API
 

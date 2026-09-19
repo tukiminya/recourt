@@ -9,6 +9,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "wrangler dev",
+    "test": "node --import tsx --test src/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"
   },

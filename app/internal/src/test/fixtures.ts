@@ -38,7 +38,15 @@ export const createBody: CreateRevisionBody = {
     summary: { type: "opening_and_closing", items: [] },
   },
   comments: "初稿",
-  court_case_id: { era: "reiwa", year: 8, type: "受", number: 42 },
+  source_document_sha256: "a".repeat(64),
+  court_case_id: {
+    court_name: "最高裁判所",
+    branch_name: null,
+    era: "reiwa",
+    year: 8,
+    type: "受",
+    number: 42,
+  },
 };
 
 export const caseWithRevision: CaseWithRevision = {
@@ -48,6 +56,7 @@ export const caseWithRevision: CaseWithRevision = {
     title: "損害賠償請求事件（最高裁判所）",
     comments: "初稿",
     court_case_id: createBody.court_case_id ?? null,
+    source_document_sha256: createBody.source_document_sha256 ?? null,
     article_schema_version: 1,
     status: "draft",
     created_at: "2026-09-10T00:00:00.000Z",

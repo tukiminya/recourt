@@ -17,6 +17,7 @@ function revision(status: RevisionStatus = "draft"): RevisionRecord {
     courtCaseId: createBody.court_case_id ?? null,
     articleSchemaVersion: 1,
     articleSha256: "hash",
+    sourceDocumentSha256: createBody.source_document_sha256 ?? null,
     status,
     createdAt,
     publishedAt: status === "published" ? new Date("2026-09-10T01:00:00.000Z") : null,
@@ -35,19 +36,17 @@ function createStore(): ArticleStore {
 
 function createRepository(): CasesRepository {
   return {
-    createCaseWithRevision: vi.fn(async (record) => ({
-      ...revision(),
-      ...record,
-      createdAt,
-      publishedAt: null,
-      status: "draft",
-    })),
+    ensureCase: vi.fn(async (candidateId) => ({ caseId: candidateId, created: true })),
+    deleteCaseIfEmpty: vi.fn(async () => true),
     createRevision: vi.fn(async (record) => ({
-      ...revision(),
-      ...record,
-      createdAt,
-      publishedAt: null,
-      status: "draft",
+      record: {
+        ...revision(),
+        ...record,
+        createdAt,
+        publishedAt: null,
+        status: "draft",
+      },
+      created: true,
     })),
     listRevisions: vi.fn(async () => ({ rows: [revision()], total: 1 })),
     findRevision: vi.fn(async () => revision()),
@@ -64,11 +63,11 @@ describe("case service", () => {
 
     expect(result.id).toMatch(/^[0-9a-f-]{36}$/);
     expect(result.revision.title).toBe("損害賠償請求事件（最高裁判所）");
-    expect(repository.createCaseWithRevision).toHaveBeenCalledWith(
+    expect(repository.ensureCase).toHaveBeenCalledWith(result.id, createBody.court_case_id);
+    expect(repository.createRevision).toHaveBeenCalledWith(
       expect.objectContaining({
         caseId: result.id,
         revisionId: result.revision.id,
-        courtCaseId: createBody.court_case_id,
         articleSchemaVersion: 1,
         articleSha256: expect.stringMatching(/^[0-9a-f]{64}$/),
       }),
@@ -83,7 +82,7 @@ describe("case service", () => {
   it("cleans up the draft when DB creation fails", async () => {
     const store = createStore();
     const repository = createRepository();
-    vi.mocked(repository.createCaseWithRevision).mockRejectedValueOnce(new Error("db down"));
+    vi.mocked(repository.createRevision).mockRejectedValueOnce(new Error("db down"));
 
     await expect(
       createCasesService("unused", store, repository).createCase(createBody),
@@ -100,7 +99,7 @@ describe("case service", () => {
       createCasesService("unused", store, repository).createCase(createBody),
     ).rejects.toBeInstanceOf(InternalServerError);
     expect(store.deleteDraft).toHaveBeenCalledOnce();
-    expect(repository.createCaseWithRevision).not.toHaveBeenCalled();
+    expect(repository.createRevision).not.toHaveBeenCalled();
   });
 
   it("cleans up the draft and returns not found when adding to a missing case", async () => {
@@ -112,6 +111,43 @@ describe("case service", () => {
       createCasesService("unused", store, repository).createRevision(caseId, createBody),
     ).rejects.toBeInstanceOf(NotFoundError);
     expect(store.deleteDraft).toHaveBeenCalledWith(expect.objectContaining({ caseId }));
+  });
+
+  it("returns the existing revision for the same source document hash", async () => {
+    const store = createStore();
+    const repository = createRepository();
+    vi.mocked(repository.createRevision).mockResolvedValueOnce({
+      record: { ...revision(), sourceDocumentSha256: "a".repeat(64) },
+      created: false,
+    });
+
+    const result = await createCasesService("unused", store, repository).createRevision(
+      caseId,
+      createBody,
+    );
+
+    expect(result.revision.id).toBe(revisionId);
+    expect(repository.createRevision).toHaveBeenCalledWith(
+      expect.objectContaining({ sourceDocumentSha256: "a".repeat(64) }),
+    );
+    expect(store.deleteDraft).toHaveBeenCalledOnce();
+  });
+
+  it("adds a new revision to the Case resolved from the court natural key", async () => {
+    const store = createStore();
+    const repository = createRepository();
+    vi.mocked(repository.ensureCase).mockResolvedValueOnce({ caseId, created: false });
+
+    const result = await createCasesService("unused", store, repository).createCase(createBody);
+
+    expect(result.id).toBe(caseId);
+    expect(repository.ensureCase).toHaveBeenCalledWith(
+      expect.stringMatching(/^[0-9a-f-]{36}$/),
+      createBody.court_case_id,
+    );
+    expect(repository.createRevision).toHaveBeenCalledWith(
+      expect.objectContaining({ caseId, sourceDocumentSha256: "a".repeat(64) }),
+    );
   });
 
   it("lists revision metadata and rejects stored article hash drift", async () => {

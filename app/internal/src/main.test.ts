@@ -8,7 +8,6 @@ import { createCasesService, type CasesService } from "./service/cases";
 import { caseId, caseWithRevision, createBody, revisionId } from "./test/fixtures";
 
 vi.mock("./service/cases", () => ({ createCasesService: vi.fn() }));
-
 const testEnv = {
   DB_URL: "unused",
   DRAFT_ARTICLES: {} as R2Bucket,
@@ -101,9 +100,24 @@ describe("internal case routes", () => {
     ["bad offset", `/case/${caseId}?offset=-1`, undefined],
     ["bad JSON body", "/case", { article: {} }],
     [
+      "bad source document hash",
+      "/case",
+      { ...createBody, source_document_sha256: "not-a-sha256" },
+    ],
+    [
       "bad court case number",
       "/case",
-      { ...createBody, court_case_id: { era: "reiwa", year: 0, type: "", number: -1 } },
+      {
+        ...createBody,
+        court_case_id: {
+          court_name: "",
+          branch_name: null,
+          era: "reiwa",
+          year: 0,
+          type: "",
+          number: -1,
+        },
+      },
     ],
   ])("returns 400 for %s", async (_name, path, body) => {
     const service = createMockService();
