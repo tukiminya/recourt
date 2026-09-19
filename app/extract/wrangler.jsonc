@@ -1,9 +1,10 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "recourt-extract",
-  "compatibility_date": "2026-07-07",
+  "compatibility_date": "2026-08-18",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
+  "workers_dev": false,
   "observability": {
     "enabled": true,
   },
@@ -13,5 +14,26 @@
       "binding": "STORE_ARTICLE",
       "class_name": "StoreArticleWorkflow",
     },
+    {
+      "name": "extract-case",
+      "binding": "EXTRACT_CASE",
+      "class_name": "ExtractCaseWorkflow",
+    },
   ],
+  "services": [
+    { "binding": "EXTERNAL_SERVICE", "service": "recourt-external-service" },
+    { "binding": "INTERNAL_SERVICE", "service": "recourt-internal" },
+  ],
+  "queues": {
+    "consumers": [
+      {
+        "queue": "recourt-extract",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 3,
+        "retry_delay": 30,
+        "dead_letter_queue": "recourt-extract-dlq",
+      },
+    ],
+  },
 }
