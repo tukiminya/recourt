@@ -10,7 +10,7 @@ export const DEFAULT_PROMPT =
   "このPDFを読み、判例解説記事として日本語で整理してください。各フィールドの説明に従い、PDFに記載がない内容は推測せず、該当する配列を空にしてください。";
 
 type GenerateTextFromPdfInput = {
-  pdf: ReadableStream<Uint8Array>;
+  pdf: Uint8Array;
   prompt: string;
 };
 
@@ -18,8 +18,6 @@ export async function generateTextFromPdf({
   pdf,
   prompt,
 }: GenerateTextFromPdfInput): Promise<CaseArticleGenerationData> {
-  const pdfBytes = new Uint8Array(await new Response(pdf).arrayBuffer());
-
   const gateway = createGateway({
     apiKey: env.VERCEL_AI_GATEWAY_API_KEY,
   });
@@ -38,7 +36,7 @@ export async function generateTextFromPdf({
           { type: "text", text: prompt },
           {
             type: "file",
-            data: pdfBytes,
+            data: pdf,
             mediaType: "application/pdf",
             filename: "article.pdf",
           },

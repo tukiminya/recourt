@@ -10,15 +10,6 @@ export type StoreArticleParams = {
   prompt?: string;
 };
 
-const fetchRetryConfig = {
-  retries: {
-    limit: 3,
-    delay: "5 seconds" as const,
-    backoff: "exponential" as const,
-  },
-  timeout: "5 minutes" as const,
-} satisfies WorkflowStepConfig;
-
 const aiRetryConfig = {
   retries: {
     limit: 2,
@@ -30,18 +21,12 @@ const aiRetryConfig = {
 
 export class StoreArticleWorkflow extends WorkflowEntrypoint<Env, StoreArticleParams> {
   async run(event: WorkflowEvent<StoreArticleParams>, step: WorkflowStep) {
-    const pdf = await step.do("fetch PDF", fetchRetryConfig, () =>
-      fetchPdf(new URL(event.payload.url)),
-    );
-
     const prompt = event.payload.prompt?.trim() || DEFAULT_PROMPT;
 
-    const draft = await step.do("generate article", aiRetryConfig, () =>
-      generateTextFromPdf({
-        pdf,
-        prompt,
-      }),
-    );
+    const draft = await step.do("fetch PDF and generate article", aiRetryConfig, async () => {
+      const pdf = await fetchPdf(new URL(event.payload.url));
+      return generateTextFromPdf({ pdf, prompt });
+    });
 
     return await step.do("build storage article", async () =>
       toCaseArticleStorageV1({
