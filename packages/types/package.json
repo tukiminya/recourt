@@ -10,7 +10,8 @@
   "exports": {
     ".": "./src/entry.ts",
     "./storage/v1": "./src/storage/v1/entry.ts",
-    "./generation": "./src/generation/entry.ts"
+    "./generation": "./src/generation/entry.ts",
+    "./courts": "./src/courts/entry.ts"
   },
   "scripts": {
     "script:write-json-schema": "tsx src/scripts/write-json-schema.ts",
