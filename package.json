@@ -26,11 +26,5 @@
     "typescript": "^7.0.2",
     "wrangler": "catalog:"
   },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.7.0",
-      "onFail": "download"
-    }
-  }
+  "packageManager": "pnpm@11.22.0"
 }
