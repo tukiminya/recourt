@@ -4,4 +4,5 @@
   "compatibility_date": "2026-07-07",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
+  "workers_dev": false,
 }

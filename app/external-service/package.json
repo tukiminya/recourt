@@ -9,10 +9,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "wrangler dev",
+    "test": "node --import tsx --test src/courts/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"
   },
   "dependencies": {
-    "hono": "catalog:"
+    "@hono/standard-validator": "^0.4.0",
+    "hono": "catalog:",
+    "zod": "catalog:"
   }
 }
