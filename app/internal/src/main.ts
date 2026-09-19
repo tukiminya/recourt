@@ -120,7 +120,7 @@ app.onError((error, context) => {
   const internalError =
     error instanceof InternalServerError
       ? error
-      : new InternalServerError("Unhandled error", { cause: error });
+      : new InternalServerError("Unhandled error", undefined, { cause: error });
   console.error(
     JSON.stringify({
       message: "Internal request failed",

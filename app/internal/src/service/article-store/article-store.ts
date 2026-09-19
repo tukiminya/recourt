@@ -38,7 +38,7 @@ function asInternalStorageError(message: string, error: unknown): never {
     throw error;
   }
 
-  throw new InternalServerError(message, { cause: error });
+  throw new InternalServerError(message, undefined, { cause: error });
 }
 
 async function readArticle(
@@ -56,12 +56,12 @@ async function readArticle(
   try {
     parsedJson = JSON.parse(serialized);
   } catch (error) {
-    throw new InternalServerError("Stored article is not valid JSON", { cause: error });
+    throw new InternalServerError("Stored article is not valid JSON", undefined, { cause: error });
   }
 
   const parsedArticle = CaseArticleStorage.safeParse(parsedJson);
   if (!parsedArticle.success) {
-    throw new InternalServerError("Stored article does not match a supported schema", {
+    throw new InternalServerError("Stored article does not match a supported schema", undefined, {
       cause: parsedArticle.error,
     });
   }

@@ -99,7 +99,7 @@ function asServiceError(message: string, error: unknown): never {
   if (isKnownServiceError(error)) {
     throw error;
   }
-  throw new InternalServerError(message, { cause: error });
+  throw new InternalServerError(message, undefined, { cause: error });
 }
 
 function logDraftCleanupFailure(
