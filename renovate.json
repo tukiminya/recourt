@@ -10,7 +10,6 @@
   ],
   "timezone": "Asia/Tokyo",
   "labels": ["dependencies"],
-  "prConcurrentLimit": 5,
   "dependencyDashboard": true,
   "major": {
     "dependencyDashboardApproval": true
@@ -18,6 +17,8 @@
   "minimumReleaseAge": "5 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
   "prCreation": "not-pending",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 7,
   "internalChecksFilter": "strict",
   "internalChecksAsSuccess": true,
   "postUpdateOptions": ["pnpmDedupe"]
