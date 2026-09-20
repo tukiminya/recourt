@@ -1,0 +1,14 @@
+{
+  "name": "@recourt/renovate-scheduler",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types"
+  },
+  "dependencies": {
+    "octokit": "^5.0.5"
+  }
+}

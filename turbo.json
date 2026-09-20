@@ -45,6 +45,9 @@
     "@recourt/internal#typecheck": {
       "dependsOn": ["^typecheck", "@recourt/internal#types"]
     },
+    "@recourt/renovate-scheduler#typecheck": {
+      "dependsOn": ["^typecheck", "@recourt/renovate-scheduler#types"]
+    },
     "web#typecheck": {
       "dependsOn": ["^typecheck", "web#types", "web#generate-routes"]
     }

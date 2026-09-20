@@ -1,0 +1,24 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "recourt-renovate-scheduler",
+  "main": "src/main.ts",
+  "compatibility_date": "2026-09-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "triggers": {
+    "crons": ["17 * * * *"],
+  },
+  "vars": {
+    "GITHUB_OWNER": "tukiminya",
+    "GITHUB_REPOSITORY": "recourt",
+    "GITHUB_WORKFLOW": "renovate.yaml",
+    "GITHUB_REF": "feat/v1",
+  },
+  "secrets": {
+    "required": ["GITHUB_APP_CLIENT_ID", "GITHUB_APP_PRIVATE_KEY"],
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+}

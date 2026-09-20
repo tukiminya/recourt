@@ -20,6 +20,8 @@ jobs:
             build_web: false
           - worker: internal
             build_web: false
+          - worker: renovate-scheduler
+            build_web: false
           - worker: web
             build_web: true
     uses: ./.github/workflows/cf-worker-deploy.yaml

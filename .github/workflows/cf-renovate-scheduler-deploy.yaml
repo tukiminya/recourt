@@ -1,0 +1,24 @@
+name: Deploy Renovate Scheduler Worker
+
+on:
+  push:
+    branches:
+      - feat/v1
+    paths:
+      - app/renovate-scheduler/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .github/workflows/cf-worker-deploy.yaml
+      - .github/workflows/cf-renovate-scheduler-deploy.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/cf-worker-deploy.yaml
+    with:
+      worker: renovate-scheduler
+    secrets: inherit

@@ -35,3 +35,14 @@ resource "cloudflare_worker" "recourt-internal" {
     }
   }
 }
+
+resource "cloudflare_worker" "recourt-renovate-scheduler" {
+  name       = "recourt-renovate-scheduler"
+  account_id = var.cloudflare_account_id
+  observability = {
+    enabled = true
+    traces = {
+      enabled = true
+    }
+  }
+}

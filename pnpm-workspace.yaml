@@ -4,6 +4,7 @@ packages:
   - app/external-service
   - app/extract
   - app/internal
+  - app/renovate-scheduler
   - app/web
   - packages/lint
   - packages/database
