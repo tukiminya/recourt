@@ -5,6 +5,10 @@
   "compatibility_date": "2026-08-18",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
+  "triggers": {
+    // Cloudflare Cron Triggers use UTC. 18:00 UTC is 03:00 JST the following day.
+    "crons": ["0 18 * * *"],
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,

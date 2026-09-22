@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --test-scheduled",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"

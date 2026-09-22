@@ -8,14 +8,14 @@ import {
   kosaiQuery,
   rodoQuery,
   saikosaiQuery,
-  type CourtSearchCategory,
 } from "@recourt/types/courts";
 import { Hono } from "hono";
 import { z } from "zod";
 
+import { startScheduledCrawl } from "./scheduled-crawl";
+import { startCrawl } from "./start-crawl";
 export { CrawlCaseWorkflow } from "./workflows/crawl-case";
 export { CrawlSearchWorkflow, type CrawlSearchParams } from "./workflows/crawl-search";
-import type { CrawlSearchParams } from "./workflows/crawl-search";
 
 type AppEnv = { Bindings: Env };
 const app = new Hono<AppEnv>();
@@ -33,17 +33,6 @@ const rejectOffset = <T extends z.ZodType<Record<string, unknown>>>(schema: T) =
     message: "offset is managed by the crawler",
   });
 const crawlIdParams = z.object({ crawlId: z.string().uuid() });
-
-async function startCrawl(
-  env: Env,
-  category: CourtSearchCategory,
-  query: Record<string, string | string[] | undefined>,
-) {
-  const crawlRunId = crypto.randomUUID();
-  const params: CrawlSearchParams = { crawlRunId, category, query };
-  await env.CRAWL_SEARCH.create({ id: crawlRunId, params });
-  return { crawlId: crawlRunId, status: "queued" as const };
-}
 
 app.post(
   "/crawl/general",
@@ -112,6 +101,9 @@ async function createCaseWorkflow(env: Env, message: Message<unknown>) {
 
 export default {
   fetch: app.fetch,
+  async scheduled(controller, env) {
+    await startScheduledCrawl(env, controller);
+  },
   async queue(batch, env) {
     for (const message of batch.messages) await createCaseWorkflow(env, message);
   },

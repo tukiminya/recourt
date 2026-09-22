@@ -27,6 +27,18 @@ Queueはどちらも`max_batch_size: 1`で、裁判所・支部・事件番号�
 
 開始APIは`202`と`crawlId`を返す。状態APIはCloudflare Workflowの現在状態と、完了時の投入件数を返す。
 
+## 定期実行
+
+Crawler WorkerのCron Triggerは毎日03:00 JST（`0 18 * * *` UTC）に統合検索を開始する。実行日の7日前から当日までを裁判年月日の検索範囲にするため、公開の遅れや一時的な停止があっても次回以降の実行で回収できる。重複した判例は後段の事件番号とPDF本文による冪等処理で吸収する。
+
+同じCronイベントが再配信された場合は、Cron式と`scheduledTime`のSHA-256から同じUUIDを生成し、同じ`CrawlSearchWorkflow`を参照する。ローカルでは次のURLでScheduled Handlerを実行できる。
+
+```sh
+cd app/crawler
+pnpm dev
+curl "http://localhost:8787/cdn-cgi/local/scheduled?cron=0+18+*+*+*&time=1789927200000"
+```
+
 ## 必要なCloudflareリソース
 
 デプロイ前に次のQueueを作成する。
