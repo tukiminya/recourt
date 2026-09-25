@@ -16,7 +16,7 @@ allowBuilds:
   workerd: true
 catalog:
   vite: ^8.2.1
-  vitest: ^4.1.10
+  vitest: ^5.0.0
   wrangler: ^4.123.0
   hono: ^4.13.2
   ai: ^7.0.66
