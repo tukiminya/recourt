@@ -26,5 +26,5 @@
     "typescript": "^7.0.2",
     "wrangler": "catalog:"
   },
-  "packageManager": "pnpm@12.4.2"
+  "packageManager": "pnpm@12.5.1"
 }
