@@ -10,7 +10,7 @@
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vite test run",
+    "test": "vitest run --config vitest.config.ts",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"
   },
