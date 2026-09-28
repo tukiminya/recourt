@@ -36,4 +36,8 @@
     { "name": "crawl-search", "binding": "CRAWL_SEARCH", "class_name": "CrawlSearchWorkflow" },
     { "name": "crawl-case", "binding": "CRAWL_CASE", "class_name": "CrawlCaseWorkflow" },
   ],
+  "dev": {
+    "port": 8788,
+    "inspector_port": 9230
+  }
 }
