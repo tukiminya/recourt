@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/cockroach";
 import * as schema from "./schema/entry";
 
 export const db = (connectionString: string) =>

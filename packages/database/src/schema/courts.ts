@@ -1,7 +1,7 @@
-import { foreignKey, pgTable, text } from "drizzle-orm/pg-core";
 import { drizzleUuidColmns, drizzleUuidColmnsWithDefault } from "./utils";
+import { cockroachTable, text, foreignKey } from "drizzle-orm/cockroach-core";
 
-export const courts = pgTable(
+export const courts = cockroachTable(
   "courts",
   {
     id: drizzleUuidColmnsWithDefault().primaryKey(),

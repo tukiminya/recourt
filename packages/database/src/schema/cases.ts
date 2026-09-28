@@ -1,21 +1,10 @@
-import {
-  boolean,
-  check,
-  integer,
-  json,
-  pgEnum,
-  pgTable,
-  smallint,
-  text,
-  timestamp,
-  unique,
-} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { drizzleUuidColmns, drizzleUuidColmnsWithDefault } from "./utils";
 import { type EraName } from "@recourt/utils";
 import { judges } from "./judges";
+import { cockroachEnum, cockroachTable, boolean, check, smallint, text,timestamp,unique, int4, jsonb } from "drizzle-orm/cockroach-core";
 
-export const caseRevisionStatus = pgEnum("case_revision_status", [
+export const caseRevisionStatus = cockroachEnum("case_revision_status", [
   "draft",
   "publishing",
   "published",
@@ -23,7 +12,7 @@ export const caseRevisionStatus = pgEnum("case_revision_status", [
 ]);
 
 // 裁判所・支部と `平成17(行コ)134` のような事件番号を正規化して保存
-export const case_id_by_courts = pgTable(
+export const case_id_by_courts = cockroachTable(
   "case_id_by_courts",
   {
     random_id: drizzleUuidColmnsWithDefault().primaryKey(), // 機械的にアクセスしやすいランダムな UUID を割り当て。cases テーブルからの references はこのカラムに向ける
@@ -32,7 +21,7 @@ export const case_id_by_courts = pgTable(
     era: text().$type<EraName>().notNull(),
     year: smallint().notNull(),
     type: text().notNull(),
-    case_id: integer().notNull(),
+    case_id: int4().notNull(),
   },
   (table) => [
     unique("case_id_by_courts_natural_key").on(
@@ -46,7 +35,7 @@ export const case_id_by_courts = pgTable(
   ],
 );
 
-export const cases = pgTable(
+export const cases = cockroachTable(
   "cases",
   {
     id: drizzleUuidColmnsWithDefault().primaryKey(),
@@ -55,7 +44,7 @@ export const cases = pgTable(
   (table) => [unique("cases_case_id_by_courts").on(table.case_id_by_courts)],
 );
 
-export const case_revisions = pgTable(
+export const case_revisions = cockroachTable(
   "case_revisions",
   {
     id: drizzleUuidColmnsWithDefault().primaryKey(),
@@ -87,17 +76,17 @@ export const case_revisions = pgTable(
   ],
 );
 
-export const case_revision_judges = pgTable("case_revision_judges", {
+export const case_revision_judges = cockroachTable("case_revision_judges", {
   revision_id: drizzleUuidColmns()
     .primaryKey()
     .references(() => case_revisions.id, { onDelete: "cascade" }),
   judge_id: drizzleUuidColmns().references(() => judges.id),
   is_presiding: boolean().notNull(),
   opinion_type: text().notNull(),
-  opinion_text: json(),
+  opinion_text: jsonb(),
 });
 
-export const case_revision_acts = pgTable("case_revision_acts", {
+export const case_revision_acts = cockroachTable("case_revision_acts", {
   revision_id: drizzleUuidColmns()
     .primaryKey()
     .references(() => case_revisions.id, { onDelete: "cascade" }),
