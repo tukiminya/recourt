@@ -13,14 +13,18 @@
     "types": "wrangler types"
   },
   "dependencies": {
+    "@cloudflare/puppeteer": "^1.4.0",
     "@hono/standard-validator": "^0.4.0",
     "@recourt/database": "workspace:*",
     "@recourt/types": "workspace:*",
     "@recourt/utils": "workspace:*",
+    "ai": "catalog:",
     "hono": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/jsdom": "^27.0.0",
+    "jsdom": "^28.1.0",
     "vitest": "catalog:"
   }
 }
