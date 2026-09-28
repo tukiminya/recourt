@@ -12,4 +12,8 @@
     { "name": "CHAT_LIMIT", "namespace_id": "26092612", "simple": { "limit": 20, "period": 60 } },
   ],
   "triggers": { "crons": ["0 * * * *"] },
+  "dev": {
+    "port": 8787,
+    "inspector_port": 9229
+  }
 }

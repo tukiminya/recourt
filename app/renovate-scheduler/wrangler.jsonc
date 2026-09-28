@@ -21,4 +21,8 @@
     "enabled": true,
     "head_sampling_rate": 1,
   },
+  "dev": {
+    "port": 8792,
+    "inspector_port": 9234
+  }
 }

@@ -14,4 +14,8 @@
       "bucket_name": "recourt-v1",
     },
   ],
+  "dev": {
+    "port": 8791,
+    "inspector_port": 9233
+  }
 }

@@ -5,4 +5,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
   "workers_dev": false,
+  "dev": {
+    "port": 8789,
+    "inspector_port": 9231
+  }
 }
