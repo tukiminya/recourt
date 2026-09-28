@@ -1,7 +1,15 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "recourt-api",
-  "compatibility_date": "2026-07-07",
+  "compatibility_date": "2026-09-25",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
+  "workers_dev": false,
+  "browser": { "binding": "BROWSER" },
+  "secrets": { "required": ["DB_URL", "VERCEL_AI_GATEWAY_API_KEY"] },
+  "ratelimits": [
+    { "name": "IMPORT_LIMIT", "namespace_id": "26092611", "simple": { "limit": 3, "period": 60 } },
+    { "name": "CHAT_LIMIT", "namespace_id": "26092612", "simple": { "limit": 20, "period": 60 } },
+  ],
+  "triggers": { "crons": ["0 * * * *"] },
 }
