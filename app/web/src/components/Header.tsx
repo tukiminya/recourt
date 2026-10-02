@@ -1,55 +1,32 @@
-import { Link as RouterLink } from "@tanstack/react-router";
-import { LucideChevronDown, LucideSearch } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import RecourtLogo from "./logo/RecourtLogo";
-
-const navItems = ["コラム", "再考裁について"];
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 h-[72px] overflow-hidden bg-white border-b border-neutral-100">
-      <nav className="flex h-full items-center justify-between px-5 lg:px-[49px]">
-        <div className="flex items-center gap-8 lg:gap-12">
-          <RouterLink to="/" className="inline-flex shrink-0" aria-label="再考裁 ホーム">
-            <RecourtLogo variant="header" />
-          </RouterLink>
-
-          <div className="hidden items-center gap-9 md:flex">
-            <RouterLink
-              to="/cases/$id"
-              params={{ id: "religious-corporation-dissolution" }}
-              className="flex items-center gap-0.5 text-[14px] leading-none font-normal whitespace-nowrap text-neutral-900"
-            >
-              判例を見つける
-              <LucideChevronDown className="h-[15px] w-[15px]" strokeWidth={1.5} />
-            </RouterLink>
-            {navItems.map((item) => (
-              <button
-                key={item}
-                type="button"
-                className="flex items-center gap-0.5 text-[14px] leading-none font-normal whitespace-nowrap text-neutral-900"
-              >
-                {item}
-                <LucideChevronDown className="h-[15px] w-[15px]" strokeWidth={1.5} />
-              </button>
-            ))}
-          </div>
+    <header className="sticky top-0 z-50 border-b border-[#e8edfa] bg-white/95 backdrop-blur-sm">
+      <nav
+        className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-4 px-5 md:px-8"
+        aria-label="メインナビゲーション"
+      >
+        <Link to="/" className="inline-flex shrink-0 items-center gap-4" aria-label="再考裁 ホーム">
+          <RecourtLogo variant="header" className="h-6 fill-recourt-brandblue" />
+          <span className="hidden border-l border-[#dce5fa] pl-4 text-xs leading-snug text-[#61708f] sm:block">
+            判例を読むときの、
+            <br />
+            開かれた入り口に。
+          </span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <span className="hidden rounded-full bg-[#edf2ff] px-3 py-1 text-xs font-medium text-recourt-brandblue sm:inline-flex">
+            体験検証中
+          </span>
+          <a
+            href="/#try"
+            className="rounded-lg bg-recourt-brandblue px-4 py-2 text-xs font-medium text-white hover:bg-[#1523a0] sm:text-sm"
+          >
+            対話を試す
+          </a>
         </div>
-
-        <form
-          className="relative hidden h-[30px] w-[300px] items-center overflow-hidden rounded-lg border border-[#dadada] md:flex"
-          role="search"
-        >
-          <LucideSearch
-            className="pointer-events-none absolute left-3 h-3 w-3 text-neutral-600"
-            strokeWidth={1.7}
-            aria-hidden="true"
-          />
-          <input
-            type="search"
-            placeholder="フリーワード検索"
-            className="h-full w-full border-0 bg-white pr-3 pl-8 text-[12px] text-neutral-700 outline-none placeholder:text-[#5a5a5a]"
-          />
-        </form>
       </nav>
     </header>
   );
