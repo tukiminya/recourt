@@ -6,8 +6,17 @@
   "license": "Apache-2.0",
   "author": "",
   "type": "module",
+  "exports": {
+    "./rpc": {
+      "types": "./src/main.ts"
+    },
+    "./chat-events": {
+      "types": "./src/reading/chat-events.ts"
+    }
+  },
   "main": "index.js",
   "scripts": {
+    "dev": "wrangler dev --var WEB_ORIGIN:http://localhost:5137",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"

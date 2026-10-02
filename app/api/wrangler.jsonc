@@ -5,6 +5,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
   "workers_dev": false,
+  "routes": [{ "pattern": "api.recourt-v1.tuki.dev", "custom_domain": true }],
+  "vars": { "WEB_ORIGIN": "https://recourt-v1.tuki.dev" },
   "browser": { "binding": "BROWSER" },
   "secrets": { "required": ["DB_URL", "VERCEL_AI_GATEWAY_API_KEY"] },
   "ratelimits": [
