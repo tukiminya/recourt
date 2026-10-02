@@ -1,15 +1,6 @@
 name: Deploy Cloudflare API Worker
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - app/api/**
-      - packages/**
-      - package.json
-      - pnpm-lock.yaml
-      - pnpm-workspace.yaml
   workflow_dispatch:
 
 permissions:

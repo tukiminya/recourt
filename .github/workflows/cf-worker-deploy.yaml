@@ -47,9 +47,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Type-check web and API
+        if: inputs.worker == 'api' || inputs.build_web
+        run: pnpm exec turbo run typecheck --filter=web
+
       - name: Build web application
         if: inputs.build_web
         run: pnpm --filter web run build
 
+      - name: Deploy web Worker
+        if: inputs.build_web
+        run: pnpm exec wrangler deploy --config app/web/dist/server/wrangler.json
+
       - name: Deploy Worker
+        if: ${{ !inputs.build_web }}
         run: pnpm exec wrangler deploy --config "app/${{ inputs.worker }}/wrangler.jsonc"
