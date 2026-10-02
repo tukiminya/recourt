@@ -5,11 +5,14 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
   "workers_dev": false,
-  "services": [{ "binding": "API", "service": "recourt-api" }],
   "routes": [
     {
       "custom_domain": true,
       "pattern": "recourt-v1.tuki.dev",
     },
   ],
+  "dev": {
+    "port": 5137,
+    "inspector_port": 9228
+  }
 }

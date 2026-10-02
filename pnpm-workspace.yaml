@@ -18,6 +18,6 @@ catalog:
   vite: ^8.2.1
   vitest: ^5.0.2
   wrangler: ^4.123.0
-  hono: ^4.13.2
+  hono: ^4.13.8
   ai: ^7.0.107
   zod: ^4.4.3
