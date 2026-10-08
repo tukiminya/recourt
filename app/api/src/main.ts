@@ -9,6 +9,7 @@ import { ArticleUnavailableError, extractArticle } from "./reading/article-brows
 import { streamConversation } from "./reading/chat";
 import { createReadingSourceStore } from "./reading/source-store";
 import { InvalidSourceUrlError } from "./reading/source-url";
+import { caseReadingRoutes } from "./case-reading/routes";
 
 type AppEnv = { Bindings: Env };
 
@@ -45,8 +46,9 @@ app.use("/api/*", async (context, next) => {
 });
 app.use("/api/*", cors({
   origin: (origin, context) => origin === context.env.WEB_ORIGIN ? origin : "",
-  allowMethods: ["POST", "DELETE", "OPTIONS"],
-  allowHeaders: ["Content-Type"],
+  allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
+  allowHeaders: ["Content-Type", "Range"],
+  exposeHeaders: ["Content-Range", "Accept-Ranges"],
   maxAge: 600,
 }));
 app.use("*", bodyLimit({
@@ -111,7 +113,8 @@ const routes = app.post("/api/reading-sources", sValidator("json", importBody, v
   });
 });
 
-export type AppType = typeof routes;
+const allRoutes = routes.route("/api", caseReadingRoutes);
+export type AppType = typeof allRoutes;
 
 app.notFound((context) => context.json(errorBody("NOT_FOUND", "ページが見つかりません。"), 404));
 app.onError((error, context) => {

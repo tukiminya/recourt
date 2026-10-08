@@ -4,6 +4,7 @@ import { InvalidCourtPdfUrlError, validateCourtPdfUrl } from "../../court-pdf-ur
 
 const PDF_MEDIA_TYPE = "application/pdf";
 const OCTET_STREAM_MEDIA_TYPE = "application/octet-stream";
+export class PdfTooLargeError extends NonRetryableError {}
 export const MAX_PDF_BYTES = 25 * 1024 * 1024;
 
 export async function fetchPdf(url: URL): Promise<Uint8Array> {
@@ -36,7 +37,8 @@ export async function fetchPdf(url: URL): Promise<Uint8Array> {
   }
   const contentLength = Number(response.headers.get("content-length"));
   if (Number.isFinite(contentLength) && contentLength > MAX_PDF_BYTES) {
-    throw new NonRetryableError("The PDF exceeds the 25 MiB limit.");
+    await response.body.cancel();
+    throw new PdfTooLargeError("The PDF exceeds the 25 MiB limit.");
   }
 
   const reader = response.body.getReader();
@@ -48,7 +50,7 @@ export async function fetchPdf(url: URL): Promise<Uint8Array> {
     length += value.byteLength;
     if (length > MAX_PDF_BYTES) {
       await reader.cancel("PDF size limit exceeded");
-      throw new NonRetryableError("The PDF exceeds the 25 MiB limit.");
+      throw new PdfTooLargeError("The PDF exceeds the 25 MiB limit.");
     }
     chunks.push(value);
   }

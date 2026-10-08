@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { createArticleStore } from "./service/article-store/article-store";
 import { createCasesService } from "./service/cases";
+import { caseReadingRoutes } from "./case-reading-routes";
 
 type AppEnv = { Bindings: Env };
 
@@ -42,6 +43,8 @@ app.use(
       context.json(errorBody("PAYLOAD_TOO_LARGE", "Request body is too large"), 413),
   }),
 );
+
+app.route("/reading", caseReadingRoutes);
 
 app.post("/case", sValidator("json", createRevisionBody, validationHook), async (context) => {
   const result = await casesService(context.env).createCase(context.req.valid("json"));

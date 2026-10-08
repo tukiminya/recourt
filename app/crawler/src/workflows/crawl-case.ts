@@ -2,7 +2,8 @@ import { WorkflowEntrypoint } from "cloudflare:workers";
 import type { WorkflowEvent, WorkflowStep, WorkflowStepConfig } from "cloudflare:workers";
 import {
   courtCaseSource,
-  type CrawlerQueueMessage,
+  type CaseCrawlQueueMessage,
+  type ReadingExtractQueueMessage,
   type ExtractQueueMessage,
 } from "@recourt/types/courts";
 import { NonRetryableError } from "cloudflare:workflows";
@@ -24,8 +25,8 @@ const writeConfig = {
   timeout: "2 minutes",
 } satisfies WorkflowStepConfig;
 
-export class CrawlCaseWorkflow extends WorkflowEntrypoint<Env, CrawlerQueueMessage> {
-  async run(event: WorkflowEvent<CrawlerQueueMessage>, step: WorkflowStep) {
+export class CrawlCaseWorkflow extends WorkflowEntrypoint<Env, CaseCrawlQueueMessage> {
+  async run(event: WorkflowEvent<CaseCrawlQueueMessage>, step: WorkflowStep) {
     const source = await step.do("read court detail", fetchConfig, async () => {
       const url = new URL("/courts/hanrei/detail", "https://external-service.internal");
       url.searchParams.set("url", event.payload.detailUrl);
@@ -49,11 +50,14 @@ export class CrawlCaseWorkflow extends WorkflowEntrypoint<Env, CrawlerQueueMessa
       if (error instanceof CourtCaseIdentityError) throw new NonRetryableError(error.message);
       throw error;
     }
-    const jobId = await extractWorkflowId(courtCaseId, fullText.url);
+    const jobId =
+      event.payload.version === 2
+        ? `reading-${event.payload.crawlRunId}-${source.courtDetailId}`
+        : await extractWorkflowId(courtCaseId, fullText.url);
 
     await step.do("enqueue PDF extraction", writeConfig, async () => {
-      const message: ExtractQueueMessage = {
-        version: 1,
+      const message: ExtractQueueMessage | ReadingExtractQueueMessage = {
+        version: event.payload.version,
         crawlRunId: event.payload.crawlRunId,
         jobId,
         courtCaseId,

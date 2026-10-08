@@ -11,7 +11,7 @@ export default function Footer() {
           </p>
         </div>
         <p className="text-xs leading-relaxed text-[#7784a1]">
-          © 2026 Recourt · 対話型読解の試作版
+          © 2026 Recourt · 判例読解の試作版
         </p>
       </div>
     </footer>

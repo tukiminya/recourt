@@ -1,5 +1,5 @@
 import puppeteer from "@cloudflare/puppeteer";
-import { allowedSourceHosts, InvalidSourceUrlError, parseSourceUrl } from "./source-url";
+import { InvalidSourceUrlError, parseSourceUrl } from "./source-url";
 
 export const ARTICLE_USER_AGENT = "RecourtReader/0.1 (+https://recourt-v1.tuki.dev/)";
 const MAX_CONTENT_LENGTH = 20_000;
@@ -20,7 +20,7 @@ export type ExtractedArticle = {
 
 export async function extractArticle(browserBinding: Env["BROWSER"], input: string): Promise<ExtractedArticle> {
   const requested = parseSourceUrl(input);
-  const hosts = await allowedSourceHosts(requested.hostname);
+  const hosts = [requested.hostname];
   let browser: Awaited<ReturnType<typeof puppeteer.launch>>;
   try {
     browser = await puppeteer.launch(browserBinding, {
@@ -69,6 +69,7 @@ export async function extractArticle(browserBinding: Env["BROWSER"], input: stri
     }
 
     const extracted = await page.evaluate(() => {
+      const accessGate = document.querySelector("#erpc-half-modal") !== null;
       const articles = Array.from(document.querySelectorAll("article"));
       const candidates = articles.length > 0 ? articles : Array.from(document.querySelectorAll("main, [role='main']"));
       const root = candidates.sort((a, b) => (b.textContent?.length ?? 0) - (a.textContent?.length ?? 0))[0] ?? document.body;
@@ -85,8 +86,12 @@ export async function extractArticle(browserBinding: Env["BROWSER"], input: stri
         document.querySelector<HTMLMetaElement>("meta[property='og:title']")?.content ||
         document.querySelector("h1")?.textContent ||
         document.title;
-      return { title: title?.replace(/\s+/g, " ").trim() ?? "", content };
+      return { title: title?.replace(/\s+/g, " ").trim() ?? "", content, accessGate };
     });
+
+    if (extracted.accessGate) {
+      throw new ArticleUnavailableError("この記事はサイト側の利用確認が必要なため取得できません。", 422);
+    }
 
     const title = extracted.title.slice(0, 300);
     const content = extracted.content.slice(0, MAX_CONTENT_LENGTH).trim();

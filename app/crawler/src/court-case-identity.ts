@@ -25,7 +25,7 @@ function parseCourtLabel(value: string): Pick<CaseCourtId, "court_name" | "branc
 export function courtCaseIdFromSource(source: CourtCaseSource): CaseCourtId {
   if (!source.courtName) throw new CourtCaseIdentityError("The court detail has no court name");
   const number = normalize(source.caseNumber).match(
-    /^(昭和|平成|令和)(元|\d+)年?\(([^)]+)\)第?(\d+)号?$/,
+    /^(昭和|平成|令和)(元|\d+)年?\(([^)]+)\)第?(\d+)号?(?:[,、，]|$)/,
   );
   if (!number) throw new CourtCaseIdentityError("The court case number could not be normalized");
 

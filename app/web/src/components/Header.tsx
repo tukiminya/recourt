@@ -8,7 +8,7 @@ export default function Header() {
         className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-4 px-5 md:px-8"
         aria-label="メインナビゲーション"
       >
-        <Link to="/" className="inline-flex shrink-0 items-center gap-4" aria-label="再考裁 ホーム">
+        <Link to="/" search={{ topics: "" }} className="inline-flex shrink-0 items-center gap-4" aria-label="再考裁 ホーム">
           <RecourtLogo variant="header" className="h-6 fill-recourt-brandblue" />
           <span className="hidden border-l border-[#dce5fa] pl-4 text-xs leading-snug text-[#61708f] sm:block">
             判例を読むときの、
@@ -24,7 +24,7 @@ export default function Header() {
             href="/#try"
             className="rounded-lg bg-recourt-brandblue px-4 py-2 text-xs font-medium text-white hover:bg-[#1523a0] sm:text-sm"
           >
-            対話を試す
+            判例を探す
           </a>
         </div>
       </nav>

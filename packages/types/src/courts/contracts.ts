@@ -46,6 +46,12 @@ export const extractQueueMessage = z.object({
   pdfUrl: z.url(),
 });
 export type ExtractQueueMessage = z.infer<typeof extractQueueMessage>;
+export const readingExtractQueueMessage = extractQueueMessage.extend({ version: z.literal(2) });
+export const caseExtractionQueueMessage = z.discriminatedUnion("version", [extractQueueMessage, readingExtractQueueMessage]);
+export const readingCrawlerQueueMessage = crawlerQueueMessage.extend({ version: z.literal(2) });
+export const caseCrawlQueueMessage = z.discriminatedUnion("version", [crawlerQueueMessage, readingCrawlerQueueMessage]);
+export type CaseCrawlQueueMessage = z.infer<typeof caseCrawlQueueMessage>;
+export type ReadingExtractQueueMessage = z.infer<typeof readingExtractQueueMessage>;
 export const courtSearchResult = z.object({
   id: z.string().regex(/^\d+$/),
   label: z.string(),

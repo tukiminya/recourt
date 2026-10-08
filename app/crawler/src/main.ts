@@ -1,7 +1,7 @@
 import { sValidator } from "@hono/standard-validator";
 import {
   chizaiQuery,
-  crawlerQueueMessage,
+  caseCrawlQueueMessage,
   generalQuery,
   gyoseiQuery,
   kakyusaiQuery,
@@ -12,7 +12,7 @@ import {
 import { Hono } from "hono";
 import { z } from "zod";
 
-import { startScheduledCrawl } from "./scheduled-crawl";
+import { startScheduledCrawl, startTopicCrawls } from "./scheduled-crawl";
 import { startCrawl } from "./start-crawl";
 export { CrawlCaseWorkflow } from "./workflows/crawl-case";
 export { CrawlSearchWorkflow, type CrawlSearchParams } from "./workflows/crawl-search";
@@ -33,6 +33,9 @@ const rejectOffset = <T extends z.ZodType<Record<string, unknown>>>(schema: T) =
     message: "offset is managed by the crawler",
   });
 const crawlIdParams = z.object({ crawlId: z.string().uuid() });
+app.post("/crawl/reading", async (c) =>
+  c.json({ jobs: await startTopicCrawls(c.env, crypto.randomUUID()) }, 202),
+);
 
 app.post(
   "/crawl/general",
@@ -78,7 +81,7 @@ app.onError((error, c) => {
 });
 
 async function createCaseWorkflow(env: Env, message: Message<unknown>) {
-  const payload = crawlerQueueMessage.parse(message.body);
+  const payload = caseCrawlQueueMessage.parse(message.body);
   try {
     await env.CRAWL_CASE.create({ id: payload.jobId, params: payload });
   } catch (error) {

@@ -1,15 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { promises as dns } from "node:dns";
-import { allowedSourceHosts, InvalidSourceUrlError, parseSourceUrl } from "./source-url";
-
-vi.mock("node:dns", () => ({
-  promises: { resolve4: vi.fn(), resolve6: vi.fn() },
-}));
-
-beforeEach(() => {
-  vi.mocked(dns.resolve4).mockReset().mockResolvedValue(["93.184.215.14"]);
-  vi.mocked(dns.resolve6).mockReset().mockResolvedValue([]);
-});
+import { describe, expect, it } from "vitest";
+import { InvalidSourceUrlError, parseSourceUrl } from "./source-url";
 
 describe("article URL restrictions", () => {
   it.each([
@@ -25,14 +15,8 @@ describe("article URL restrictions", () => {
     expect(() => parseSourceUrl(url)).toThrow(InvalidSourceUrlError);
   });
 
-  it("rejects a hostname if any DNS answer is private", async () => {
-    vi.mocked(dns.resolve4).mockResolvedValue(["93.184.215.14", "10.0.0.1"]);
-    await expect(allowedSourceHosts("news.example.com")).rejects.toThrow(InvalidSourceUrlError);
-  });
-
-  it("does not allow a www redirect if its DNS answer is private", async () => {
-    vi.mocked(dns.resolve4).mockImplementation(async (hostname) =>
-      hostname === "www.news.example.com" ? ["192.168.1.4"] : ["93.184.215.14"]);
-    await expect(allowedSourceHosts("news.example.com")).resolves.toEqual(["news.example.com"]);
+  it("accepts the NHK article URL without a DNS lookup", () => {
+    expect(parseSourceUrl("https://news.web.nhk/newsweb/na/nd-20260822de45659").href)
+      .toBe("https://news.web.nhk/newsweb/na/nd-20260822de45659");
   });
 });

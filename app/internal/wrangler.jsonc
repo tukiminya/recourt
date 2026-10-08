@@ -4,7 +4,11 @@
   "compatibility_date": "2026-09-10",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
+  "workers_dev": false,
+  "secrets": { "required": ["DB_URL"] },
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
   "r2_buckets": [
+    { "binding": "CASE_DOCUMENTS", "bucket_name": "recourt-case-documents-v1" },
     {
       "binding": "DRAFT_ARTICLES",
       "bucket_name": "recourt-drafts-v1",

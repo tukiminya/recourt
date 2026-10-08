@@ -17,6 +17,7 @@
     "@recourt/types": "workspace:*",
     "ai": "catalog:",
     "hono": "catalog:",
+    "unpdf": "^1.8.1",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -5,10 +5,13 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
   "workers_dev": false,
+  "secrets": { "required": ["VERCEL_AI_GATEWAY_API_KEY"] },
+  "r2_buckets": [{ "binding": "CASE_DOCUMENTS", "bucket_name": "recourt-case-documents-v1" }],
   "observability": {
     "enabled": true,
   },
   "workflows": [
+    { "name": "prepare-case-reading", "binding": "PREPARE_CASE_READING", "class_name": "PrepareCaseReadingWorkflow" },
     {
       "name": "store-article",
       "binding": "STORE_ARTICLE",

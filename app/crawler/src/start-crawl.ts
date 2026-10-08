@@ -7,8 +7,17 @@ export async function startCrawl(
   category: CourtSearchCategory,
   query: Record<string, string | string[] | undefined>,
   crawlRunId: string = crypto.randomUUID(),
+  maxCases = 50,
+  cursorKey?: string,
 ) {
-  const params: CrawlSearchParams = { crawlRunId, category, query };
+  const params: CrawlSearchParams = {
+    crawlRunId,
+    category,
+    query,
+    maxCases,
+    reading: true,
+    cursorKey,
+  };
 
   try {
     await env.CRAWL_SEARCH.create({ id: crawlRunId, params });

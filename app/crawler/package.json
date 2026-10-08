@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --test-scheduled",
+    "dev": "wrangler dev -c wrangler.jsonc -c ../external-service/wrangler.jsonc -c ../extract/wrangler.jsonc -c ../internal/wrangler.jsonc --persist-to ../../.wrangler/state --test-scheduled",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types"

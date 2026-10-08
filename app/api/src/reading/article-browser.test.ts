@@ -3,10 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const launch = vi.hoisted(() => vi.fn());
 vi.mock("@cloudflare/puppeteer", () => ({ default: { launch } }));
-vi.mock("./source-url", async (importOriginal) => ({
-  ...await importOriginal<typeof import("./source-url")>(),
-  allowedSourceHosts: vi.fn(async () => ["news.example.com"]),
-}));
 
 import { ARTICLE_USER_AGENT, ArticleUnavailableError, extractArticle } from "./article-browser";
 import { InvalidSourceUrlError } from "./source-url";
@@ -71,6 +67,31 @@ describe("Browser Run article extraction", () => {
     finalUrl = "https://other.example.com/article";
     await expect(extractArticle({} as Env["BROWSER"], "https://news.example.com/article"))
       .rejects.toThrow(InvalidSourceUrlError);
+  });
+
+  it("allows only the requested hostname for an NHK article", async () => {
+    const url = "https://news.web.nhk/newsweb/na/nd-20260822de45659";
+    finalUrl = url;
+
+    await extractArticle({} as Env["BROWSER"], url);
+
+    expect(launch).toHaveBeenCalledWith(expect.anything(), { guardrails: { allowedDomains: ["news.web.nhk"] } });
+    expect(page.goto).toHaveBeenCalledWith(url, { waitUntil: "domcontentloaded", timeout: 20_000 });
+
+    const continueRequest = vi.fn(async () => {});
+    const abortRequest = vi.fn(async () => {});
+    requestHandlers[0]({ url: () => "https://www.news.web.nhk/article", continue: continueRequest, abort: abortRequest });
+    expect(abortRequest).toHaveBeenCalledOnce();
+    expect(continueRequest).not.toHaveBeenCalled();
+  });
+
+  it("rejects an NHK page that only exposes a preview behind its usage confirmation", async () => {
+    finalUrl = "https://news.web.nhk/newsweb/na/nd-20260822de45659";
+    html = `<title>NHK ニュース</title><main><h1>ニュースの見出し</h1><p>${body}</p><p>${body}</p></main><div id="erpc-half-modal">ご利用にあたって</div>`;
+
+    await expect(extractArticle({} as Env["BROWSER"], "https://news.web.nhk/newsweb/na/nd-20260822de45659"))
+      .rejects.toThrow("サイト側の利用確認が必要");
+    expect(close).toHaveBeenCalledOnce();
   });
 
   it("rejects a paywalled article and an empty article", async () => {

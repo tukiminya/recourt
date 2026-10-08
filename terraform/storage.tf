@@ -10,6 +10,12 @@ resource "cloudflare_r2_bucket" "recourt_drafts" {
   location   = "apac"
 }
 
+resource "cloudflare_r2_bucket" "recourt_case_documents" {
+  name       = "recourt-case-documents-v1"
+  account_id = var.cloudflare_account_id
+  location   = "apac"
+}
+
 resource "cloudflare_r2_bucket_lock" "recourt_published_articles" {
   account_id  = var.cloudflare_account_id
   bucket_name = cloudflare_r2_bucket.recourt.name

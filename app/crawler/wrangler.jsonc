@@ -16,6 +16,7 @@
   "services": [
     { "binding": "EXTERNAL_SERVICE", "service": "recourt-external-service" },
   ],
+  "r2_buckets": [{ "binding": "CASE_DOCUMENTS", "bucket_name": "recourt-case-documents-v1" }],
   "queues": {
     "producers": [
       { "binding": "CRAWLER_QUEUE", "queue": "recourt-crawler" },

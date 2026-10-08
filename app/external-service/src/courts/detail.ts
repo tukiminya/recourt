@@ -139,7 +139,7 @@ export async function parseCourtDetail(
     caseNumber: optional(rawMetadata, "事件番号") ?? "",
     caseName: optional(rawMetadata, "事件名"),
     decisionDate: optional(rawMetadata, "裁判年月日"),
-    courtName: optional(rawMetadata, "法廷名"),
+    courtName: optional(rawMetadata, "裁判所名・部") ?? optional(rawMetadata, "法廷名"),
     judgmentType: optional(rawMetadata, "裁判種別"),
     result: optional(rawMetadata, "結果"),
     collectionCitation: optional(rawMetadata, "判例集等巻・号・頁"),

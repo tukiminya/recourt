@@ -25,7 +25,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "再考裁 - 記事を対話で読み解く",
+        title: "再考裁 - 気になるトピックから判例を読み解く",
       },
     ],
     links: [
