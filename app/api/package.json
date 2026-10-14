@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "author": "",
   "type": "module",
+  "main": "index.js",
   "exports": {
     "./rpc": {
       "types": "./src/main.ts"
@@ -14,12 +15,11 @@
       "types": "./src/reading/chat-events.ts"
     }
   },
-  "main": "index.js",
   "scripts": {
     "dev": "wrangler dev --var WEB_ORIGIN:http://localhost:5137",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "types": "wrangler types"
+    "types": "wrangler types --strict-vars=false"
   },
   "dependencies": {
     "@cloudflare/puppeteer": "^1.4.0",

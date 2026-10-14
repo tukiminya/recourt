@@ -110,6 +110,8 @@ export const generatedParagraph = z
     kind: z.enum(["judgment", "explanation", "unavailable"]),
     text: z.string().trim().min(1).max(4_000),
     passageIds: z.array(z.string()).max(5),
+    // Structured Outputs requires every generation field; use [] when there are no terms.
+    termMentions: z.array(z.string().trim().min(1).max(40)).max(5),
   })
   .refine((value) => value.kind !== "judgment" || value.passageIds.length > 0, {
     message: "Judgment claims require evidence",
@@ -124,9 +126,29 @@ export const sourceCitation = z.object({
 export const readingParagraph = z.object({
   kind: generatedParagraph.shape.kind,
   text: z.string(),
+  // Optional so tabs with a conversation created before term annotations can still restore it.
+  termMentions: z.array(z.string().trim().min(1).max(40)).max(5).optional(),
   citations: z.array(sourceCitation),
 });
 export type ReadingParagraph = z.infer<typeof readingParagraph>;
+
+export const caseTermExplanationBody = z.strictObject({
+  documentId: z.uuid(),
+  term: z.string().trim().min(1).max(60),
+  passageIds: z.array(z.string().regex(/^p\d+-\d+$/)).max(5),
+});
+export type CaseTermExplanationBody = z.infer<typeof caseTermExplanationBody>;
+
+export const caseTermExplanation = z.object({
+  term: z.string().trim().min(1).max(60),
+  generalMeaning: z.string().trim().min(1).max(400),
+  caseUsage: z.object({
+    kind: z.enum(["judgment", "unavailable"]),
+    text: z.string().trim().min(1).max(500),
+  }),
+  citations: z.array(sourceCitation).max(3),
+});
+export type CaseTermExplanation = z.infer<typeof caseTermExplanation>;
 export const caseReadingEvent = z.discriminatedUnion("event", [
   z.object({ event: z.literal("paragraph"), data: readingParagraph }),
   z.object({ event: z.literal("done"), data: z.object({}) }),

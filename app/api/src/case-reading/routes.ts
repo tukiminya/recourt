@@ -3,6 +3,8 @@ import { sValidator } from "@hono/standard-validator";
 import {
   caseChatBody,
   caseExplainBody,
+  caseTermExplanation,
+  caseTermExplanationBody,
   caseDocument,
   readingCase,
   readingTopic,
@@ -10,6 +12,8 @@ import {
 } from "@recourt/types";
 import { z } from "zod";
 import { streamCaseReading } from "./chat";
+import { explainCaseTerm } from "./terms";
+import { mockCaseReadingResponse } from "./mock-data";
 
 const params = z.object({ caseId: z.uuid() });
 const documentParams = params.extend({ documentId: z.uuid() });
@@ -34,10 +38,13 @@ class CaseServiceError extends Error {
 }
 
 async function internal(env: Env, path: string, headers?: Headers) {
-  const response = await env.INTERNAL_SERVICE.fetch(
-    `https://internal-service.internal/reading/${path}`,
-    { headers, signal: AbortSignal.timeout(30_000) },
-  );
+  const mock = env.CASE_READING_MOCK === "true" ? mockCaseReadingResponse(path) : undefined;
+  const response =
+    mock ??
+    (await env.INTERNAL_SERVICE.fetch(`https://internal-service.internal/reading/${path}`, {
+      headers,
+      signal: AbortSignal.timeout(30_000),
+    }));
   if (response.status === 416 && path.endsWith("/pdf")) return response;
   if (!response.ok) {
     await response.body?.cancel();
@@ -137,6 +144,44 @@ export const caseReadingRoutes = new Hono<{ Bindings: Env }>()
         ...input,
         signal: c.req.raw.signal,
       });
+    },
+  )
+  .post(
+    "/cases/:caseId/terms/explain",
+    sValidator("param", params, validation),
+    sValidator("json", caseTermExplanationBody, validation),
+    async (c) => {
+      const { success } = await c.env.CHAT_LIMIT.limit({
+        key: c.req.header("cf-connecting-ip") ?? "local",
+      });
+      if (!success) {
+        c.header("Retry-After", "60");
+        return c.json(
+          { error: { code: "RATE_LIMITED", message: "少し待ってからお試しください。" } },
+          429,
+        );
+      }
+      const { caseId } = c.req.valid("param");
+      const input = c.req.valid("json");
+      const document = caseDocument.parse(
+        await (await internal(c.env, `cases/${caseId}/documents/${input.documentId}`)).json(),
+      );
+      const availablePassages = new Set(document.text.passages.map((passage) => passage.id));
+      if (input.passageIds.some((id) => !availablePassages.has(id))) {
+        return c.json(
+          { error: { code: "VALIDATION_ERROR", message: "選んだ原文箇所を確認できません。" } },
+          400,
+        );
+      }
+      const explanation = await explainCaseTerm({
+        apiKey: c.env.VERCEL_AI_GATEWAY_API_KEY,
+        courtCase: document.case,
+        text: document.text,
+        input,
+        signal: c.req.raw.signal,
+      });
+      c.header("Cache-Control", "no-store");
+      return c.json(caseTermExplanation.parse(explanation));
     },
   );
 

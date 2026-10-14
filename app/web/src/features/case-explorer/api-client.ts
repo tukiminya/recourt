@@ -1,11 +1,13 @@
 import { hc } from "hono/client";
 import type { AppType } from "@recourt/api/rpc";
 import {
+  caseTermExplanation,
   caseReadingEvent,
   type ReadingCase,
   type ReadingParagraph,
   type caseExplainBody,
   type caseChatBody,
+  type caseTermExplanationBody,
 } from "@recourt/types";
 import type { z } from "zod";
 import { ReadingRequestError } from "../guided-reading/api-client";
@@ -136,4 +138,17 @@ export async function chatAboutCase(
     ),
     onParagraph,
   );
+}
+
+export async function explainCaseTerm(
+  courtCase: ReadingCase,
+  input: z.infer<typeof caseTermExplanationBody>,
+  signal: AbortSignal,
+) {
+  const response = await client.api.cases[":caseId"].terms.explain.$post(
+    { param: { caseId: courtCase.id }, json: input },
+    { init: { signal } },
+  );
+  await ensureSuccess(response);
+  return caseTermExplanation.parse(await response.json());
 }

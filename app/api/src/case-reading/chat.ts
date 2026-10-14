@@ -15,8 +15,8 @@ export function resolveParagraph(
   courtCase: ReadingCase,
   text: JudgmentText,
 ): ReadingParagraph {
-  generatedParagraph.parse(value);
-  const citations = [...new Set(value.passageIds)].map((id) => {
+  const parsed = generatedParagraph.parse(value);
+  const citations = [...new Set(parsed.passageIds)].map((id) => {
     const passage = text.passages.find((item) => item.id === id);
     if (!passage) throw new Error("UNKNOWN_PASSAGE");
     return {
@@ -27,7 +27,10 @@ export function resolveParagraph(
       pdfUrl: `/api/cases/${courtCase.id}/documents/${courtCase.documentId}/pdf#page=${passage.page}`,
     };
   });
-  return { kind: value.kind, text: value.text, citations };
+  const termMentions = [...new Set(parsed.termMentions)].filter((term) =>
+    parsed.text.includes(term),
+  );
+  return { kind: parsed.kind, text: parsed.text, termMentions, citations };
 }
 
 export function caseReadingPrompt(
@@ -41,6 +44,8 @@ export function caseReadingPrompt(
     "原審の判断、本判決の判断、補足意見は区別し、誰が主張・認定・検討・判断したかを原文どおりに述べます。裁判所が検討すべき論点を、当事者が検討すべき義務と言い換えません。差戻しを当事者の責任が確定した結論として扱いません。",
     "判決に関する説明はkind=judgmentとし、必ず該当するpassageIdsを付けます。1段落の根拠は最大5箇所で、箇所IDは提供された本文にあるものだけを使います。引用文やURLは生成しません。",
     "一般的な用語の言い換えや説明はkind=explanationとし、裁判所が述べたこととして扱いません。本文で確認できない事柄はkind=unavailableで確認できないと伝えます。根拠がない場合は推測せず、必要に応じて一つだけ問い返します。",
+    "法律に詳しくない人が読める平易な日本語を使います。専門用語を使う必要がある場合は、初出時に短い言い換えを添え、日常語に置き換えることで法的な意味を変えないでください。長い文や法律独自の言い回しを避け、結論と理由のつながりを順に説明します。",
+    "termMentionsは必ず配列で返します。説明文に、一般の読者が意味を調べたくなりそうな専門用語がある場合だけ最大5語を入れ、該当する語句がなければ空配列[]にします。各語句は説明文にそのまま含まれる短い語句に限ります。",
     "理解度を採点したり確認問題を出したりしません。利用者の言葉遣いや質問に合わせて説明し、『もっと簡単に』『詳しく』という依頼を今回の返答に反映します。",
     `表示中の項目: ${{ overview: "全体像", background: "背景", issue: "争点", reason: "判断理由" }[section]}。基本の詳しさ: ${{ short: "短く、全体で2〜3文・最大2段落", standard: "標準、要点を最大4段落・各段落160字程度で", detailed: "詳しく、背景と理由のつながりまで最大7段落・各段落220字程度で" }[depth]}。`,
     "質問がなければ表示中の項目を説明してください。判決の内容を述べる段落では、各説明を支える箇所IDだけを選びます。",

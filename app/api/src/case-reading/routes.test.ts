@@ -2,8 +2,25 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("./chat", () => ({
   streamCaseReading: vi.fn(() => new Response("event: done\ndata: {}\n\n")),
 }));
+vi.mock("./terms", () => ({
+  explainCaseTerm: vi.fn(async ({ input, courtCase }) => ({
+    term: input.term,
+    generalMeaning: "裁判所が判断を示した文書です。",
+    caseUsage: { kind: "judgment", text: "この箇所は判決の一部です。" },
+    citations: [
+      {
+        documentId: courtCase.documentId,
+        passageId: "p1-1",
+        page: 1,
+        excerpt: "判決",
+        pdfUrl: `/api/cases/${courtCase.id}/documents/${courtCase.documentId}/pdf#page=1`,
+      },
+    ],
+  })),
+}));
 import { caseReadingRoutes } from "./routes";
 import { streamCaseReading } from "./chat";
+import { explainCaseTerm } from "./terms";
 const caseId = "0199aa11-1100-7000-8000-000000000001",
   documentId = "0199aa11-1100-7000-8000-000000000002";
 const data = {
@@ -38,6 +55,12 @@ const request = (document = documentId) =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ documentId: document, section: "overview", depth: "standard" }),
   });
+const termRequest = (body: object = { documentId, term: "判決", passageIds: ["p1-1"] }) =>
+  new Request(`https://api/cases/${caseId}/terms/explain`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
 describe("case API", () => {
   it("fetches the pinned document and forwards it to the model", async () => {
     const bindings = env(Response.json(data));
@@ -66,5 +89,42 @@ describe("case API", () => {
     expect(response.status).toBe(429);
     expect(response.headers.get("Retry-After")).toBe("60");
     expect(bindings.INTERNAL_SERVICE.fetch).not.toHaveBeenCalled();
+  });
+  it("explains a term using only the requested document and verified passage IDs", async () => {
+    const bindings = env(Response.json(data));
+    const response = await caseReadingRoutes.request(termRequest(), undefined, bindings);
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(await response.json()).toMatchObject({
+      term: "判決",
+      caseUsage: { kind: "judgment" },
+      citations: [{ passageId: "p1-1", page: 1 }],
+    });
+    expect(explainCaseTerm).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        courtCase: data.case,
+        text: data.text,
+        input: { documentId, term: "判決", passageIds: ["p1-1"] },
+      }),
+    );
+  });
+  it("rejects unknown passages and malformed terms before starting generation", async () => {
+    const bindings = env(Response.json(data));
+    const response = await caseReadingRoutes.request(
+      termRequest({ documentId, term: "判決", passageIds: ["p9-1"] }),
+      undefined,
+      bindings,
+    );
+    expect(response.status).toBe(400);
+    expect(explainCaseTerm).not.toHaveBeenCalled();
+    expect(
+      (
+        await caseReadingRoutes.request(
+          termRequest({ documentId, term: "", passageIds: [] }),
+          undefined,
+          bindings,
+        )
+      ).status,
+    ).toBe(400);
   });
 });

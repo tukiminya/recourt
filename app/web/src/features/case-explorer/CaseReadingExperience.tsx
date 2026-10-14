@@ -4,7 +4,9 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 
 import { readingParagraph, type ReadingCase, type ReadingParagraph } from "@recourt/types";
 import { z } from "zod";
 import Label from "../../components/Label";
+import CaseLegalDiagrams from "./CaseLegalDiagrams";
 import { caseApiBaseUrl, chatAboutCase, explainCase } from "./api-client";
+import TermAwareText from "./TermAwareText";
 
 type Section = "overview" | "background" | "issue" | "reason";
 type Depth = "short" | "standard" | "detailed";
@@ -43,8 +45,17 @@ export default function CaseReadingExperience({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
+  const [questionDraft, setQuestionDraft] = useState<{ id: number; text: string } | null>(null);
+  const questionDraftId = useRef(0);
   const chatAbort = useRef<AbortController | null>(null);
   const cache = useRef(new Map<string, ReadingParagraph[]>());
+  function askAboutTerm(term: string, context: string) {
+    const snippet = context.replace(/\s+/g, " ").trim().slice(0, 1_200);
+    setQuestionDraft({
+      id: ++questionDraftId.current,
+      text: `「${term}」はこの文脈でどのような意味ですか？${snippet ? `\n文脈: ${snippet}` : ""}`,
+    });
+  }
   useEffect(() => {
     chatAbort.current?.abort();
     const controller = new AbortController();
@@ -121,6 +132,7 @@ export default function CaseReadingExperience({
               裁判所の公開情報
             </a>
           </header>
+          <CaseLegalDiagrams courtCase={courtCase} />
           <div className="grid lg:grid-cols-[minmax(0,1fr)_350px]">
             <article className="min-w-0 px-5 py-6 sm:px-8 sm:py-8">
               <nav className="flex flex-wrap gap-2" aria-label="裁判の内容">
@@ -166,6 +178,8 @@ export default function CaseReadingExperience({
                   <EvidenceParagraph
                     key={`${section}:${depth}:${retry}:${index}`}
                     paragraph={paragraph}
+                    courtCase={courtCase}
+                    onAskAboutTerm={askAboutTerm}
                   />
                 ))}
                 {loading && (
@@ -193,6 +207,8 @@ export default function CaseReadingExperience({
               section={section}
               depth={depth}
               abortRef={chatAbort}
+              questionDraft={questionDraft}
+              onAskAboutTerm={askAboutTerm}
             />
           </div>
         </div>
@@ -201,7 +217,15 @@ export default function CaseReadingExperience({
   );
 }
 
-export function EvidenceParagraph({ paragraph }: { paragraph: ReadingParagraph }) {
+export function EvidenceParagraph({
+  paragraph,
+  courtCase,
+  onAskAboutTerm,
+}: {
+  paragraph: ReadingParagraph;
+  courtCase: ReadingCase;
+  onAskAboutTerm: (term: string, context: string) => void;
+}) {
   const [active, setActive] = useState<string | null>(null);
   const source = paragraph.citations.find((citation) => citation.passageId === active);
   return (
@@ -211,7 +235,15 @@ export function EvidenceParagraph({ paragraph }: { paragraph: ReadingParagraph }
           {paragraph.kind === "explanation" ? "用語の説明" : "本文で確認できないこと"}
         </p>
       )}
-      <p className="whitespace-pre-wrap">{paragraph.text}</p>
+      <p className="whitespace-pre-wrap">
+        <TermAwareText
+          text={paragraph.text}
+          termMentions={paragraph.termMentions ?? []}
+          courtCase={courtCase}
+          citations={paragraph.citations}
+          onAskAboutTerm={onAskAboutTerm}
+        />
+      </p>
       {paragraph.citations.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
           {paragraph.citations.map((citation) => (
@@ -231,7 +263,13 @@ export function EvidenceParagraph({ paragraph }: { paragraph: ReadingParagraph }
         <div className="mt-3 rounded-xl border border-[#dbe4f8] bg-[#f8faff] p-3">
           <p className="mb-2 text-xs font-semibold">判決原文 · {source.page}ページ</p>
           <blockquote className="max-h-72 overflow-auto whitespace-pre-wrap text-xs leading-[1.9]">
-            {source.excerpt}
+            <TermAwareText
+              text={source.excerpt}
+              termMentions={paragraph.termMentions ?? []}
+              courtCase={courtCase}
+              citations={[source]}
+              onAskAboutTerm={onAskAboutTerm}
+            />
           </blockquote>
           <a
             href={new URL(source.pdfUrl, caseApiBaseUrl).href}
@@ -263,11 +301,15 @@ function CaseConversation({
   section,
   depth,
   abortRef,
+  questionDraft,
+  onAskAboutTerm,
 }: {
   courtCase: ReadingCase;
   section: Section;
   depth: Depth;
   abortRef: React.MutableRefObject<AbortController | null>;
+  questionDraft: { id: number; text: string } | null;
+  onAskAboutTerm: (term: string, context: string) => void;
 }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -279,6 +321,7 @@ function CaseConversation({
   const [error, setError] = useState("");
   const [failedQuestion, setFailedQuestion] = useState("");
   const conversationScroll = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const followLatest = useRef(true);
   const key = `recourt:case:${courtCase.documentId}`;
   useEffect(() => {
@@ -310,6 +353,11 @@ function CaseConversation({
     const element = conversationScroll.current;
     if (element && followLatest.current) element.scrollTop = element.scrollHeight;
   }, [messages, pending]);
+  useEffect(() => {
+    if (!questionDraft) return;
+    setInput(questionDraft.text);
+    inputRef.current?.focus();
+  }, [questionDraft]);
   async function ask(question: string) {
     const trimmed = question.trim();
     if (!trimmed || abortRef.current || !loaded) return;
@@ -415,7 +463,12 @@ function CaseConversation({
             {message.role === "user"
               ? message.content
               : message.paragraphs.map((paragraph, i) => (
-                  <EvidenceParagraph key={i} paragraph={paragraph} />
+                  <EvidenceParagraph
+                    key={i}
+                    paragraph={paragraph}
+                    courtCase={courtCase}
+                    onAskAboutTerm={onAskAboutTerm}
+                  />
                 ))}
           </div>
         ))}
@@ -426,7 +479,12 @@ function CaseConversation({
             </p>
             <div className="space-y-3 rounded-2xl bg-[#f1f5ff] p-3">
               {pending.paragraphs.map((paragraph, index) => (
-                <EvidenceParagraph key={index} paragraph={paragraph} />
+                <EvidenceParagraph
+                  key={index}
+                  paragraph={paragraph}
+                  courtCase={courtCase}
+                  onAskAboutTerm={onAskAboutTerm}
+                />
               ))}
               <p className="text-xs text-[#657391]">原文を確認しています…</p>
               <button
@@ -461,6 +519,7 @@ function CaseConversation({
           </label>
           <textarea
             id="case-message"
+            ref={inputRef}
             rows={2}
             maxLength={2_000}
             value={input}

@@ -78,6 +78,18 @@ curl -X POST http://localhost:8788/crawl/reading
 
 DBとR2は組で保持する。DBだけを復元すると本文・PDFを取得できないため、同じ保存先を戻すか、初回収集を再実行する。現在の実データ検証用プレビューの起動構成は [検証記録](case-reading-validation.md#検証環境) に記載する。
 
+## モックデータでの画面確認
+
+APIの `CASE_READING_MOCK` フラグを文字列 `"true"` にすると、DBや初回収集を使わずにトピック・判例一覧・判例詳細を表示できる。ローカルでは `app/api/.dev.vars` に次の行を追加してAPIを再起動する。
+
+```dotenv
+CASE_READING_MOCK=true
+```
+
+モックは6件の架空資料で、タイトルに「【モック】」を付ける。複数トピックのOR検索、件数、関連度と裁判日による並び順、ページ送りは通常のAPIと同じ仕様。AIへ渡す参照本文もサンプルを使うが、解説・チャット・用語説明の返答は通常どおりAI Gatewayで生成するため、APIの `VERCEL_AI_GATEWAY_API_KEY` が必要。PDFファイルはモックに含めない。
+
+`CASE_READING_MOCK=false` にするかローカルの設定行を削除すると、通常のInternalサービスからデータを取得する。`app/api/wrangler.jsonc` の既定値は `"false"`。
+
 ## 導入
 
 1. CockroachDBへ `packages/database/migrations` の追加マイグレーションを順番に適用する。既存DBで初期マイグレーションが適用済みなら、再適用しない。

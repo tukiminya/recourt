@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ReadingCase, ReadingParagraph } from "@recourt/types";
+import type { CaseTermExplanation, ReadingCase, ReadingParagraph } from "@recourt/types";
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ children }: { children: React.ReactNode }) => <a href="/">{children}</a>,
 }));
@@ -9,8 +9,9 @@ vi.mock("./api-client", () => ({
   caseApiBaseUrl: "http://localhost:8787",
   explainCase: vi.fn(),
   chatAboutCase: vi.fn(),
+  explainCaseTerm: vi.fn(),
 }));
-import { explainCase, chatAboutCase } from "./api-client";
+import { explainCase, chatAboutCase, explainCaseTerm } from "./api-client";
 import CaseReadingExperience from "./CaseReadingExperience";
 const courtCase: ReadingCase = {
   id: "0199aa11-1100-7000-8000-000000000001",
@@ -37,6 +38,17 @@ const paragraph: ReadingParagraph = {
     },
   ],
 };
+const termParagraph: ReadingParagraph = {
+  ...paragraph,
+  text: "未決勾留の日数が刑期に算入されました。",
+  termMentions: ["未決勾留"],
+};
+const termExplanation: CaseTermExplanation = {
+  term: "未決勾留",
+  generalMeaning: "判決が確定する前に、身柄を拘束されている期間です。",
+  caseUsage: { kind: "judgment", text: "この判決では、その日数を刑期に含めています。" },
+  citations: [paragraph.citations[0]],
+};
 beforeEach(() => {
   sessionStorage.clear();
   vi.resetAllMocks();
@@ -44,6 +56,7 @@ beforeEach(() => {
     onParagraph(paragraph);
     return [paragraph];
   });
+  vi.mocked(explainCaseTerm).mockResolvedValue(termExplanation);
 });
 afterEach(cleanup);
 describe("case reader", () => {
@@ -63,6 +76,65 @@ describe("case reader", () => {
         expect.any(AbortSignal),
       ),
     );
+  });
+  it("opens a contextual term card and prepares a question in the existing chat", async () => {
+    vi.mocked(explainCase).mockImplementationOnce(async (_courtCase, _input, onParagraph) => {
+      onParagraph(termParagraph);
+      return [termParagraph];
+    });
+    render(<CaseReadingExperience courtCase={courtCase} topics="殺人" />);
+    const term = await screen.findByRole("button", { name: "未決勾留" });
+    fireEvent.focus(term);
+    expect(await screen.findByRole("dialog", { name: "未決勾留の用語カード" })).toBeTruthy();
+    await waitFor(() =>
+      expect(explainCaseTerm).toHaveBeenCalledWith(
+        courtCase,
+        { documentId: courtCase.documentId, term: "未決勾留", passageIds: ["p2-1"] },
+        expect.any(AbortSignal),
+      ),
+    );
+    expect(await screen.findByText(termExplanation.generalMeaning)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "この語をチャットで質問" }));
+    expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toContain("未決勾留");
+    expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toContain(
+      termParagraph.text,
+    );
+  });
+  it("opens by hover and click, closes with Escape, and reuses the session result", async () => {
+    vi.mocked(explainCase).mockImplementation(async (_courtCase, _input, onParagraph) => {
+      onParagraph(termParagraph);
+      return [termParagraph];
+    });
+    const page = render(<CaseReadingExperience courtCase={courtCase} topics="殺人" />);
+    const term = await screen.findByRole("button", { name: "未決勾留" });
+    fireEvent.mouseEnter(term);
+    const dialog = await screen.findByRole("dialog", { name: "未決勾留の用語カード" });
+    await screen.findByText(termExplanation.generalMeaning);
+    fireEvent.keyDown(dialog, { key: "Escape" });
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    fireEvent.click(term);
+    await screen.findByRole("dialog", { name: "未決勾留の用語カード" });
+    expect(explainCaseTerm).toHaveBeenCalledTimes(1);
+    page.unmount();
+
+    render(<CaseReadingExperience courtCase={courtCase} topics="殺人" />);
+    fireEvent.focus(await screen.findByRole("button", { name: "未決勾留" }));
+    expect(await screen.findByText(termExplanation.generalMeaning)).toBeTruthy();
+    expect(explainCaseTerm).toHaveBeenCalledTimes(1);
+  });
+  it("retries a failed term explanation", async () => {
+    vi.mocked(explainCase).mockImplementationOnce(async (_courtCase, _input, onParagraph) => {
+      onParagraph(termParagraph);
+      return [termParagraph];
+    });
+    vi.mocked(explainCaseTerm)
+      .mockRejectedValueOnce(new Error("communication failed"))
+      .mockResolvedValueOnce(termExplanation);
+    render(<CaseReadingExperience courtCase={courtCase} topics="殺人" />);
+    fireEvent.focus(await screen.findByRole("button", { name: "未決勾留" }));
+    fireEvent.click(await screen.findByRole("button", { name: "再試行" }));
+    expect(await screen.findByText(termExplanation.generalMeaning)).toBeTruthy();
+    expect(explainCaseTerm).toHaveBeenCalledTimes(2);
   });
   it("retries a failed chat without putting incomplete answers into history", async () => {
     vi.mocked(chatAboutCase)

@@ -8,7 +8,10 @@
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "services": [{ "binding": "INTERNAL_SERVICE", "service": "recourt-internal" }],
   "routes": [{ "pattern": "api.recourt-v1.tuki.dev", "custom_domain": true }],
-  "vars": { "WEB_ORIGIN": "https://recourt-v1.tuki.dev" },
+  "vars": {
+    "WEB_ORIGIN": "https://recourt-v1.tuki.dev",
+    "CASE_READING_MOCK": "false",
+  },
   "browser": { "binding": "BROWSER", "remote": true },
   "secrets": { "required": ["DB_URL", "VERCEL_AI_GATEWAY_API_KEY"] },
   "ratelimits": [
@@ -18,6 +21,6 @@
   "triggers": { "crons": ["0 * * * *"] },
   "dev": {
     "port": 8787,
-    "inspector_port": 9229
-  }
+    "inspector_port": 9229,
+  },
 }
