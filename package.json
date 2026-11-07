@@ -8,6 +8,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "db:migrate": "pnpm --filter @recourt/database migrate",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "turbo run build",
     "dev": "turbo run dev --filter=@recourt/api --filter=@recourt/crawler --filter=web",

@@ -67,7 +67,7 @@ Queue v1は従来の記事生成Workflowへ、v2は判例読解用Workflowへ送
 
 ## ローカル開発
 
-Internalの `.dev.vars` にローカルDBの `DB_URL`、APIの `.dev.vars` に `DB_URL` と `VERCEL_AI_GATEWAY_API_KEY`、Extractの `.dev.vars` に `VERCEL_AI_GATEWAY_API_KEY` を設定し、DBへマイグレーションを適用する。リポジトリのルートで `pnpm dev` を実行する。
+Internalの `.dev.vars` にローカルDBの `DB_URL`、APIの `.dev.vars` に `DB_URL` と `VERCEL_AI_GATEWAY_API_KEY`、Extractの `.dev.vars` に `VERCEL_AI_GATEWAY_API_KEY` を設定し、`pnpm db:migrate` でDBへマイグレーションを適用する。コピーできるサンプルと履歴についての注意点は[開発環境とDBマイグレーション](development-setup.md)を参照する。リポジトリのルートで `pnpm dev` を実行する。
 
 Crawler・External・Extract・Internalは1つのWranglerで起動し、ルートの `.wrangler/state` に保存する。Extractが書いたPDF・本文をInternalが同じR2から読めるようにし、Queueの送受信も同じ実行環境でつなぐ。APIは8787、Crawlerは8788、Webは5137で起動する。補助Workerの個別ポートは使用しない（[Cloudflareの複数Worker開発](https://developers.cloudflare.com/workers/local-development/multi-workers/)）。各Workerの `dev` を同時に個別起動しない。
 
@@ -80,19 +80,21 @@ DBとR2は組で保持する。DBだけを復元すると本文・PDFを取得�
 
 ## モックデータでの画面確認
 
-APIの `CASE_READING_MOCK` フラグを文字列 `"true"` にすると、DBや初回収集を使わずにトピック・判例一覧・判例詳細を表示できる。ローカルでは `app/api/.dev.vars` に次の行を追加してAPIを再起動する。
+APIの `CASE_READING_MOCK` フラグを文字列 `"true"` にすると、DBや初回収集を使わずにトピック・判例一覧・判例詳細を表示できる。通常のAPIを停止し、次のコマンドで起動する。既存のWeb・収集Workerはそのまま利用できる。
 
-```dotenv
-CASE_READING_MOCK=true
+```sh
+pnpm --filter @recourt/api dev --var CASE_READING_MOCK:true
 ```
+
+`CASE_READING_MOCK` は通常の変数として扱う。APIの `secrets.required` に含まれないため、`.dev.vars` ではなくCLIの `--var` で指定する。
 
 モックは6件の架空資料で、タイトルに「【モック】」を付ける。複数トピックのOR検索、件数、関連度と裁判日による並び順、ページ送りは通常のAPIと同じ仕様。AIへ渡す参照本文もサンプルを使うが、解説・チャット・用語説明の返答は通常どおりAI Gatewayで生成するため、APIの `VERCEL_AI_GATEWAY_API_KEY` が必要。PDFファイルはモックに含めない。
 
-`CASE_READING_MOCK=false` にするかローカルの設定行を削除すると、通常のInternalサービスからデータを取得する。`app/api/wrangler.jsonc` の既定値は `"false"`。
+`--var CASE_READING_MOCK:true` を外して通常の開発コマンドで再起動すると、Internalサービスからデータを取得する。`app/api/wrangler.jsonc` の既定値は `"false"`。
 
 ## 導入
 
-1. CockroachDBへ `packages/database/migrations` の追加マイグレーションを順番に適用する。既存DBで初期マイグレーションが適用済みなら、再適用しない。
+1. CockroachDBの接続先を設定し、`pnpm db:migrate` で未適用のSQLを適用する。SQLを手動適用済みでDrizzle履歴がないDBは、[履歴の移行について](development-setup.md#マイグレーションの実行)を先に確認する。
 2. Terraformの `recourt_case_documents` を適用してR2を作成する。Crawler・Extract・Internalで同じバケットを共有する。
 3. 既存のCrawler/Extract Queue、DLQ、Workflowを作成する。Extractには新しい `PREPARE_CASE_READING` Workflowを追加する。
 4. Internalの `DB_URL`、APIとExtractの `VERCEL_AI_GATEWAY_API_KEY` を設定する。APIのDB設定は従来のURL読解機能でも使う。API→Internal、Extract→Internal/External、Crawler→ExternalのService Bindingを確認する。

@@ -1,0 +1,3 @@
+# コピー先: app/internal/.dev.vars
+# ルート .env と app/api/.dev.vars と同じDBを指定してください。
+DB_URL="postgresql://root@127.0.0.1:26257/recourt?sslmode=disable"

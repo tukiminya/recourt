@@ -11,6 +11,8 @@
     ".": "./src/entry.ts"
   },
   "scripts": {
+    "migrate": "node scripts/migrate.mjs",
+    "test:migrate": "node --test scripts/migrate.test.mjs",
     "migrate:generate": "drizzle-kit generate"
   },
   "dependencies": {

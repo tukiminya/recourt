@@ -1,0 +1,5 @@
+# 任意: Renovate用スケジューラーを個別に動かす場合のみ使用します。
+# コピー先: app/renovate-scheduler/.dev.vars
+# pnpm dev で起動するWeb/API/収集処理には不要です。
+GITHUB_APP_CLIENT_ID="replace-with-your-github-app-client-id"
+GITHUB_APP_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nREPLACE_WITH_PRIVATE_KEY_CONTENT\n-----END PRIVATE KEY-----"
