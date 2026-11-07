@@ -8,6 +8,7 @@
   "type": "module",
   "main": "index.js",
   "exports": {
+    "./review-catalog": "./src/judicial-review/catalog.ts",
     "./rpc": {
       "types": "./src/main.ts"
     },

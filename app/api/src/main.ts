@@ -10,6 +10,7 @@ import { streamConversation } from "./reading/chat";
 import { createReadingSourceStore } from "./reading/source-store";
 import { InvalidSourceUrlError } from "./reading/source-url";
 import { caseReadingRoutes } from "./case-reading/routes";
+import { judicialReviewRoutes } from "./judicial-review/routes";
 
 type AppEnv = { Bindings: Env };
 
@@ -113,7 +114,7 @@ const routes = app.post("/api/reading-sources", sValidator("json", importBody, v
   });
 });
 
-const allRoutes = routes.route("/api", caseReadingRoutes);
+const allRoutes = routes.route("/api", caseReadingRoutes).route("/api", judicialReviewRoutes);
 export type AppType = typeof allRoutes;
 
 app.notFound((context) => context.json(errorBody("NOT_FOUND", "ページが見つかりません。"), 404));
