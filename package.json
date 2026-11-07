@@ -16,7 +16,7 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.6.6",
     "node-addon-api": "^8.9.2",
     "node-gyp": "^13.0.1",
     "oxfmt": "^0.75.0",
