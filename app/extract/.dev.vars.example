@@ -1,0 +1,3 @@
+# コピー先: app/extract/.dev.vars
+# 判例の分類と記事生成に使用します。APIと同じキーを利用できます。
+VERCEL_AI_GATEWAY_API_KEY="replace-with-your-ai-gateway-key"

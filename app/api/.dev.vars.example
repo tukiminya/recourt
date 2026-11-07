@@ -1,0 +1,11 @@
+# コピー先: app/api/.dev.vars
+# ルート .env と app/internal/.dev.vars と同じDBを指定してください。
+DB_URL="postgresql://root@127.0.0.1:26257/recourt?sslmode=disable"
+
+# AI解説・対話・用語説明・記事URL読解で使用します。
+# 固定の裁判官資料・匿名論点共有だけならAIは呼び出されません。
+VERCEL_AI_GATEWAY_API_KEY="replace-with-your-ai-gateway-key"
+
+# WEB_ORIGIN は pnpm dev が http://localhost:5137 に設定します。
+# CASE_READING_MOCK は wrangler.jsonc の既定値 false を使います。
+# 変更する場合はwrangler devの --var CASE_READING_MOCK:true を使用してください。

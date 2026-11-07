@@ -25,7 +25,7 @@ sequenceDiagram
 
 ## 公開前の設定
 
-1. 既存のPostgreSQLに [`0001_lumpy_madripoor.sql`](../packages/database/migrations/0001_lumpy_madripoor.sql) を適用する。既存DBにまだ初期スキーマがない環境では、先に `0000_court_case_natural_key.sql` を適用する。DBの状態を確認し、既に存在するテーブルを再作成しない。
+1. CockroachDBの接続先を設定し、`pnpm db:migrate` で `reading_sources` を含む未適用のSQLを適用する。環境変数のサンプルと、手動適用済みDBの扱いは[開発環境とDBマイグレーション](development-setup.md)を参照する。
 2. `recourt-api` Workerに `DB_URL` と `VERCEL_AI_GATEWAY_API_KEY` をシークレットとして設定する。ローカル開発では `app/api/.dev.vars` または環境変数を使う。
 3. API WorkerのCustom Domain `api.recourt-v1.tuki.dev` を先に公開し、`https://recourt-v1.tuki.dev` からのCORSプリフライトを確認してからWeb Workerをデプロイする。Web WorkerはAPIリクエストを中継しない。API Workerの `workers.dev` 公開URLは無効のままにする。
 

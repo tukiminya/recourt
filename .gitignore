@@ -13,7 +13,9 @@ dist
 terraform.tfstate*
 
 # Secret
-.dev.vars
-.env
+.dev.vars*
+.env*
+!.dev.vars.example
+!.env.example
 .env.keys
 terraform.tfvars

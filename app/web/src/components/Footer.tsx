@@ -7,11 +7,11 @@ export default function Footer() {
         <div>
           <RecourtLogo variant="footer" className="h-6 fill-recourt-brandblue" />
           <p className="mt-3 text-xs leading-relaxed text-[#657391]">
-            わかりやすい判例で人をアップデートする。
+            裁判官の判断をたどり、自分の考えを持つ。判断は、市民がする。
           </p>
         </div>
         <p className="text-xs leading-relaxed text-[#7784a1]">
-          © 2026 Recourt · 判例読解の試作版
+          © 2026 Recourt · 京都未踏プロジェクト
         </p>
       </div>
     </footer>
