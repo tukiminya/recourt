@@ -1,73 +1,53 @@
 # 開発環境とDBマイグレーション
 
-Node.js 24と、`package.json` に指定したpnpmを使用する。依存は `pnpm install --frozen-lockfile` でインストールする。データベースはCockroachDBを用意し、接続先の `recourt` データベースをあらかじめ作成する。
+リポジトリが指定する Node.js 26 と pnpm を使用する。依存関係は `pnpm install --frozen-lockfile` でインストールする。
 
-## 環境変数のサンプル
+## ローカル開発
 
-リポジトリルートで必要なサンプルをコピーし、接続先とキーを書き換える。既存の設定がある場合は上書きせず、必要な項目だけを追加する。
-
-```sh
-cp -n .env.example .env
-cp -n app/api/.dev.vars.example app/api/.dev.vars
-cp -n app/internal/.dev.vars.example app/internal/.dev.vars
-cp -n app/extract/.dev.vars.example app/extract/.dev.vars
-cp -n app/web/.env.example app/web/.env
-```
-
-| ファイル                           | 項目                                             | 用途                                           |
-| ---------------------------------- | ------------------------------------------------ | ---------------------------------------------- |
-| `.env`                             | `DB_URL`                                         | マイグレーションCLIの接続先                    |
-| `app/api/.dev.vars`                | `DB_URL`, `VERCEL_AI_GATEWAY_API_KEY`            | 匿名論点共有・記事読解・AI解説                 |
-| `app/internal/.dev.vars`           | `DB_URL`                                         | 判例・記事・読解文書の保存と取得               |
-| `app/extract/.dev.vars`            | `VERCEL_AI_GATEWAY_API_KEY`                      | 判例分類と記事生成                             |
-| `app/web/.env`                     | `VITE_CASE_API_URL`                              | 判例読解・論点共有のAPI接続先（任意）          |
-| `app/renovate-scheduler/.dev.vars` | `GITHUB_APP_CLIENT_ID`, `GITHUB_APP_PRIVATE_KEY` | Renovateスケジューラーを個別に利用する場合のみ |
-
-3か所の `DB_URL` は同じデータベースを指すように設定する。ルート `.env` はマイグレーションCLIが読み込み、Workerには各ディレクトリの `.dev.vars` を用意する。[Cloudflareのローカル環境変数の仕様](https://developers.cloudflare.com/workers/local-development/environment-variables/)に合わせ、Workerと同じディレクトリに配置する。
-
-サンプルのDB接続は、ローカルのinsecureモードで動くCockroachDB向け。CloudのDBでは、証明書・TLSの指定を含めて提供された接続URLを使う。AI用のキーは `replace-with-...` を実際の値に置き換える。Webの `VITE_` 値はブラウザに公開されるため、DB接続URLやAIキーを置かない。
-
-`WEB_ORIGIN` は `pnpm dev` が `http://localhost:5137` に設定する。R2・Queue・Workflow・Service Binding・レート制限は各 `wrangler.jsonc` の設定を利用するため、環境変数としてIDを追加する必要はない。CrawlerとExternal Serviceには現在必要なシークレットがない。
-
-## マイグレーションの実行
+リポジトリのルートで次のコマンドを実行する。
 
 ```sh
-# ファイル確認のみ。DBへ接続せず、全SQLファイルを一覧表示する。
-pnpm db:migrate --dry-run
-
-# .env のDB_URLへ接続し、未適用のマイグレーションを適用する。
 pnpm db:migrate
+pnpm dev
 ```
 
-`packages/database/scripts/migrate.mjs` はルート `.env` を読み込み、設定済みの環境変数を優先する。CI等で `DB_URL` を環境変数として渡す場合は `.env` を作成する必要はない。接続URLやキーはスクリプトの案内に表示しない。
+API (8787) と内部 Worker は、ルートの `.wrangler/state` にある同じローカル D1 を使う。Crawler (8788) の開発コマンドが External Service、Extract、Internal も起動する。Web のポートは 5137。
+
+AI を使う場合は、`app/api/.dev.vars.example` と `app/extract/.dev.vars.example` を各ディレクトリの `.dev.vars` にコピーし、`VERCEL_AI_GATEWAY_API_KEY` を設定する。記事 URL の取込には Cloudflare の Browser Run も利用する。Web の接続先を変える場合は `app/web/.env.example` の `VITE_CASE_API_URL` を使う。 `VITE_` で始まる値はブラウザに公開される。
 
 ```mermaid
 flowchart LR
-    A[SQLファイルの確認] --> B{実行方法}
-    B -->|dry-run| C[全ファイルを表示して終了]
-    B -->|通常| D[DB_URLの検証]
-    D --> E[Drizzleの履歴と照合]
-    E --> F[未適用のSQLを適用]
+    Web[Web] --> API[API Worker]
+    API -->|Service Binding| Internal[内部 Worker]
+    API -->|記事・匿名の論点共有| D1[recourt-database]
+    Internal -->|判例のメタデータ| D1
+    Internal -->|PDF・本文・記事| R2[R2]
 ```
 
-適用はインストール済みの `drizzle-kit migrate` に委譲し、`packages/database/migrations` のSQLをDrizzleの履歴に従って適用する。履歴テーブルは標準の `drizzle.__drizzle_migrations` を利用し、適用済みのSQLは再実行しない。DBの作成、シークレット設定、Workerのデプロイはこのコマンドには含まない。
+## マイグレーションの実行
 
-既存DBでSQLを手動適用しておりDrizzleの履歴がない場合は、自動では適用済みと判定できない。その状態で初期SQLを再実行せず、既存スキーマと履歴の移行を先に確認する。テーブルの存在だけでマイグレーションを自動的に適用済み扱いにはしない。
-
-`--dry-run` はDBの適用状況を確認するものではなく、ローカルの全SQLファイルを確認する。新しいSQLを生成する既存コマンドは次のとおり。
+D1 の SQL は `packages/database/d1-migrations` に置く。スキーマを変更したら次のコマンドで差分を生成し、ローカルに適用する。
 
 ```sh
-pnpm --filter @recourt/database migrate:generate
+pnpm --filter @recourt/database migrate:generate --name=change_name
+pnpm db:migrate
 ```
 
-## 起動と確認
+Wrangler が `d1_migrations` の履歴を使って未適用の SQL を適用する。 `pnpm db:migrate:remote` は Wrangler の認証先にある `recourt-database` に適用する。GitHub Actions は内部 Worker のデプロイ前にこのコマンドを実行するため、CI の Cloudflare トークンには対象アカウントの D1 編集権限が必要。
 
-DBへ適用したら `pnpm dev` を実行する。Webは5137、APIは8787、Crawlerは8788。CrawlerがExternal Service・Extract・Internalを同じ開発環境で起動するため、補助Workerを重複して起動しない。
+CockroachDB の SQL 履歴は `packages/database/migrations` に保存している。旧環境からデータを引き継ぐ場合は、D1 にスキーマを適用してから行を取り込む。UUID と R2 のキーは維持し、タイムスタンプは Unix ミリ秒、JSONB は JSON 文字列、真偽値は `0` または `1` に変換する。判例の PDF や本文が入った R2 バケットも同じデータにそろえる。
+
+## 初回の API 公開
+
+1. `pnpm db:migrate:remote` でリモート D1 を初期化する。
+2. [R2 の定義](../terraform/storage.tf)にある 3 つのバケットを用意し、`pnpm exec wrangler deploy --config app/internal/wrangler.jsonc` で内部 Worker をデプロイする。
+3. API を初めて作成する場合は `VERCEL_AI_GATEWAY_API_KEY` を含むシークレット用ファイルを用意し、`pnpm exec wrangler deploy --config app/api/wrangler.jsonc --secrets-file <path>` を実行する。
+4. `https://api.recourt-v1.tuki.dev` で CORS と `GET /api/topics` の応答を確認する。初回収集は [判例読解の導入手順](case-reading.md#導入)に従う。
+
+## テスト
 
 ```sh
-pnpm --filter @recourt/database test:migrate
 pnpm --filter @recourt/api test
+pnpm --filter @recourt/internal test
 pnpm --filter web test
 ```
-
-固定の裁判官資料と端末内メモはDB・AIキーなしでも閲覧できる。匿名論点の保存・集計にはマイグレーション済みのDB、AI読解にはAIキー、裁判所からの収集には既存のパイプライン設定が必要。詳細は[判例読解](case-reading.md)と[裁判官の公開資料](judicial-review.md)を参照する。

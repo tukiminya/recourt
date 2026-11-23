@@ -47,7 +47,7 @@ POSTは既存の `CHAT_LIMIT` バインディングを、`review-reasons:` 接�
 
 ## 導入と確認
 
-既存のDB設定を利用し、`pnpm db:migrate` で `review_reflections` を含む未適用のSQLをCockroachDBに適用してからAPI・Webを導入する。環境変数と実行手順は[開発環境とDBマイグレーション](development-setup.md)を参照する。新しいシークレットやバインディングは不要。DB未設定時も固定資料と端末内メモは利用でき、集計APIは503を返す。
+API の `DB` バインディングに指定された D1 に、`pnpm db:migrate:remote` で `review_reflections` を含む未適用の SQL を適用してから API・Web を導入する。固定資料と端末内メモは引き続きブラウザで利用できる。実行手順は[開発環境とDBマイグレーション](development-setup.md)を参照する。
 
 この変更では本番DBへの適用・デプロイは実施していない。DB実機での集計・同時投稿は導入環境での確認が残る。新資料の自動抽出・公開審査、現職裁判官の網羅、司法へのフィードバック送達は後続の開発事項。
 

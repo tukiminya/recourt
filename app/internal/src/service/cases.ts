@@ -384,9 +384,9 @@ async function publishRevision(
 }
 
 export function createCasesService(
-  connectionString: string,
+  binding: D1Database,
   articleStore: ArticleStore,
-  repository: CasesRepository = createCasesRepository(connectionString),
+  repository: CasesRepository = createCasesRepository(binding),
 ): CasesService {
   return {
     createCase: (input) => createCase(repository, articleStore, input),

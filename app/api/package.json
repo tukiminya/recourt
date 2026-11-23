@@ -17,7 +17,7 @@
     }
   },
   "scripts": {
-    "dev": "wrangler dev --var WEB_ORIGIN:http://localhost:5137",
+    "dev": "wrangler dev --persist-to ../../.wrangler/state --var WEB_ORIGIN:http://localhost:5137",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "types": "wrangler types --strict-vars=false"

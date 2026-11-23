@@ -31,7 +31,7 @@ const validationHook = (
 };
 
 const casesService = (env: Env) =>
-  createCasesService(env.DB_URL, createArticleStore(env.DRAFT_ARTICLES, env.PUBLISHED_ARTICLES));
+  createCasesService(env.DB, createArticleStore(env.DRAFT_ARTICLES, env.PUBLISHED_ARTICLES));
 
 const app = new Hono<AppEnv>();
 

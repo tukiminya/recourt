@@ -28,7 +28,7 @@ const source = {
 };
 const env = {
   WEB_ORIGIN: "https://recourt-v1.tuki.dev",
-  DB_URL: "postgres://unused",
+  DB: {},
   VERCEL_AI_GATEWAY_API_KEY: "test",
   IMPORT_LIMIT: { limit: async () => ({ success: true }) },
   CHAT_LIMIT: { limit: async () => ({ success: true }) },

@@ -6,6 +6,7 @@ import type { ArticleStore } from "./article-store/article-store";
 import { createCasesService, type CasesRepository, type RevisionRecord } from "./cases";
 import { caseId, createBody, revisionId } from "../test/fixtures";
 
+const binding = {} as D1Database;
 const createdAt = new Date("2026-09-10T00:00:00.000Z");
 
 function revision(status: RevisionStatus = "draft"): RevisionRecord {
@@ -59,7 +60,7 @@ describe("case service", () => {
   it("creates IDs, derives a plain title, hashes the article, and passes the court number", async () => {
     const store = createStore();
     const repository = createRepository();
-    const result = await createCasesService("unused", store, repository).createCase(createBody);
+    const result = await createCasesService(binding, store, repository).createCase(createBody);
 
     expect(result.id).toMatch(/^[0-9a-f-]{36}$/);
     expect(result.revision.title).toBe("損害賠償請求事件（最高裁判所）");
@@ -85,7 +86,7 @@ describe("case service", () => {
     vi.mocked(repository.createRevision).mockRejectedValueOnce(new Error("db down"));
 
     await expect(
-      createCasesService("unused", store, repository).createCase(createBody),
+      createCasesService(binding, store, repository).createCase(createBody),
     ).rejects.toBeInstanceOf(InternalServerError);
     expect(store.deleteDraft).toHaveBeenCalledOnce();
   });
@@ -96,7 +97,7 @@ describe("case service", () => {
     vi.mocked(store.putDraft).mockRejectedValueOnce(new InternalServerError("R2 timeout"));
 
     await expect(
-      createCasesService("unused", store, repository).createCase(createBody),
+      createCasesService(binding, store, repository).createCase(createBody),
     ).rejects.toBeInstanceOf(InternalServerError);
     expect(store.deleteDraft).toHaveBeenCalledOnce();
     expect(repository.createRevision).not.toHaveBeenCalled();
@@ -108,7 +109,7 @@ describe("case service", () => {
     vi.mocked(repository.createRevision).mockResolvedValueOnce(undefined);
 
     await expect(
-      createCasesService("unused", store, repository).createRevision(caseId, createBody),
+      createCasesService(binding, store, repository).createRevision(caseId, createBody),
     ).rejects.toBeInstanceOf(NotFoundError);
     expect(store.deleteDraft).toHaveBeenCalledWith(expect.objectContaining({ caseId }));
   });
@@ -121,7 +122,7 @@ describe("case service", () => {
       created: false,
     });
 
-    const result = await createCasesService("unused", store, repository).createRevision(
+    const result = await createCasesService(binding, store, repository).createRevision(
       caseId,
       createBody,
     );
@@ -138,7 +139,7 @@ describe("case service", () => {
     const repository = createRepository();
     vi.mocked(repository.ensureCase).mockResolvedValueOnce({ caseId, created: false });
 
-    const result = await createCasesService("unused", store, repository).createCase(createBody);
+    const result = await createCasesService(binding, store, repository).createCase(createBody);
 
     expect(result.id).toBe(caseId);
     expect(repository.ensureCase).toHaveBeenCalledWith(
@@ -153,7 +154,7 @@ describe("case service", () => {
   it("lists revision metadata and rejects stored article hash drift", async () => {
     const store = createStore();
     const repository = createRepository();
-    const service = createCasesService("unused", store, repository);
+    const service = createCasesService(binding, store, repository);
 
     await expect(service.listRevisions(caseId, { limit: 20, offset: 0 })).resolves.toEqual({
       id: caseId,
@@ -184,7 +185,7 @@ describe("case service", () => {
     vi.mocked(repository.transitionRevision)
       .mockResolvedValueOnce(publishing)
       .mockResolvedValueOnce(published);
-    const service = createCasesService("unused", store, repository);
+    const service = createCasesService(binding, store, repository);
 
     const first = await service.publishRevision(caseId, revisionId);
     expect(repository.transitionRevision).toHaveBeenNthCalledWith(
@@ -222,7 +223,7 @@ describe("case service", () => {
     vi.mocked(store.publishDraft).mockRejectedValueOnce(new Error("R2 unavailable"));
 
     await expect(
-      createCasesService("unused", store, repository).publishRevision(caseId, revisionId),
+      createCasesService(binding, store, repository).publishRevision(caseId, revisionId),
     ).rejects.toBeInstanceOf(InternalServerError);
     expect(repository.transitionRevision).not.toHaveBeenCalled();
   });
@@ -235,7 +236,7 @@ describe("case service", () => {
     vi.mocked(store.deleteDraft).mockRejectedValueOnce(new Error("R2 unavailable"));
 
     await expect(
-      createCasesService("unused", store, repository).deleteRevision(caseId, revisionId),
+      createCasesService(binding, store, repository).deleteRevision(caseId, revisionId),
     ).rejects.toBeInstanceOf(InternalServerError);
     expect(repository.deleteRevision).not.toHaveBeenCalled();
   });
@@ -254,7 +255,7 @@ describe("case service", () => {
       if (state !== "deleting") return false;
       return true;
     });
-    const service = createCasesService("unused", store, repository);
+    const service = createCasesService(binding, store, repository);
 
     const results = await Promise.allSettled([
       service.publishRevision(caseId, revisionId),
@@ -273,7 +274,7 @@ describe("case service", () => {
     vi.mocked(repository.findRevision).mockResolvedValueOnce(revision("published"));
 
     await expect(
-      createCasesService("unused", store, repository).deleteRevision(caseId, revisionId),
+      createCasesService(binding, store, repository).deleteRevision(caseId, revisionId),
     ).rejects.toBeInstanceOf(ConflictError);
     expect(store.deleteDraft).not.toHaveBeenCalled();
   });

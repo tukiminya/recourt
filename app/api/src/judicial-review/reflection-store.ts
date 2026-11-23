@@ -1,4 +1,4 @@
-import { and, db, eq, review_reflections, sql } from "@recourt/database";
+import { and, count, db, eq, review_reflections, sql } from "@recourt/database";
 import { reviewReasons, type ReviewReflection, type ReviewReasonSummary } from "@recourt/types";
 
 export interface ReviewReflectionStore {
@@ -9,8 +9,8 @@ export interface ReviewReflectionStore {
   summarize: (judgeId: string, caseId: string, version: string) => Promise<ReviewReasonSummary>;
 }
 
-export function createReviewReflectionStore(connectionString: string): ReviewReflectionStore {
-  const database = db(connectionString);
+export function createReviewReflectionStore(binding: D1Database): ReviewReflectionStore {
+  const database = db(binding);
   return {
     async submit(judgeId, input) {
       const created = await database
@@ -45,20 +45,25 @@ export function createReviewReflectionStore(connectionString: string): ReviewRef
         eq(review_reflections.catalog_version, version),
       );
       // One statement gives the total and all reason counts from the same snapshot.
+      const countReason = (reason: ReviewReflection["reasons"][number]) => sql<number>`
+        count(*) filter (where exists (
+          select 1 from json_each(${review_reflections.reason_ids}) where value = ${reason}
+        ))
+      `;
       const [result] = await database
         .select({
-          total: sql<number>`count(*)::int`,
-          rights: sql<number>`count(*) filter (where ${review_reflections.reason_ids} @> '["rights"]'::jsonb)::int`,
-          reasoning: sql<number>`count(*) filter (where ${review_reflections.reason_ids} @> '["reasoning"]'::jsonb)::int`,
-          institutions: sql<number>`count(*) filter (where ${review_reflections.reason_ids} @> '["institutions"]'::jsonb)::int`,
-          impact: sql<number>`count(*) filter (where ${review_reflections.reason_ids} @> '["impact"]'::jsonb)::int`,
-          undecided: sql<number>`count(*) filter (where ${review_reflections.reason_ids} @> '["undecided"]'::jsonb)::int`,
+          total: count(),
+          rights: countReason("rights"),
+          reasoning: countReason("reasoning"),
+          institutions: countReason("institutions"),
+          impact: countReason("impact"),
+          undecided: countReason("undecided"),
         })
         .from(review_reflections)
         .where(condition);
       return {
-        total: Number(result.total),
-        reasons: reviewReasons.map(({ id }) => ({ id, count: Number(result[id]) })),
+        total: result.total,
+        reasons: reviewReasons.map(({ id }) => ({ id, count: result[id] })),
       };
     },
   };

@@ -1,11 +1,11 @@
-import { drizzleUuidColmns, drizzleUuidColmnsWithDefault } from "./utils";
-import { cockroachTable, text, foreignKey } from "drizzle-orm/cockroach-core";
+import { foreignKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { uuidV7Column, uuidV7ColumnWithDefault } from "./utils";
 
-export const courts = cockroachTable(
+export const courts = sqliteTable(
   "courts",
   {
-    id: drizzleUuidColmnsWithDefault().primaryKey(),
-    parent_id: drizzleUuidColmns(),
+    id: uuidV7ColumnWithDefault().notNull().primaryKey(),
+    parent_id: uuidV7Column(),
     name: text().notNull(),
   },
   (table) => [

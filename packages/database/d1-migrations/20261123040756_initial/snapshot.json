@@ -1,0 +1,1219 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "af85174c-7ef3-4a72-b941-af56e373301f",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "name": "case_id_by_courts",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_revision_acts",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_revision_judges",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_revisions",
+      "entityType": "tables"
+    },
+    {
+      "name": "cases",
+      "entityType": "tables"
+    },
+    {
+      "name": "courts",
+      "entityType": "tables"
+    },
+    {
+      "name": "judges",
+      "entityType": "tables"
+    },
+    {
+      "name": "reading_sources",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_ai_gate",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_classification_jobs",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_document_topics",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_documents",
+      "entityType": "tables"
+    },
+    {
+      "name": "case_reading_holds",
+      "entityType": "tables"
+    },
+    {
+      "name": "reading_topics",
+      "entityType": "tables"
+    },
+    {
+      "name": "review_reflections",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "random_id",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "court_name",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "branch_name",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "era",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "year",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "case_id",
+      "entityType": "columns",
+      "table": "case_id_by_courts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "revision_id",
+      "entityType": "columns",
+      "table": "case_revision_acts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "revision_id",
+      "entityType": "columns",
+      "table": "case_revision_judges"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "judge_id",
+      "entityType": "columns",
+      "table": "case_revision_judges"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "is_presiding",
+      "entityType": "columns",
+      "table": "case_revision_judges"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "opinion_type",
+      "entityType": "columns",
+      "table": "case_revision_judges"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "opinion_text",
+      "entityType": "columns",
+      "table": "case_revision_judges"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "case_id",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "comments",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "article_schema_version",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "article_sha256",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source_document_sha256",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'draft'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(cast(round(unixepoch('subsec') * 1000) as integer))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "published_at",
+      "entityType": "columns",
+      "table": "case_revisions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "cases"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "case_id_by_courts",
+      "entityType": "columns",
+      "table": "cases"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "courts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "parent_id",
+      "entityType": "columns",
+      "table": "courts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "courts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "judges"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "display_name",
+      "entityType": "columns",
+      "table": "judges"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "requested_url",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source_url",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "content",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "fetched_at",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "expires_at",
+      "entityType": "columns",
+      "table": "reading_sources"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "case_ai_gate"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "next_start",
+      "entityType": "columns",
+      "table": "case_ai_gate"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source_sha256",
+      "entityType": "columns",
+      "table": "case_classification_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "processing_version",
+      "entityType": "columns",
+      "table": "case_classification_jobs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "owner",
+      "entityType": "columns",
+      "table": "case_classification_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "lease_until",
+      "entityType": "columns",
+      "table": "case_classification_jobs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "document_id",
+      "entityType": "columns",
+      "table": "case_document_topics"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "topic_id",
+      "entityType": "columns",
+      "table": "case_document_topics"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "case_id",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source_sha256",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "processing_version",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "pdf_key",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "text_key",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "text_sha256",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "page_count",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "hold_reason",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "decision_date",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(cast(round(unixepoch('subsec') * 1000) as integer))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "case_documents"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "case_id",
+      "entityType": "columns",
+      "table": "case_reading_holds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "pdf_url",
+      "entityType": "columns",
+      "table": "case_reading_holds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "case_reading_holds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reason",
+      "entityType": "columns",
+      "table": "case_reading_holds"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(cast(round(unixepoch('subsec') * 1000) as integer))",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "case_reading_holds"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "reading_topics"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "reading_topics"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "request_id",
+      "entityType": "columns",
+      "table": "review_reflections"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "judge_id",
+      "entityType": "columns",
+      "table": "review_reflections"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "case_id",
+      "entityType": "columns",
+      "table": "review_reflections"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "catalog_version",
+      "entityType": "columns",
+      "table": "review_reflections"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reason_ids",
+      "entityType": "columns",
+      "table": "review_reflections"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(cast(round(unixepoch('subsec') * 1000) as integer))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "review_reflections"
+    },
+    {
+      "columns": [
+        "revision_id"
+      ],
+      "tableTo": "case_revisions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_case_revision_acts_revision_id_case_revisions_id_fk",
+      "entityType": "fks",
+      "table": "case_revision_acts"
+    },
+    {
+      "columns": [
+        "revision_id"
+      ],
+      "tableTo": "case_revisions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_case_revision_judges_revision_id_case_revisions_id_fk",
+      "entityType": "fks",
+      "table": "case_revision_judges"
+    },
+    {
+      "columns": [
+        "judge_id"
+      ],
+      "tableTo": "judges",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_case_revision_judges_judge_id_judges_id_fk",
+      "entityType": "fks",
+      "table": "case_revision_judges"
+    },
+    {
+      "columns": [
+        "case_id"
+      ],
+      "tableTo": "cases",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_case_revisions_case_id_cases_id_fk",
+      "entityType": "fks",
+      "table": "case_revisions"
+    },
+    {
+      "columns": [
+        "case_id_by_courts"
+      ],
+      "tableTo": "case_id_by_courts",
+      "columnsTo": [
+        "random_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_cases_case_id_by_courts_case_id_by_courts_random_id_fk",
+      "entityType": "fks",
+      "table": "cases"
+    },
+    {
+      "columns": [
+        "parent_id"
+      ],
+      "tableTo": "courts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_courts_parent_id_courts_id_fk",
+      "entityType": "fks",
+      "table": "courts"
+    },
+    {
+      "columns": [
+        "document_id"
+      ],
+      "tableTo": "case_documents",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_case_document_topics_document_id_case_documents_id_fk",
+      "entityType": "fks",
+      "table": "case_document_topics"
+    },
+    {
+      "columns": [
+        "topic_id"
+      ],
+      "tableTo": "reading_topics",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_case_document_topics_topic_id_reading_topics_id_fk",
+      "entityType": "fks",
+      "table": "case_document_topics"
+    },
+    {
+      "columns": [
+        "case_id"
+      ],
+      "tableTo": "cases",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_case_documents_case_id_cases_id_fk",
+      "entityType": "fks",
+      "table": "case_documents"
+    },
+    {
+      "columns": [
+        "case_id"
+      ],
+      "tableTo": "cases",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_case_reading_holds_case_id_cases_id_fk",
+      "entityType": "fks",
+      "table": "case_reading_holds"
+    },
+    {
+      "columns": [
+        "source_sha256",
+        "processing_version"
+      ],
+      "nameExplicit": false,
+      "name": "case_classification_jobs_pk",
+      "entityType": "pks",
+      "table": "case_classification_jobs"
+    },
+    {
+      "columns": [
+        "document_id",
+        "topic_id"
+      ],
+      "nameExplicit": false,
+      "name": "case_document_topics_pk",
+      "entityType": "pks",
+      "table": "case_document_topics"
+    },
+    {
+      "columns": [
+        "case_id",
+        "pdf_url"
+      ],
+      "nameExplicit": false,
+      "name": "case_reading_holds_pk",
+      "entityType": "pks",
+      "table": "case_reading_holds"
+    },
+    {
+      "columns": [
+        "random_id"
+      ],
+      "nameExplicit": false,
+      "name": "case_id_by_courts_pk",
+      "table": "case_id_by_courts",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "revision_id"
+      ],
+      "nameExplicit": false,
+      "name": "case_revision_acts_pk",
+      "table": "case_revision_acts",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "revision_id"
+      ],
+      "nameExplicit": false,
+      "name": "case_revision_judges_pk",
+      "table": "case_revision_judges",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "case_revisions_pk",
+      "table": "case_revisions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "cases_pk",
+      "table": "cases",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "courts_pk",
+      "table": "courts",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "judges_pk",
+      "table": "judges",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "reading_sources_pk",
+      "table": "reading_sources",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "case_ai_gate_pk",
+      "table": "case_ai_gate",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "case_documents_pk",
+      "table": "case_documents",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "reading_topics_pk",
+      "table": "reading_topics",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "request_id"
+      ],
+      "nameExplicit": false,
+      "name": "review_reflections_pk",
+      "table": "review_reflections",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "expires_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "reading_sources_expires_at_idx",
+      "entityType": "indexes",
+      "table": "reading_sources"
+    },
+    {
+      "columns": [
+        {
+          "value": "topic_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "case_document_topics_topic",
+      "entityType": "indexes",
+      "table": "case_document_topics"
+    },
+    {
+      "columns": [
+        {
+          "value": "status",
+          "isExpression": false
+        },
+        {
+          "value": "case_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "case_documents_ready_case",
+      "entityType": "indexes",
+      "table": "case_documents"
+    },
+    {
+      "columns": [
+        {
+          "value": "judge_id",
+          "isExpression": false
+        },
+        {
+          "value": "case_id",
+          "isExpression": false
+        },
+        {
+          "value": "catalog_version",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "review_reflections_context",
+      "entityType": "indexes",
+      "table": "review_reflections"
+    },
+    {
+      "columns": [
+        "court_name",
+        "branch_name",
+        "era",
+        "year",
+        "type",
+        "case_id"
+      ],
+      "nameExplicit": true,
+      "name": "case_id_by_courts_natural_key",
+      "entityType": "uniques",
+      "table": "case_id_by_courts"
+    },
+    {
+      "columns": [
+        "case_id",
+        "source_document_sha256"
+      ],
+      "nameExplicit": true,
+      "name": "case_revisions_case_id_source_document_sha256",
+      "entityType": "uniques",
+      "table": "case_revisions"
+    },
+    {
+      "columns": [
+        "case_id_by_courts"
+      ],
+      "nameExplicit": true,
+      "name": "cases_case_id_by_courts",
+      "entityType": "uniques",
+      "table": "cases"
+    },
+    {
+      "columns": [
+        "case_id",
+        "source_sha256",
+        "processing_version"
+      ],
+      "nameExplicit": true,
+      "name": "case_documents_source_version",
+      "entityType": "uniques",
+      "table": "case_documents"
+    },
+    {
+      "value": "\"status\" IN ('draft', 'publishing', 'published', 'deleting')",
+      "name": "case_revisions_status",
+      "entityType": "checks",
+      "table": "case_revisions"
+    },
+    {
+      "value": "(\"status\" = 'published' AND \"published_at\" IS NOT NULL) OR (\"status\" <> 'published' AND \"published_at\" IS NULL)",
+      "name": "case_revisions_published_at_matches_status",
+      "entityType": "checks",
+      "table": "case_revisions"
+    },
+    {
+      "value": "\"source_document_sha256\" IS NULL OR\n        (length(\"source_document_sha256\") = 64 AND \"source_document_sha256\" NOT GLOB '*[^0-9a-f]*')",
+      "name": "case_revisions_source_document_sha256",
+      "entityType": "checks",
+      "table": "case_revisions"
+    }
+  ],
+  "renames": []
+}

@@ -7,7 +7,14 @@ permissions:
   contents: read
 
 jobs:
+  deploy_internal:
+    uses: ./.github/workflows/cf-worker-deploy.yaml
+    with:
+      worker: internal
+    secrets: inherit
+
   deploy:
+    needs: deploy_internal
     strategy:
       fail-fast: false
       matrix:
@@ -17,8 +24,6 @@ jobs:
           - worker: external-service
             build_web: false
           - worker: extract
-            build_web: false
-          - worker: internal
             build_web: false
           - worker: renovate-scheduler
             build_web: false

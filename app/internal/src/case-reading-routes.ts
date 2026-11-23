@@ -13,7 +13,7 @@ const validation = (
   !result.success
     ? c.json({ error: { code: "VALIDATION_ERROR", message: "入力内容を確認してください。" } }, 400)
     : undefined;
-const service = (env: Env) => createCaseReadingService(env.DB_URL, env.CASE_DOCUMENTS);
+const service = (env: Env) => createCaseReadingService(env.DB, env.CASE_DOCUMENTS);
 
 export const caseReadingRoutes = new Hono<{ Bindings: Env }>()
   .post(
