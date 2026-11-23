@@ -38,9 +38,9 @@ function materialError(judgeId: string, caseId: string, version: string) {
 }
 
 export function createJudicialReviewRoutes(
-  createStore: (url: string) => ReviewReflectionStore = createReviewReflectionStore,
+  createStore: (binding: D1Database) => ReviewReflectionStore = createReviewReflectionStore,
 ) {
-  return new Hono<{ Bindings: Pick<Env, "DB_URL" | "CHAT_LIMIT"> }>()
+  return new Hono<{ Bindings: Pick<Env, "DB" | "CHAT_LIMIT"> }>()
     .get(
       "/judges/:judgeId/reasons",
       sValidator("param", params, validation),
@@ -51,12 +51,12 @@ export function createJudicialReviewRoutes(
         const missing = materialError(judgeId, caseId, version);
         if (missing) return c.json(error(missing.code, missing.message), missing.status);
         c.header("Cache-Control", "no-store");
-        if (!c.env.DB_URL)
+        if (!c.env.DB)
           return c.json(
             error("UNAVAILABLE", "論点の共有は準備中です。資料はそのまま読めます。"),
             503,
           );
-        return c.json(await createStore(c.env.DB_URL).summarize(judgeId, caseId, version));
+        return c.json(await createStore(c.env.DB).summarize(judgeId, caseId, version));
       },
     )
     .post(
@@ -79,12 +79,12 @@ export function createJudicialReviewRoutes(
           );
         }
         c.header("Cache-Control", "no-store");
-        if (!c.env.DB_URL)
+        if (!c.env.DB)
           return c.json(
             error("UNAVAILABLE", "論点の共有は準備中です。資料はそのまま読めます。"),
             503,
           );
-        const result = await createStore(c.env.DB_URL).submit(judgeId, input);
+        const result = await createStore(c.env.DB).submit(judgeId, input);
         if (result === "conflict")
           return c.json(
             error(

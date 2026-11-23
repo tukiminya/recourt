@@ -11,15 +11,14 @@
     ".": "./src/entry.ts"
   },
   "scripts": {
-    "migrate": "node scripts/migrate.mjs",
-    "test:migrate": "node --test scripts/migrate.test.mjs",
+    "migrate": "wrangler d1 migrations apply recourt-database --config ../../app/internal/wrangler.jsonc --persist-to ../../.wrangler/state --local",
+    "migrate:remote": "wrangler d1 migrations apply recourt-database --config ../../app/internal/wrangler.jsonc --remote",
     "migrate:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@recourt/types": "workspace:*",
     "@recourt/utils": "workspace:*",
-    "drizzle-orm": "^1.0.0-rc.4",
-    "pg": "^8.23.0"
+    "drizzle-orm": "^1.0.0-rc.4"
   },
   "devDependencies": {
     "drizzle-kit": "^1.0.0-rc.4"

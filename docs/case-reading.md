@@ -9,7 +9,7 @@ flowchart LR
     W --> R[専用R2にPDF保存]
     R --> E[ページ別本文・箇所ID]
     E --> A[トピックと一覧説明の抽出]
-    A --> D[DBにready文書登録]
+    A --> D[D1にready文書登録]
     D --> T[トピックと裁判の一覧]
     T --> U[利用者が裁判を開く]
     U --> G[AI解説・対話]
@@ -57,7 +57,7 @@ Queue v1は従来の記事生成Workflowへ、v2は判例読解用Workflowへ送
 | `POST /api/cases/:caseId/chat`                     | 上記と交互の `messages` を指定                 |
 | `GET /api/cases/:caseId/documents/:documentId/pdf` | 保存済みPDF。単一Rangeに対応                   |
 
-一覧は一致するトピック数、裁判日の降順、文書IDの順に並ぶ。検索条件はURLの `topics` に持たせ、一覧へ戻った時に復元する。初期表示は件数の多い16トピックと選択済みトピックで、「他のトピックも見る」からすべてを選べる。
+一覧は一致するトピック数、裁判日の降順、事件IDの順に並ぶ。検索条件はURLの `topics` に持たせ、一覧へ戻った時に復元する。初期表示は件数の多い16トピックと選択済みトピックで、「他のトピックも見る」からすべてを選べる。
 
 モデルは利用者指定の `openai/gpt-5.2`。Vercel AI Gatewayを利用する。項目は全体像・背景・争点・判断理由、詳しさは短く・標準・詳しく。初回は全体像・標準。生成済みの項目は画面内で再利用する。項目や詳しさの変更、離脱、中止操作は進行中の生成を止める。
 
@@ -67,7 +67,7 @@ Queue v1は従来の記事生成Workflowへ、v2は判例読解用Workflowへ送
 
 ## ローカル開発
 
-Internalの `.dev.vars` にローカルDBの `DB_URL`、APIの `.dev.vars` に `DB_URL` と `VERCEL_AI_GATEWAY_API_KEY`、Extractの `.dev.vars` に `VERCEL_AI_GATEWAY_API_KEY` を設定し、`pnpm db:migrate` でDBへマイグレーションを適用する。コピーできるサンプルと履歴についての注意点は[開発環境とDBマイグレーション](development-setup.md)を参照する。リポジトリのルートで `pnpm dev` を実行する。
+API と Extract の `.dev.vars` に `VERCEL_AI_GATEWAY_API_KEY` を設定する。リポジトリのルートで `pnpm db:migrate` を実行して共有のローカル D1 を初期化し、`pnpm dev` で起動する。設定例は[開発環境とDBマイグレーション](development-setup.md)を参照する。
 
 Crawler・External・Extract・Internalは1つのWranglerで起動し、ルートの `.wrangler/state` に保存する。Extractが書いたPDF・本文をInternalが同じR2から読めるようにし、Queueの送受信も同じ実行環境でつなぐ。APIは8787、Crawlerは8788、Webは5137で起動する。補助Workerの個別ポートは使用しない（[Cloudflareの複数Worker開発](https://developers.cloudflare.com/workers/local-development/multi-workers/)）。各Workerの `dev` を同時に個別起動しない。
 
@@ -94,10 +94,10 @@ pnpm --filter @recourt/api dev --var CASE_READING_MOCK:true
 
 ## 導入
 
-1. CockroachDBの接続先を設定し、`pnpm db:migrate` で未適用のSQLを適用する。SQLを手動適用済みでDrizzle履歴がないDBは、[履歴の移行について](development-setup.md#マイグレーションの実行)を先に確認する。
+1. `pnpm db:migrate:remote` で共有 D1 に未適用の SQL を適用する。詳細は[初回の API 公開](development-setup.md#初回の-api-公開)を参照する。
 2. Terraformの `recourt_case_documents` を適用してR2を作成する。Crawler・Extract・Internalで同じバケットを共有する。
 3. 既存のCrawler/Extract Queue、DLQ、Workflowを作成する。Extractには新しい `PREPARE_CASE_READING` Workflowを追加する。
-4. Internalの `DB_URL`、APIとExtractの `VERCEL_AI_GATEWAY_API_KEY` を設定する。APIのDB設定は従来のURL読解機能でも使う。API→Internal、Extract→Internal/External、Crawler→ExternalのService Bindingを確認する。
+4. API と Extract の `VERCEL_AI_GATEWAY_API_KEY` を設定する。API と Internal が同じ D1 の `DB` バインディングを使うことを確認する。API→Internal、Extract→Internal/External、Crawler→External の Service Binding を確認する。
 5. `WEB_ORIGIN` をWebの実際のオリジンに設定する。標準のWeb API接続先は開発時 `http://localhost:8787`、公開時 `https://api.recourt-v1.tuki.dev`。検証時は `VITE_CASE_API_URL` で変更できる。
 6. Internal・External・Extract・Crawler・API・Webを導入し、初回収集を開始する。主要トピックの表示、詳しさの変更、対話、原文抜粋、保存PDFの該当ページまで確認する。
 

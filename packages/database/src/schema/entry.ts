@@ -4,3 +4,4 @@ export * from "./judges";
 export * from "./reading-sources";
 export * from "./case-documents";
 export * from "./review-reflections";
+export { databaseTimeMs } from "./utils";

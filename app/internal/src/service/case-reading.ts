@@ -1,9 +1,10 @@
 import {
   case_reading_holds,
   case_documents,
-  case_document_topics,
+  databaseTimeMs,
   db,
-  reading_topics,
+  and,
+  eq,
   sql,
 } from "@recourt/database";
 import {
@@ -20,49 +21,71 @@ import { uuidv7 } from "@recourt/utils";
 import { ConflictError, InternalServerError, NotFoundError } from "@recourt/utils/error";
 import { createCasesRepository } from "./cases-repository";
 
-const latest = sql`WITH ready AS (
+const CLASSIFICATION_LEASE_MS = 15 * 60 * 1_000;
+const CLASSIFICATION_INTERVAL_MS = 15 * 1_000;
+
+const latest = sql`WITH ranked AS (
   SELECT d.*, row_number() OVER (PARTITION BY case_id ORDER BY created_at DESC, id DESC) AS rank
   FROM case_documents d WHERE status = 'ready'
-), catalog AS (
-  SELECT d.*, coalesce((SELECT jsonb_agg(jsonb_build_object('id', t.id, 'label', t.label) ORDER BY t.label)
-    FROM case_document_topics dt JOIN reading_topics t ON t.id = dt.topic_id WHERE dt.document_id = d.id), '[]'::jsonb) AS topics
-  FROM ready d WHERE rank = 1
+), ready AS (
+  SELECT * FROM ranked WHERE rank = 1
 )`;
-const publicFields = sql`case_id AS id, id AS "documentId", title, description,
-  source->>'courtName' AS "courtName", source->>'caseNumber' AS "caseNumber",
-  decision_date AS "decisionDate", source->>'detailUrl' AS "detailUrl", topics, page_count AS "pageCount"`;
 
-export function createCaseReadingService(connection: string, bucket: R2Bucket) {
-  const database = db(connection);
-  const repository = createCasesRepository(connection);
+const publicFields = sql`d.case_id AS id, d.id AS "documentId", d.title, d.description,
+  json_extract(d.source, '$.courtName') AS "courtName",
+  json_extract(d.source, '$.caseNumber') AS "caseNumber",
+  d.decision_date AS "decisionDate", json_extract(d.source, '$.detailUrl') AS "detailUrl",
+  (SELECT json_group_array(json_object('id', t.id, 'label', t.label) ORDER BY t.label)
+    FROM case_document_topics dt JOIN reading_topics t ON t.id = dt.topic_id
+    WHERE dt.document_id = d.id) AS topics, d.page_count AS "pageCount"`;
+
+function parseReadingCase(row: { topics: string }) {
+  return readingCase.parse({ ...row, topics: JSON.parse(row.topics) });
+}
+
+export function createCaseReadingService(binding: D1Database, bucket: R2Bucket) {
+  const database = db(binding);
+  const repository = createCasesRepository(binding);
 
   async function documentRow(caseId: string, documentId: string) {
-    const result =
-      await database.execute(sql`SELECT d.*, coalesce((SELECT jsonb_agg(jsonb_build_object('id', t.id, 'label', t.label) ORDER BY t.label)
-      FROM case_document_topics dt JOIN reading_topics t ON t.id = dt.topic_id WHERE dt.document_id = d.id), '[]'::jsonb) AS topics
-      FROM case_documents d WHERE d.case_id = ${caseId}::uuid AND d.id = ${documentId}::uuid AND d.status = 'ready'`);
-    const row = result.rows[0];
+    const [row] = await database.all<{
+      pdfKey: string;
+      textKey: string | null;
+      textSha256: string | null;
+      topics: string;
+    }>(sql`
+      SELECT ${publicFields}, d.pdf_key AS "pdfKey", d.text_key AS "textKey", d.text_sha256 AS "textSha256"
+      FROM case_documents d
+      WHERE d.case_id = ${caseId} AND d.id = ${documentId} AND d.status = 'ready'
+    `);
     if (!row) throw new NotFoundError("Document not found");
     return row;
   }
 
   return {
     async claimClassification(sha256: string, version: number, owner: string) {
-      return database.transaction(async (transaction) => {
-        const result =
-          await transaction.execute(sql`INSERT INTO case_classification_jobs (source_sha256, processing_version, owner, lease_until)
-          VALUES (${sha256}, ${version}, ${owner}, now() + INTERVAL '15 minutes')
-          ON CONFLICT (source_sha256, processing_version) DO UPDATE SET owner = excluded.owner, lease_until = excluded.lease_until
-          WHERE case_classification_jobs.lease_until < now() OR case_classification_jobs.owner = excluded.owner RETURNING owner`);
-        if (!result.rows[0])
-          throw new ConflictError("Classification is already running", "CLASSIFICATION_BUSY");
-        const gate =
-          await transaction.execute(sql`INSERT INTO case_ai_gate (id, next_start) VALUES ('classification', now() + INTERVAL '15 seconds')
-          ON CONFLICT (id) DO UPDATE SET next_start = excluded.next_start WHERE case_ai_gate.next_start <= now() RETURNING id`);
-        if (!gate.rows[0])
-          throw new ConflictError("Classification capacity is busy", "CLASSIFICATION_BUSY");
-        return { claimed: true };
-      });
+      // D1 executes both statements atomically. Advance the gate only when the lease changed.
+      const [lease] = await database.batch([
+        database.run(sql`
+          INSERT INTO case_classification_jobs (source_sha256, processing_version, owner, lease_until)
+          SELECT ${sha256}, ${version}, ${owner}, ${databaseTimeMs} + ${CLASSIFICATION_LEASE_MS}
+          WHERE NOT EXISTS (
+            SELECT 1 FROM case_ai_gate WHERE id = 'classification' AND next_start > ${databaseTimeMs}
+          )
+          ON CONFLICT (source_sha256, processing_version) DO UPDATE
+          SET owner = excluded.owner, lease_until = excluded.lease_until
+          WHERE case_classification_jobs.lease_until < ${databaseTimeMs}
+            OR case_classification_jobs.owner = excluded.owner
+        `),
+        database.run(sql`
+          INSERT INTO case_ai_gate (id, next_start)
+          SELECT 'classification', ${databaseTimeMs} + ${CLASSIFICATION_INTERVAL_MS} WHERE changes() = 1
+          ON CONFLICT (id) DO UPDATE SET next_start = excluded.next_start
+        `),
+      ]);
+      if (lease.meta.changes === 0)
+        throw new ConflictError("Classification capacity is busy", "CLASSIFICATION_BUSY");
+      return { claimed: true };
     },
     async holdSource(input: z.infer<typeof heldJudgmentSource>) {
       if (
@@ -115,11 +138,13 @@ export function createCaseReadingService(connection: string, bucket: R2Bucket) {
           throw new InternalServerError("Judgment page count mismatch");
       }
       const { caseId } = await repository.ensureCase(uuidv7(), input.courtCaseId);
-      return database.transaction(async (transaction) => {
-        const [created] = await transaction
+      const documentId = uuidv7();
+      const labels = JSON.stringify(readingTopicLabels(input.topics));
+      const [[created]] = await database.batch([
+        database
           .insert(case_documents)
           .values({
-            id: uuidv7(),
+            id: documentId,
             case_id: caseId,
             source_sha256: input.sha256,
             processing_version: input.processingVersion,
@@ -135,111 +160,98 @@ export function createCaseReadingService(connection: string, bucket: R2Bucket) {
             decision_date: normalizeDecisionDate(input.source.decisionDate),
           })
           .onConflictDoNothing()
-          .returning({ documentId: case_documents.id });
-        if (!created) {
-          const existing = await transaction.execute(
-            sql`SELECT id FROM case_documents WHERE case_id = ${caseId}::uuid AND source_sha256 = ${input.sha256} AND processing_version = ${input.processingVersion}`,
-          );
-          return { caseId, documentId: String(existing.rows[0]?.id), created: false };
-        }
-        for (const label of readingTopicLabels(input.topics)) {
-          await transaction
-            .insert(reading_topics)
-            .values({ id: label, label })
-            .onConflictDoNothing();
-          await transaction
-            .insert(case_document_topics)
-            .values({ document_id: created.documentId, topic_id: label })
-            .onConflictDoNothing();
-        }
-        return { caseId, documentId: created.documentId, created: true };
-      });
+          .returning({ documentId: case_documents.id }),
+        database.run(sql`
+          INSERT INTO reading_topics (id, label)
+          SELECT value, value FROM json_each(${labels})
+          WHERE EXISTS (SELECT 1 FROM case_documents WHERE id = ${documentId})
+          ON CONFLICT (id) DO NOTHING
+        `),
+        database.run(sql`
+          INSERT INTO case_document_topics (document_id, topic_id)
+          SELECT ${documentId}, value FROM json_each(${labels})
+          WHERE EXISTS (SELECT 1 FROM case_documents WHERE id = ${documentId})
+        `),
+      ]);
+      if (created) return { caseId, documentId: created.documentId, created: true };
+
+      const [existing] = await database
+        .select({ documentId: case_documents.id })
+        .from(case_documents)
+        .where(
+          and(
+            eq(case_documents.case_id, caseId),
+            eq(case_documents.source_sha256, input.sha256),
+            eq(case_documents.processing_version, input.processingVersion),
+          ),
+        );
+      if (!existing) throw new InternalServerError("Registered document could not be read");
+      return { caseId, documentId: existing.documentId, created: false };
     },
     async findPrepared(
       courtCaseId: PreparedJudgment["courtCaseId"],
       sha256: string,
       version: number,
     ) {
-      const result =
-        await database.execute(sql`SELECT d.id AS "documentId", d.case_id AS "caseId", d.status FROM case_documents d
+      const [document] = await database.all<{
+        documentId: string;
+        caseId: string;
+        status: "ready" | "held";
+      }>(sql`SELECT d.id AS "documentId", d.case_id AS "caseId", d.status FROM case_documents d
         JOIN cases c ON c.id = d.case_id JOIN case_id_by_courts i ON i.random_id = c.case_id_by_courts
         WHERE i.court_name = ${courtCaseId.court_name} AND i.branch_name = ${courtCaseId.branch_name ?? ""}
         AND i.era = ${courtCaseId.era} AND i.year = ${courtCaseId.year} AND i.type = ${courtCaseId.type} AND i.case_id = ${courtCaseId.number}
         AND d.source_sha256 = ${sha256} AND d.processing_version = ${version} LIMIT 1`);
-      return { document: result.rows[0] ?? null };
+      return { document: document ?? null };
     },
     async topics() {
-      const result =
-        await database.execute(sql`${latest} SELECT t.id, t.label, count(*)::int AS count
-        FROM catalog d JOIN case_document_topics dt ON dt.document_id = d.id JOIN reading_topics t ON t.id = dt.topic_id
+      const rows =
+        await database.all(sql`${latest} SELECT t.id, t.label, count(*) AS count
+        FROM ready d JOIN case_document_topics dt ON dt.document_id = d.id JOIN reading_topics t ON t.id = dt.topic_id
         GROUP BY t.id, t.label ORDER BY count DESC, t.label`);
-      return {
-        topics: readingTopic.array().parse(
-          result.rows.map((row: Record<string, unknown>) => ({
-            ...row,
-            count: Number(row.count),
-          })),
-        ),
-      };
+      return { topics: readingTopic.array().parse(rows) };
     },
     async list(topicIds: string[], offset: number) {
       if (topicIds.length === 0) return { cases: [], total: 0, offset, limit: 20 as const };
-      const ids = sql.join(
-        topicIds.map((id) => sql`${id}`),
-        sql`, `,
-      );
-      const relevance = sql`(SELECT count(*) FROM case_document_topics dt WHERE dt.document_id = d.id AND dt.topic_id IN (${ids}))`;
-      const [rows, total] = await Promise.all([
-        database.execute(
-          sql`${latest} SELECT ${publicFields} FROM catalog d WHERE ${relevance} > 0 ORDER BY ${relevance} DESC, decision_date DESC NULLS LAST, id DESC LIMIT 20 OFFSET ${offset}`,
-        ),
-        database.execute(
-          sql`${latest} SELECT count(*)::int AS total FROM catalog d WHERE ${relevance} > 0`,
-        ),
+      const matches = sql`${latest}, matches AS (
+        SELECT d.*, count(*) AS relevance
+        FROM ready d JOIN case_document_topics dt ON dt.document_id = d.id
+        WHERE dt.topic_id IN (SELECT value FROM json_each(${JSON.stringify(topicIds)}))
+        GROUP BY d.id
+      )`;
+      const [rows, [total]] = await database.batch([
+        database.all<{ topics: string }>(sql`
+          ${matches} SELECT ${publicFields} FROM matches d
+          ORDER BY d.relevance DESC, d.decision_date DESC NULLS LAST, d.case_id DESC
+          LIMIT 20 OFFSET ${offset}
+        `),
+        database.all<{ total: number }>(sql`${matches} SELECT count(*) AS total FROM matches`),
       ]);
       return caseListResult.parse({
-        cases: rows.rows.map((row: Record<string, unknown>) => ({
-          ...row,
-          pageCount: Number(row.pageCount),
-        })),
-        total: Number(total.rows[0]?.total ?? 0),
+        cases: rows.map(parseReadingCase),
+        total: total.total,
         offset,
         limit: 20,
       });
     },
     async getCase(caseId: string) {
-      const result = await database.execute(
-        sql`${latest} SELECT ${publicFields} FROM catalog WHERE case_id = ${caseId}::uuid`,
+      const [row] = await database.all<{ topics: string }>(
+        sql`${latest} SELECT ${publicFields} FROM ready d WHERE d.case_id = ${caseId}`,
       );
-      if (!result.rows[0]) throw new NotFoundError("Case not found");
-      return readingCase.parse({ ...result.rows[0], pageCount: Number(result.rows[0].pageCount) });
+      if (!row) throw new NotFoundError("Case not found");
+      return parseReadingCase(row);
     },
     async getDocument(caseId: string, documentId: string) {
       const row = await documentRow(caseId, documentId);
-      const object = await bucket.get(String(row.text_key));
-      if (!object || object.customMetadata?.sha256 !== row.text_sha256)
+      const object = row.textKey ? await bucket.get(row.textKey) : null;
+      if (!object || object.customMetadata?.sha256 !== row.textSha256)
         throw new InternalServerError("Judgment text is missing");
       const text = judgmentText.parse(await object.json());
-      const source = row.source as PreparedJudgment["source"];
-      return {
-        case: readingCase.parse({
-          id: row.case_id,
-          documentId: row.id,
-          title: row.title,
-          description: row.description,
-          courtName: source.courtName,
-          caseNumber: source.caseNumber,
-          decisionDate: row.decision_date,
-          detailUrl: source.detailUrl,
-          topics: row.topics,
-          pageCount: Number(row.page_count),
-        }),
-        text,
-      };
+      return { case: parseReadingCase(row), text };
     },
     async pdf(caseId: string, documentId: string, headers: Headers) {
       const row = await documentRow(caseId, documentId);
-      const key = String(row.pdf_key);
+      const key = row.pdfKey;
       const head = await bucket.head(key);
       if (!head) throw new NotFoundError("PDF not found");
       const responseHeaders = new Headers({

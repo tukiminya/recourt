@@ -26,6 +26,9 @@ jobs:
     name: Deploy ${{ inputs.worker }} Worker
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    concurrency:
+      group: cloudflare-deploy-${{ inputs.worker }}
+      cancel-in-progress: false
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -58,6 +61,10 @@ jobs:
       - name: Deploy web Worker
         if: inputs.build_web
         run: pnpm exec wrangler deploy --config app/web/dist/server/wrangler.json
+
+      - name: Apply D1 migrations
+        if: inputs.worker == 'internal'
+        run: pnpm db:migrate:remote
 
       - name: Deploy Worker
         if: ${{ !inputs.build_web }}

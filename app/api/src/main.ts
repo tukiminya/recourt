@@ -68,7 +68,7 @@ const routes = app.post("/api/reading-sources", sValidator("json", importBody, v
 
   try {
     const article = await extractArticle(context.env.BROWSER, context.req.valid("json").url);
-    const source = await createReadingSourceStore(context.env.DB_URL).create(article);
+    const source = await createReadingSourceStore(context.env.DB).create(article);
     context.header("Cache-Control", "no-store");
     return context.json({
       sourceId: source.id,
@@ -88,7 +88,7 @@ const routes = app.post("/api/reading-sources", sValidator("json", importBody, v
     throw error;
   }
 }).delete("/api/reading-sources/:sourceId", sValidator("param", sourceParams, validationHook), async (context) => {
-  await createReadingSourceStore(context.env.DB_URL).delete(context.req.valid("param").sourceId);
+  await createReadingSourceStore(context.env.DB).delete(context.req.valid("param").sourceId);
   return context.body(null, 204);
 }).post("/api/chat", sValidator("json", chatBody, validationHook), async (context) => {
   const { sourceId, messages } = context.req.valid("json");
@@ -100,7 +100,7 @@ const routes = app.post("/api/reading-sources", sValidator("json", importBody, v
     return context.json(errorBody("RATE_LIMITED", "会話の送信回数が多すぎます。少し待ってからお試しください。"), 429);
   }
 
-  const store = createReadingSourceStore(context.env.DB_URL);
+  const store = createReadingSourceStore(context.env.DB);
   const source = await store.get(sourceId);
   if (!source || source.expires_at.getTime() <= Date.now()) {
     if (source) await store.delete(sourceId);
@@ -128,6 +128,6 @@ export default {
     return app.fetch(request, env, ctx);
   },
   async scheduled(_controller, env) {
-    await createReadingSourceStore(env.DB_URL).purgeExpired();
+    await createReadingSourceStore(env.DB).purgeExpired();
   },
 } satisfies ExportedHandler<Env>;

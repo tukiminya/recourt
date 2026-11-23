@@ -1,37 +1,35 @@
 import {
-  cockroachTable,
+  sqliteTable,
   text,
-  int4,
-  timestamp,
-  jsonb,
+  integer,
   unique,
   index,
   primaryKey,
-} from "drizzle-orm/cockroach-core";
+} from "drizzle-orm/sqlite-core";
 import type { CourtCaseSource } from "@recourt/types";
 import { cases } from "./cases";
-import { drizzleUuidColmnsWithDefault, drizzleUuidColmns } from "./utils";
+import { databaseTimeMs, dateColumn, uuidV7Column, uuidV7ColumnWithDefault } from "./utils";
 
-export const case_documents = cockroachTable(
+export const case_documents = sqliteTable(
   "case_documents",
   {
-    id: drizzleUuidColmnsWithDefault().primaryKey(),
-    case_id: drizzleUuidColmns()
+    id: uuidV7ColumnWithDefault().notNull().primaryKey(),
+    case_id: uuidV7Column()
       .notNull()
       .references(() => cases.id),
     source_sha256: text().notNull(),
-    processing_version: int4().notNull(),
-    source: jsonb().$type<CourtCaseSource>().notNull(),
+    processing_version: integer().notNull(),
+    source: text({ mode: "json" }).$type<CourtCaseSource>().notNull(),
     pdf_key: text().notNull(),
     text_key: text(),
     text_sha256: text(),
-    page_count: int4().notNull(),
+    page_count: integer().notNull(),
     status: text().$type<"ready" | "held">().notNull(),
     hold_reason: text(),
     title: text().notNull(),
     description: text().notNull(),
     decision_date: text(),
-    created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+    created_at: dateColumn().default(databaseTimeMs).notNull(),
   },
   (table) => [
     unique("case_documents_source_version").on(
@@ -43,14 +41,14 @@ export const case_documents = cockroachTable(
   ],
 );
 
-export const reading_topics = cockroachTable("reading_topics", {
-  id: text().primaryKey(),
+export const reading_topics = sqliteTable("reading_topics", {
+  id: text().notNull().primaryKey(),
   label: text().notNull(),
 });
-export const case_document_topics = cockroachTable(
+export const case_document_topics = sqliteTable(
   "case_document_topics",
   {
-    document_id: drizzleUuidColmns()
+    document_id: uuidV7Column()
       .notNull()
       .references(() => case_documents.id, { onDelete: "cascade" }),
     topic_id: text()
@@ -64,32 +62,32 @@ export const case_document_topics = cockroachTable(
 );
 
 // Sources whose size prevents archiving are kept as holds, without a fake PDF hash.
-export const case_reading_holds = cockroachTable(
+export const case_reading_holds = sqliteTable(
   "case_reading_holds",
   {
-    case_id: drizzleUuidColmns()
+    case_id: uuidV7Column()
       .notNull()
       .references(() => cases.id),
     pdf_url: text().notNull(),
-    source: jsonb().$type<CourtCaseSource>().notNull(),
+    source: text({ mode: "json" }).$type<CourtCaseSource>().notNull(),
     reason: text().notNull(),
-    updated_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updated_at: dateColumn().default(databaseTimeMs).notNull(),
   },
   (table) => [primaryKey({ columns: [table.case_id, table.pdf_url] })],
 );
 
-export const case_classification_jobs = cockroachTable(
+export const case_classification_jobs = sqliteTable(
   "case_classification_jobs",
   {
     source_sha256: text().notNull(),
-    processing_version: int4().notNull(),
+    processing_version: integer().notNull(),
     owner: text().notNull(),
-    lease_until: timestamp({ withTimezone: true }).notNull(),
+    lease_until: dateColumn().notNull(),
   },
   (table) => [primaryKey({ columns: [table.source_sha256, table.processing_version] })],
 );
 
-export const case_ai_gate = cockroachTable("case_ai_gate", {
-  id: text().primaryKey(),
-  next_start: timestamp({ withTimezone: true }).notNull(),
+export const case_ai_gate = sqliteTable("case_ai_gate", {
+  id: text().notNull().primaryKey(),
+  next_start: dateColumn().notNull(),
 });

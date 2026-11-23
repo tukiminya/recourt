@@ -5,7 +5,15 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/main.ts",
   "workers_dev": false,
-  "secrets": { "required": ["DB_URL"] },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "recourt-database",
+      "database_id": "1f0fa95d-387f-449c-b5f2-9113f3a55034",
+      "migrations_dir": "../../packages/database/d1-migrations",
+      "migrations_pattern": "../../packages/database/d1-migrations/*/migration.sql",
+    },
+  ],
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "r2_buckets": [
     { "binding": "CASE_DOCUMENTS", "bucket_name": "recourt-case-documents-v1" },

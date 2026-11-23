@@ -1,4 +1,5 @@
 import { createGateway, streamText } from "ai";
+import { CASE_READING_MODEL } from "@recourt/types";
 import type { ChatEvent } from "./chat-events";
 
 export type ConversationMessage = { role: "user" | "assistant"; content: string };
@@ -39,7 +40,7 @@ export function streamConversation({
   const abortController = new AbortController();
   const gateway = createGateway({ apiKey });
   const result = streamText({
-    model: gateway("openai/gpt-5.6-sol"),
+    model: gateway(CASE_READING_MODEL),
     system: buildSystemPrompt(),
     messages: [
       { role: "user", content: buildSourceMessage(source) },

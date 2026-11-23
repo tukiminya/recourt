@@ -10,7 +10,7 @@ const input: ReviewReflection = {
   caseId: "married-surnames-2021",
   reasons: ["rights", "institutions"],
 };
-function setup(success = true, dbUrl = "test-db") {
+function setup(success = true, binding: D1Database | null = {} as D1Database) {
   const store: ReviewReflectionStore = {
     submit: vi.fn(async () => "created" as const),
     summarize: vi.fn(async () => ({
@@ -20,7 +20,7 @@ function setup(success = true, dbUrl = "test-db") {
   };
   const createStore = vi.fn(() => store);
   const routes = createJudicialReviewRoutes(createStore);
-  const bindings = { DB_URL: dbUrl, CHAT_LIMIT: { limit: vi.fn(async () => ({ success })) } };
+  const bindings = { DB: binding, CHAT_LIMIT: { limit: vi.fn(async () => ({ success })) } };
   const post = (body: object = input, judge = "uga-katsuya") =>
     routes.request(
       `/judges/${judge}/reasons`,
@@ -78,7 +78,7 @@ describe("anonymous review reasons", () => {
     expect(response.status).toBe(429);
     expect(response.headers.get("Retry-After")).toBe("60");
     expect(limited.createStore).not.toHaveBeenCalled();
-    const unavailable = setup(true, "");
+    const unavailable = setup(true, null);
     expect((await unavailable.get()).status).toBe(503);
     expect((await unavailable.post()).status).toBe(503);
     expect(unavailable.createStore).not.toHaveBeenCalled();

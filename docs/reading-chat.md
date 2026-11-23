@@ -8,7 +8,7 @@ sequenceDiagram
     participant W as Web Worker
     participant A as API Worker
     participant B as Browser Run
-    participant D as PostgreSQL
+    participant D as D1
     participant G as Vercel AI Gateway
     U->>W: 画面を開く
     W-->>U: 対話画面
@@ -25,11 +25,11 @@ sequenceDiagram
 
 ## 公開前の設定
 
-1. CockroachDBの接続先を設定し、`pnpm db:migrate` で `reading_sources` を含む未適用のSQLを適用する。環境変数のサンプルと、手動適用済みDBの扱いは[開発環境とDBマイグレーション](development-setup.md)を参照する。
-2. `recourt-api` Workerに `DB_URL` と `VERCEL_AI_GATEWAY_API_KEY` をシークレットとして設定する。ローカル開発では `app/api/.dev.vars` または環境変数を使う。
+1. `pnpm db:migrate:remote` で `reading_sources` を含む未適用の SQL を共有 D1 に適用する。実行手順は[開発環境とDBマイグレーション](development-setup.md)を参照する。
+2. `recourt-api` Worker に `VERCEL_AI_GATEWAY_API_KEY` をシークレットとして設定する。ローカル開発では `app/api/.dev.vars` を使う。
 3. API WorkerのCustom Domain `api.recourt-v1.tuki.dev` を先に公開し、`https://recourt-v1.tuki.dev` からのCORSプリフライトを確認してからWeb Workerをデプロイする。Web WorkerはAPIリクエストを中継しない。API Workerの `workers.dev` 公開URLは無効のままにする。
 
-ローカルでは `pnpm dev` でAPI（`localhost:8787`）とWeb（`localhost:5137`）を起動する。APIの `WEB_ORIGIN` は開発用コマンドで `http://localhost:5137` に切り替わる。ブラウザからの取込・削除・チャットはHono RPCでAPIへ直接送られる。Browser Run の開発用バインディングは `remote: true` とし、Cloudflare 側のブラウザを使う。`app/api/.dev.vars` の `DB_URL` にはローカル DB の接続先を設定する。
+ローカルでは `pnpm db:migrate` で D1 を初期化し、`pnpm dev` で API（`localhost:8787`）と Web（`localhost:5137`）を起動する。API の `WEB_ORIGIN` は開発用コマンドで `http://localhost:5137` に切り替わる。ブラウザからの取込・削除・チャットは Hono RPC で API へ直接送られる。Browser Run の開発用バインディングは `remote: true` で、Cloudflare 側のブラウザを使う。
 
 データベースの変更後は次の方法で動作を確認できる。
 

@@ -376,8 +376,8 @@ async function deleteRevision(
   return deleted !== undefined;
 }
 
-export function createCasesRepository(connectionString: string): CasesRepository {
-  const database = db(connectionString);
+export function createCasesRepository(binding: D1Database): CasesRepository {
+  const database = db(binding);
   return {
     ensureCase: (candidateId, courtCaseId) => ensureCase(database, candidateId, courtCaseId),
     deleteCaseIfEmpty: (caseId) => deleteCaseIfEmpty(database, caseId),

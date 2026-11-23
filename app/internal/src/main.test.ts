@@ -9,7 +9,7 @@ import { caseId, caseWithRevision, createBody, revisionId } from "./test/fixture
 
 vi.mock("./service/cases", () => ({ createCasesService: vi.fn() }));
 const testEnv = {
-  DB_URL: "unused",
+  DB: {} as D1Database,
   DRAFT_ARTICLES: {} as R2Bucket,
   PUBLISHED_ARTICLES: {} as R2Bucket,
 } as Env;

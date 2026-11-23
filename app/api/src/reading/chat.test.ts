@@ -29,7 +29,7 @@ describe("article-grounded conversation", () => {
     expect(response.headers.get("content-type")).toContain("text/event-stream");
     expect(await response.text()).toContain('event: done\ndata: {}');
     expect(streamText).toHaveBeenCalledWith(expect.objectContaining({
-      model: "openai/gpt-5.6-sol",
+      model: "openai/gpt-5.2",
       maxRetries: 0,
     }));
     expect(streamText.mock.calls[0][0].messages.at(-1)).toEqual(messages[0]);

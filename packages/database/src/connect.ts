@@ -1,7 +1,3 @@
-import { drizzle } from "drizzle-orm/cockroach";
-import * as schema from "./schema/entry";
+import { drizzle, type AnyD1Database } from "drizzle-orm/d1";
 
-export const db = (connectionString: string) =>
-  drizzle(connectionString, {
-    schema,
-  });
+export const db = (binding: AnyD1Database) => drizzle(binding);

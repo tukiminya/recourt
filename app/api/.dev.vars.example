@@ -1,6 +1,4 @@
 # コピー先: app/api/.dev.vars
-# ルート .env と app/internal/.dev.vars と同じDBを指定してください。
-DB_URL="postgresql://root@127.0.0.1:26257/recourt?sslmode=disable"
 
 # AI解説・対話・用語説明・記事URL読解で使用します。
 # 固定の裁判官資料・匿名論点共有だけならAIは呼び出されません。

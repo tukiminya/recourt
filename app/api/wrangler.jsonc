@@ -13,7 +13,16 @@
     "CASE_READING_MOCK": "false",
   },
   "browser": { "binding": "BROWSER", "remote": true },
-  "secrets": { "required": ["DB_URL", "VERCEL_AI_GATEWAY_API_KEY"] },
+  "secrets": { "required": ["VERCEL_AI_GATEWAY_API_KEY"] },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "recourt-database",
+      "database_id": "1f0fa95d-387f-449c-b5f2-9113f3a55034",
+      "migrations_dir": "../../packages/database/d1-migrations",
+      "migrations_pattern": "../../packages/database/d1-migrations/*/migration.sql",
+    },
+  ],
   "ratelimits": [
     { "name": "IMPORT_LIMIT", "namespace_id": "26092611", "simple": { "limit": 3, "period": 60 } },
     { "name": "CHAT_LIMIT", "namespace_id": "26092612", "simple": { "limit": 20, "period": 60 } },

@@ -1,4 +1,4 @@
-name: Deploy Cloudflare API and Web Workers
+name: Deploy Cloudflare Internal, API and Web Workers
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - app/api/**
+      - app/internal/**
       - app/web/**
       - packages/**
       - package.json
@@ -17,7 +18,14 @@ permissions:
   contents: read
 
 jobs:
+  deploy_internal:
+    uses: ./.github/workflows/cf-worker-deploy.yaml
+    with:
+      worker: internal
+    secrets: inherit
+
   deploy_api:
+    needs: deploy_internal
     uses: ./.github/workflows/cf-worker-deploy.yaml
     with:
       worker: api
